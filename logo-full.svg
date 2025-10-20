@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600&amp;family=Inter:wght@400;600&amp;display=swap');
+
+      .logo-icon-node {
+        fill: none;
+        stroke: #1a1a1a;
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .logo-icon-node-fill {
+        fill: #1a1a1a;
+      }
+
+      .logo-icon-connection {
+        stroke: #1a1a1a;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        opacity: 0.5;
+      }
+
+      .logo-text-ade {
+        font-family: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Consolas', monospace;
+        font-weight: 600;
+        font-size: 96px;
+        fill: #1a1a1a;
+        letter-spacing: -2px;
+      }
+
+      .logo-text-platform {
+        font-family: 'Inter', 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 600;
+        font-size: 56px;
+        fill: #1a1a1a;
+        letter-spacing: -1px;
+      }
+
+      .logo-text-subtitle {
+        font-family: 'Inter', 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 400;
+        font-size: 20px;
+        fill: #666666;
+        letter-spacing: 0.5px;
+      }
+
+      .logo-gradient-start {
+        stop-color: #1a1a1a;
+        stop-opacity: 1;
+      }
+
+      .logo-gradient-end {
+        stop-color: #1a1a1a;
+        stop-opacity: 0.6;
+      }
+    </style>
+
+    <linearGradient id="nodeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" class="logo-gradient-start"/>
+      <stop offset="100%" class="logo-gradient-end"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Multi-Agent Network Icon -->
+  <g id="agent-network" transform="translate(80, 150)">
+    <!-- Connection lines (behind nodes) -->
+    <line x1="60" y1="0" x2="30" y2="-40" class="logo-icon-connection"/>
+    <line x1="60" y1="0" x2="90" y2="-40" class="logo-icon-connection"/>
+    <line x1="60" y1="0" x2="20" y2="30" class="logo-icon-connection"/>
+    <line x1="60" y1="0" x2="100" y2="30" class="logo-icon-connection"/>
+
+    <!-- Agent nodes (peripheral) -->
+    <circle cx="30" cy="-40" r="14" class="logo-icon-node"/>
+    <circle cx="30" cy="-40" r="5" class="logo-icon-node-fill"/>
+
+    <circle cx="90" cy="-40" r="14" class="logo-icon-node"/>
+    <circle cx="90" cy="-40" r="5" class="logo-icon-node-fill"/>
+
+    <circle cx="20" cy="30" r="14" class="logo-icon-node"/>
+    <circle cx="20" cy="30" r="5" class="logo-icon-node-fill"/>
+
+    <circle cx="100" cy="30" r="14" class="logo-icon-node"/>
+    <circle cx="100" cy="30" r="5" class="logo-icon-node-fill"/>
+
+    <!-- Central platform node (larger) -->
+    <circle cx="60" cy="0" r="20" class="logo-icon-node" stroke-width="4"/>
+    <circle cx="60" cy="0" r="7" class="logo-icon-node-fill"/>
+  </g>
+
+  <!-- Logo Text -->
+  <g id="logo-text">
+    <!-- "ade" in monospace -->
+    <text x="280" y="165" class="logo-text-ade">ade</text>
+
+    <!-- "Agent Platform" -->
+    <text x="510" y="165" class="logo-text-platform">Agent Platform</text>
+
+    <!-- Tagline -->
+    <text x="280" y="210" class="logo-text-subtitle">Domain-Agnostic Multi-Agent AI System</text>
+  </g>
+</svg>

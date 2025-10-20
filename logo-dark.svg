@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600&amp;family=Inter:wght@400;600&amp;display=swap');
+
+      .dark-bg {
+        fill: #0d1117;
+      }
+
+      .dark-icon-node {
+        fill: none;
+        stroke: #ffffff;
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .dark-icon-node-fill {
+        fill: #ffffff;
+      }
+
+      .dark-icon-connection {
+        stroke: #ffffff;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        opacity: 0.5;
+      }
+
+      .dark-text-ade {
+        font-family: 'JetBrains Mono', 'SF Mono', 'Monaco', 'Consolas', monospace;
+        font-weight: 600;
+        font-size: 96px;
+        fill: #ffffff;
+        letter-spacing: -2px;
+      }
+
+      .dark-text-platform {
+        font-family: 'Inter', 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 600;
+        font-size: 56px;
+        fill: #ffffff;
+        letter-spacing: -1px;
+      }
+
+      .dark-text-subtitle {
+        font-family: 'Inter', 'SF Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 400;
+        font-size: 20px;
+        fill: #8b949e;
+        letter-spacing: 0.5px;
+      }
+    </style>
+  </defs>
+
+  <!-- Dark background -->
+  <rect width="1200" height="300" class="dark-bg"/>
+
+  <!-- Multi-Agent Network Icon -->
+  <g id="agent-network-dark" transform="translate(80, 150)">
+    <!-- Connection lines (behind nodes) -->
+    <line x1="60" y1="0" x2="30" y2="-40" class="dark-icon-connection"/>
+    <line x1="60" y1="0" x2="90" y2="-40" class="dark-icon-connection"/>
+    <line x1="60" y1="0" x2="20" y2="30" class="dark-icon-connection"/>
+    <line x1="60" y1="0" x2="100" y2="30" class="dark-icon-connection"/>
+
+    <!-- Agent nodes (peripheral) -->
+    <circle cx="30" cy="-40" r="14" class="dark-icon-node"/>
+    <circle cx="30" cy="-40" r="5" class="dark-icon-node-fill"/>
+
+    <circle cx="90" cy="-40" r="14" class="dark-icon-node"/>
+    <circle cx="90" cy="-40" r="5" class="dark-icon-node-fill"/>
+
+    <circle cx="20" cy="30" r="14" class="dark-icon-node"/>
+    <circle cx="20" cy="30" r="5" class="dark-icon-node-fill"/>
+
+    <circle cx="100" cy="30" r="14" class="dark-icon-node"/>
+    <circle cx="100" cy="30" r="5" class="dark-icon-node-fill"/>
+
+    <!-- Central platform node (larger) -->
+    <circle cx="60" cy="0" r="20" class="dark-icon-node" stroke-width="4"/>
+    <circle cx="60" cy="0" r="7" class="dark-icon-node-fill"/>
+  </g>
+
+  <!-- Logo Text -->
+  <g id="logo-text-dark">
+    <!-- "ade" in monospace -->
+    <text x="280" y="165" class="dark-text-ade">ade</text>
+
+    <!-- "Agent Platform" -->
+    <text x="510" y="165" class="dark-text-platform">Agent Platform</text>
+
+    <!-- Tagline -->
+    <text x="280" y="210" class="dark-text-subtitle">Domain-Agnostic Multi-Agent AI System</text>
+  </g>
+</svg>

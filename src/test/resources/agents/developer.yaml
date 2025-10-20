@@ -1,0 +1,10 @@
+role: "Software Developer"
+description: "Test Software Developer agent for integration testing"
+capabilities:
+  - "Code review"
+  - "Bug fixing"
+  - "Architecture design"
+temperature: 0.7
+maxTokens: 200  # Reduced for faster integration tests with remote Ollama
+promptTemplate: "You are a {role}. Task: {task}"
+outputFormat: "technical"

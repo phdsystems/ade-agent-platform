@@ -1,0 +1,9 @@
+name: "test-domain"
+version: "1.0.0"
+description: "Test domain for integration testing"
+outputFormats:
+  - technical
+  - business
+agentDirectory: "agents/"
+dependencies: []
+enabled: true

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="800" height="200">
+  <defs>
+    <style>
+      .logo-text {
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+        font-weight: 600;
+        fill: #1a1a1a;
+      }
+      .logo-subtitle {
+        font-family: 'Inter', 'SF Pro', -apple-system, system-ui, sans-serif;
+        font-weight: 400;
+        fill: #666;
+      }
+      .node {
+        fill: none;
+        stroke: #1a1a1a;
+        stroke-width: 2.5;
+      }
+      .connection {
+        stroke: #1a1a1a;
+        stroke-width: 2;
+        opacity: 0.6;
+      }
+      .node-center {
+        fill: #1a1a1a;
+      }
+    </style>
+  </defs>
+
+  <!-- Connected nodes (multi-agent system) -->
+  <g transform="translate(50, 80)">
+    <!-- Center node -->
+    <circle cx="40" cy="20" r="12" class="node"/>
+    <circle cx="40" cy="20" r="4" class="node-center"/>
+
+    <!-- Connected nodes -->
+    <circle cx="10" cy="0" r="8" class="node"/>
+    <circle cx="10" cy="40" r="8" class="node"/>
+    <circle cx="70" cy="0" r="8" class="node"/>
+    <circle cx="70" cy="40" r="8" class="node"/>
+
+    <!-- Connection lines -->
+    <line x1="40" y1="20" x2="16" y2="5" class="connection"/>
+    <line x1="40" y1="20" x2="16" y2="35" class="connection"/>
+    <line x1="40" y1="20" x2="64" y2="5" class="connection"/>
+    <line x1="40" y1="20" x2="64" y2="35" class="connection"/>
+  </g>
+
+  <!-- Logo text -->
+  <text x="180" y="105" class="logo-text" font-size="72">ade</text>
+  <text x="330" y="105" class="logo-subtitle" font-size="42">Agent Platform</text>
+
+  <!-- Tagline -->
+  <text x="180" y="140" class="logo-subtitle" font-size="16">Domain-Agnostic Multi-Agent AI System</text>
+</svg>

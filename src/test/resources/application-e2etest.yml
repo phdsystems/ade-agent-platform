@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: role-manager-app-e2e
+  shell:
+    interactive:
+      enabled: false  # Disable interactive shell for E2E tests
+
+server:
+  port: 0  # Random port for testing
+
+# LLM Provider Configuration (E2E Test)
+llm:
+  primary-provider: test
+
+  anthropic:
+    api-key: test-anthropic-key-e2e
+    model: claude-3-5-sonnet-20241022
+    max-tokens: 2048
+    temperature: 0.7
+
+  openai:
+    api-key: test-openai-key-e2e
+    model: gpt-4-turbo-preview
+    max-tokens: 2048
+    temperature: 0.7
+
+  ollama:
+    base-url: http://localhost:11434
+    model: qwen3:0.6b
+
+# Agent Configuration
+agents:
+  config-dir: src/test/resources/agents
+
+# Logging (more verbose for E2E tests)
+logging:
+  level:
+    root: WARN
+    adeengineer.dev.platform: DEBUG
+    org.springframework.web: INFO
+    org.springframework.test: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+# Actuator endpoints (enabled for E2E health checks)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      enabled: true

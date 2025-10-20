@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <style>
+      .icon-node {
+        fill: none;
+        stroke: #1a1a1a;
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .icon-node-fill {
+        fill: #1a1a1a;
+      }
+
+      .icon-connection {
+        stroke: #1a1a1a;
+        stroke-width: 3;
+        stroke-linecap: round;
+        opacity: 0.5;
+      }
+    </style>
+  </defs>
+
+  <!-- Multi-Agent Network Icon (Centered) -->
+  <g transform="translate(100, 100)">
+    <!-- Connection lines -->
+    <line x1="0" y1="0" x2="-40" y2="-50" class="icon-connection"/>
+    <line x1="0" y1="0" x2="40" y2="-50" class="icon-connection"/>
+    <line x1="0" y1="0" x2="-50" y2="30" class="icon-connection"/>
+    <line x1="0" y1="0" x2="50" y2="30" class="icon-connection"/>
+
+    <!-- Peripheral agent nodes -->
+    <circle cx="-40" cy="-50" r="18" class="icon-node"/>
+    <circle cx="-40" cy="-50" r="6" class="icon-node-fill"/>
+
+    <circle cx="40" cy="-50" r="18" class="icon-node"/>
+    <circle cx="40" cy="-50" r="6" class="icon-node-fill"/>
+
+    <circle cx="-50" cy="30" r="18" class="icon-node"/>
+    <circle cx="-50" cy="30" r="6" class="icon-node-fill"/>
+
+    <circle cx="50" cy="30" r="18" class="icon-node"/>
+    <circle cx="50" cy="30" r="6" class="icon-node-fill"/>
+
+    <!-- Central platform node -->
+    <circle cx="0" cy="0" r="26" class="icon-node" stroke-width="5"/>
+    <circle cx="0" cy="0" r="9" class="icon-node-fill"/>
+  </g>
+</svg>

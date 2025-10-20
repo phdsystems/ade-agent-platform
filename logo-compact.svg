@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 120" width="600" height="120">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600&amp;family=Inter:wght@600&amp;display=swap');
+
+      .compact-icon-node {
+        fill: none;
+        stroke: #1a1a1a;
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .compact-icon-node-fill {
+        fill: #1a1a1a;
+      }
+
+      .compact-icon-connection {
+        stroke: #1a1a1a;
+        stroke-width: 2;
+        stroke-linecap: round;
+        opacity: 0.5;
+      }
+
+      .compact-text-ade {
+        font-family: 'JetBrains Mono', 'SF Mono', 'Monaco', monospace;
+        font-weight: 600;
+        font-size: 48px;
+        fill: #1a1a1a;
+        letter-spacing: -1px;
+      }
+
+      .compact-text-platform {
+        font-family: 'Inter', 'SF Pro', -apple-system, sans-serif;
+        font-weight: 600;
+        font-size: 28px;
+        fill: #1a1a1a;
+        letter-spacing: -0.5px;
+      }
+    </style>
+  </defs>
+
+  <!-- Multi-Agent Network Icon (Scaled down) -->
+  <g transform="translate(40, 60)">
+    <!-- Connection lines -->
+    <line x1="30" y1="0" x2="15" y2="-20" class="compact-icon-connection"/>
+    <line x1="30" y1="0" x2="45" y2="-20" class="compact-icon-connection"/>
+    <line x1="30" y1="0" x2="10" y2="15" class="compact-icon-connection"/>
+    <line x1="30" y1="0" x2="50" y2="15" class="compact-icon-connection"/>
+
+    <!-- Peripheral nodes -->
+    <circle cx="15" cy="-20" r="8" class="compact-icon-node"/>
+    <circle cx="15" cy="-20" r="3" class="compact-icon-node-fill"/>
+
+    <circle cx="45" cy="-20" r="8" class="compact-icon-node"/>
+    <circle cx="45" cy="-20" r="3" class="compact-icon-node-fill"/>
+
+    <circle cx="10" cy="15" r="8" class="compact-icon-node"/>
+    <circle cx="10" cy="15" r="3" class="compact-icon-node-fill"/>
+
+    <circle cx="50" cy="15" r="8" class="compact-icon-node"/>
+    <circle cx="50" cy="15" r="3" class="compact-icon-node-fill"/>
+
+    <!-- Central node -->
+    <circle cx="30" cy="0" r="12" class="compact-icon-node" stroke-width="3"/>
+    <circle cx="30" cy="0" r="4" class="compact-icon-node-fill"/>
+  </g>
+
+  <!-- Logo Text (Compact) -->
+  <g>
+    <text x="130" y="72" class="compact-text-ade">ade</text>
+    <text x="255" y="72" class="compact-text-platform">Agent Platform</text>
+  </g>
+</svg>

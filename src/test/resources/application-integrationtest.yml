@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: role-manager-app-integration-test
+
+server:
+  port: 0  # Random port (not used, no web server in integration tests)
+
+# LLM Provider Configuration (Integration Test - REAL Provider)
+# Uses localhost Ollama to validate error handling, logging, and provider failover
+# NOTE: HuggingFace free tier Inference API does not support text generation models
+# Only task-specific models (summarization, classification) available on free tier
+llm:
+  primary-provider: ollama
+
+  # Ollama - Primary provider for integration tests (localhost)
+  # Requires local Ollama installation with qwen2.5:0.5b model
+  # See: doc/4-development/guide/integration-test-setup.md
+  ollama:
+    base-url: http://localhost:11434
+    model: qwen2.5:0.5b  # More stable than qwen3 (no num_predict bugs)
+
+  # HuggingFace - Not available for text generation on free tier
+  # Free tier only supports task-specific models (summarization, classification, etc.)
+  huggingface:
+    api-key: ${HF_API_KEY:}
+    model: Qwen/Qwen2-0.5B
+
+  # Anthropic - Fallback (no valid API key, will fail and test error handling)
+  anthropic:
+    api-key: invalid-key-for-testing
+    model: claude-3-5-sonnet-20241022
+
+  # OpenAI - Fallback (no valid API key, will fail and test error handling)
+  openai:
+    api-key: invalid-key-for-testing
+    model: gpt-4-turbo-preview
+
+# Agent Configuration
+agents:
+  config-dir: src/test/resources/agents
+
+# Logging - Enable detailed logging to validate error handling strategy
+logging:
+  level:
+    root: WARN
+    adeengineer.dev.platform: DEBUG  # DEBUG to see error handling in action
+    adeengineer.dev.platform.llm: DEBUG  # See provider calls and errors
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Actuator endpoints (disabled for tests)
+management:
+  endpoints:
+    enabled-by-default: false

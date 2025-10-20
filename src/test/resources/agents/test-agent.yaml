@@ -1,0 +1,9 @@
+role: "Test Agent"
+description: "A test agent for unit testing"
+capabilities:
+  - "Testing"
+  - "Validation"
+temperature: 0.7
+maxTokens: 200  # Reduced for faster integration tests with remote Ollama
+promptTemplate: "You are a {role}. Task: {task}"
+outputFormat: "technical"

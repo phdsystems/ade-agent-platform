@@ -1,0 +1,7 @@
+
+   ●───●
+    ╲ ╱
+     ●      ade Agent Platform
+    ╱ ╲
+   ●───●   Domain-Agnostic Multi-Agent AI System
+

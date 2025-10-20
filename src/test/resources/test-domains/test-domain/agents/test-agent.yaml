@@ -1,0 +1,13 @@
+name: "Test Domain Agent"
+description: "Agent for integration testing"
+capabilities:
+  - "Testing"
+  - "Validation"
+temperature: 0.5
+maxTokens: 1024
+outputFormat: "technical"
+promptTemplate: |
+  You are a Test Domain Agent.
+  Task: {task}
+  Context: {context}
+  Provide test output.

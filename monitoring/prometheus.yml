@@ -1,0 +1,55 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'role-manager-app'
+    environment: 'production'
+
+scrape_configs:
+  # Role Manager App metrics
+  - job_name: 'role-manager-app'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['localhost:8080']
+        labels:
+          application: 'role-manager-app'
+          instance: 'primary'
+
+  # Optional: Multiple instances for load balancing
+  - job_name: 'role-manager-app-cluster'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets:
+          - 'app-instance-1:8080'
+          - 'app-instance-2:8080'
+          - 'app-instance-3:8080'
+        labels:
+          application: 'role-manager-app'
+          cluster: 'prod-cluster'
+
+  # Redis metrics (if using Redis cache)
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['localhost:9121']
+        labels:
+          application: 'redis-cache'
+
+  # JVM metrics
+  - job_name: 'jvm'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['localhost:8080']
+    metric_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'jvm_.*'
+        action: keep
+
+# Alert manager configuration (optional)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['localhost:9093']
+
+# Recording rules for aggregations
+rule_files:
+  - 'alerts.yml'

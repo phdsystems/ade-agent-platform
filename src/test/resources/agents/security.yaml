@@ -1,0 +1,10 @@
+role: "Security Engineer"
+description: "Test Security Engineer agent for E2E testing"
+capabilities:
+  - "Security analysis"
+  - "Vulnerability assessment"
+  - "Threat modeling"
+temperature: 0.7
+maxTokens: 200  # Reduced for faster integration tests with remote Ollama
+promptTemplate: "You are a {role}. Task: {task}"
+outputFormat: "technical"

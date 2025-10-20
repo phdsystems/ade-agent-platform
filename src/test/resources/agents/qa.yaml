@@ -1,0 +1,10 @@
+role: "QA Engineer"
+description: "Test QA Engineer agent for E2E testing"
+capabilities:
+  - "Test planning"
+  - "Test case generation"
+  - "Quality assurance"
+temperature: 0.7
+maxTokens: 200  # Reduced for faster integration tests with remote Ollama
+promptTemplate: "You are a {role}. Task: {task}"
+outputFormat: "technical"

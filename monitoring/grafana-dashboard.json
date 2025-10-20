@@ -1,0 +1,200 @@
+{
+  "dashboard": {
+    "title": "Role Manager App - LLM Metrics",
+    "tags": ["llm", "performance", "monitoring"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "LLM Request Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(llm_requests_total[5m])",
+            "legendFormat": "{{provider}} - {{method}}"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "Requests/sec",
+            "format": "reqps"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "LLM Response Time (p95)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(llm_response_time_seconds_bucket[5m]))",
+            "legendFormat": "{{provider}}"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "Duration",
+            "format": "s"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "LLM Error Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(llm_errors_total[5m])",
+            "legendFormat": "{{provider}} - {{error_type}}"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "Errors/sec",
+            "format": "short"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Cache Hit Rate",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "rate(cache_hits_total[5m]) / (rate(cache_hits_total[5m]) + rate(cache_misses_total[5m]))",
+            "legendFormat": "Hit Rate"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percentunit",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {"value": 0, "color": "red"},
+                {"value": 0.5, "color": "yellow"},
+                {"value": 0.8, "color": "green"}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 5,
+        "title": "Circuit Breaker State",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "resilience4j_circuitbreaker_state",
+            "legendFormat": "{{provider}} - {{state}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "mappings": [
+              {"value": 0, "text": "CLOSED"},
+              {"value": 1, "text": "OPEN"},
+              {"value": 2, "text": "HALF_OPEN"}
+            ]
+          }
+        }
+      },
+      {
+        "id": 6,
+        "title": "Token Usage by Provider",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(llm_tokens_total[5m])",
+            "legendFormat": "{{provider}} - {{token_type}}"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "Tokens/sec",
+            "format": "short"
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Cost per Provider",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "increase(llm_cost_usd_total[1h])",
+            "legendFormat": "{{provider}}"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "Cost ($USD)",
+            "format": "currencyUSD"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "HTTP Connection Pool",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "reactor_netty_connection_provider_total_connections",
+            "legendFormat": "Total Connections"
+          },
+          {
+            "expr": "reactor_netty_connection_provider_active_connections",
+            "legendFormat": "Active Connections"
+          },
+          {
+            "expr": "reactor_netty_connection_provider_idle_connections",
+            "legendFormat": "Idle Connections"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "Connections",
+            "format": "short"
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "JVM Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "jvm_memory_used_bytes{area=\"heap\"}",
+            "legendFormat": "Heap Used"
+          },
+          {
+            "expr": "jvm_memory_max_bytes{area=\"heap\"}",
+            "legendFormat": "Heap Max"
+          }
+        ],
+        "yaxes": [
+          {
+            "label": "Memory",
+            "format": "bytes"
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "Streaming vs Non-Streaming Requests",
+        "type": "piechart",
+        "targets": [
+          {
+            "expr": "sum(llm_requests_total) by (streaming)",
+            "legendFormat": "{{streaming}}"
+          }
+        ]
+      }
+    ],
+    "refresh": "10s",
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    }
+  }
+}

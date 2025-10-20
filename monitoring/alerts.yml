@@ -1,0 +1,95 @@
+groups:
+  - name: llm_alerts
+    interval: 30s
+    rules:
+      # High error rate alert
+      - alert: LLMHighErrorRate
+        expr: |
+          (
+            rate(llm_errors_total[5m])
+            /
+            rate(llm_requests_total[5m])
+          ) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High LLM error rate detected"
+          description: "Provider {{ $labels.provider }} has {{ $value | humanizePercentage }} error rate"
+
+      # Circuit breaker open alert
+      - alert: CircuitBreakerOpen
+        expr: resilience4j_circuitbreaker_state{state="open"} == 1
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Circuit breaker open for provider"
+          description: "Circuit breaker for {{ $labels.provider }} is OPEN"
+
+      # High latency alert
+      - alert: LLMHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(llm_response_time_seconds_bucket[5m])
+          ) > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High LLM response latency"
+          description: "P95 latency for {{ $labels.provider }} is {{ $value }}s"
+
+      # Low cache hit rate
+      - alert: LowCacheHitRate
+        expr: |
+          (
+            rate(cache_hits_total[10m])
+            /
+            (rate(cache_hits_total[10m]) + rate(cache_misses_total[10m]))
+          ) < 0.3
+        for: 10m
+        labels:
+          severity: info
+        annotations:
+          summary: "Low cache hit rate"
+          description: "Cache hit rate is {{ $value | humanizePercentage }}"
+
+      # High connection pool usage
+      - alert: ConnectionPoolNearCapacity
+        expr: |
+          (
+            reactor_netty_connection_provider_active_connections
+            /
+            reactor_netty_connection_provider_max_connections
+          ) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Connection pool near capacity"
+          description: "Connection pool is {{ $value | humanizePercentage }} utilized"
+
+      # High daily cost
+      - alert: HighDailyCost
+        expr: increase(llm_cost_usd_total[24h]) > 100
+        labels:
+          severity: warning
+        annotations:
+          summary: "High daily LLM cost"
+          description: "Daily cost is ${{ $value | humanize }} for {{ $labels.provider }}"
+
+      # JVM memory pressure
+      - alert: HighMemoryUsage
+        expr: |
+          (
+            jvm_memory_used_bytes{area="heap"}
+            /
+            jvm_memory_max_bytes{area="heap"}
+          ) > 0.9
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High JVM memory usage"
+          description: "Heap memory usage is {{ $value | humanizePercentage }}"

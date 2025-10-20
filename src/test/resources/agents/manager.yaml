@@ -1,0 +1,10 @@
+role: "Engineering Manager"
+description: "Test Engineering Manager agent for E2E testing"
+capabilities:
+  - "Team management"
+  - "Metrics reporting"
+  - "Sprint planning"
+temperature: 0.7
+maxTokens: 200  # Reduced for faster integration tests with remote Ollama
+promptTemplate: "You are a {role}. Task: {task}"
+outputFormat: "executive"
