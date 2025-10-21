@@ -19,14 +19,21 @@ AgentUnit is a test framework module providing reusable mock implementations, te
 ```
 ade-agent-platform-agentunit/
 └── src/main/java/dev/adeengineer/platform/test/
-    ├── mock/                  # Mock implementations
-    │   ├── MockAgent.java     # Mock Agent for testing
-    │   └── MockLLMProvider.java  # Mock LLM provider
-    ├── factory/               # Test data factories
-    │   └── TestData.java      # Factory methods for test data
-    ├── builder/               # Test data builders (future)
-    ├── assertion/             # Custom assertions (future)
-    └── base/                  # Base test classes (future)
+    ├── mock/                          # Mock implementations
+    │   ├── MockAgent.java             # Mock Agent for testing
+    │   └── MockLLMProvider.java       # Mock LLM provider
+    ├── factory/                       # Test data factories
+    │   └── TestData.java              # Factory methods for test data
+    ├── builder/                       # Fluent test data builders
+    │   ├── AgentConfigBuilder.java   # Build AgentConfig instances
+    │   ├── TaskRequestBuilder.java   # Build TaskRequest instances
+    │   └── TaskResultBuilder.java    # Build TaskResult instances
+    ├── assertion/                     # Custom AssertJ assertions
+    │   ├── TaskResultAssert.java     # TaskResult assertions
+    │   └── AgentAssertions.java      # Entry point for assertions
+    └── base/                          # Base test classes
+        ├── BaseAgentTest.java        # Base for agent unit tests
+        └── BaseIntegrationTest.java  # Base for integration tests
 ```
 
 ## Usage
@@ -87,7 +94,9 @@ class AgentRegistryTest {
 
 ## Available Test Utilities
 
-### MockAgent
+### Phase 1: Core Utilities (v0.2.0)
+
+#### MockAgent
 
 Mock implementation of `Agent` interface for testing.
 
@@ -141,6 +150,144 @@ AgentConfig config = TestData.validAgentConfig();
 TaskRequest request = TestData.validTaskRequest();
 LLMResponse response = TestData.validLLMResponse();
 UsageInfo usage = TestData.validUsageInfo();
+```
+
+### Phase 2: Advanced Utilities (v0.2.0)
+
+#### Fluent Builders
+
+Build test data with a fluent API for better readability.
+
+**AgentConfigBuilder**:
+```java
+import dev.adeengineer.platform.test.builder.AgentConfigBuilder;
+
+AgentConfig config = AgentConfigBuilder.builder()
+    .name("Developer")
+    .description("Software development agent")
+    .capabilities("coding", "testing", "debugging")
+    .temperature(0.7)
+    .maxTokens(1000)
+    .promptTemplate("You are a {role}. Task: {task}")
+    .outputFormat("technical")
+    .build();
+```
+
+**TaskRequestBuilder**:
+```java
+import dev.adeengineer.platform.test.builder.TaskRequestBuilder;
+
+TaskRequest request = TaskRequestBuilder.builder()
+    .agentName("Developer")
+    .task("Write unit tests for UserService")
+    .context("priority", "high")
+    .context("deadline", "2024-01-15")
+    .build();
+```
+
+**TaskResultBuilder**:
+```java
+import dev.adeengineer.platform.test.builder.TaskResultBuilder;
+
+// Success result
+TaskResult success = TaskResultBuilder.success()
+    .agentName("Developer")
+    .task("Write tests")
+    .output("Tests written successfully")
+    .metadata("totalTokens", 150)
+    .durationMs(1000L)
+    .build();
+
+// Failure result
+TaskResult failure = TaskResultBuilder.failure()
+    .agentName("Developer")
+    .task("Invalid task")
+    .errorMessage("Task validation failed")
+    .build();
+```
+
+#### Custom Assertions
+
+Fluent AssertJ-style assertions for TaskResult.
+
+**Usage**:
+```java
+import static dev.adeengineer.platform.test.assertion.AgentAssertions.assertThat;
+
+TaskResult result = agent.executeTask(request);
+
+assertThat(result)
+    .isSuccessful()
+    .hasAgentName("Developer")
+    .hasOutputContaining("completed")
+    .hasDurationLessThan(1000L)
+    .hasMetadata("totalTokens", 150);
+```
+
+**Available Assertions**:
+- `isSuccessful()` - Verify task succeeded
+- `isFailure()` - Verify task failed
+- `hasAgentName(String)` - Check agent name
+- `hasTask(String)` - Check task description
+- `hasOutput(String)` - Check exact output
+- `hasOutputContaining(String)` - Check output substring
+- `hasErrorMessageContaining(String)` - Check error message
+- `hasDurationLessThan(Long)` - Check duration upper bound
+- `hasDurationGreaterThan(Long)` - Check duration lower bound
+- `hasMetadataKey(String)` - Check metadata key exists
+- `hasMetadata(String, Object)` - Check metadata value
+
+#### Base Test Classes
+
+Extend these base classes for standardized test setup.
+
+**BaseAgentTest** - For unit tests:
+```java
+import dev.adeengineer.platform.test.base.BaseAgentTest;
+
+class MyAgentTest extends BaseAgentTest {
+
+    private AgentRegistry agentRegistry;
+
+    @BeforeEach
+    void setUp() {
+        super.setUpBaseAgent(); // Sets up mockLLMProvider
+        agentRegistry = new AgentRegistry();
+    }
+
+    @Test
+    void shouldExecuteTask() {
+        configureMockLLM("Custom response");
+        // mockLLMProvider is available from parent
+        MockAgent agent = new MockAgent("test-agent");
+        // Test logic...
+    }
+}
+```
+
+**BaseIntegrationTest** - For integration tests:
+```java
+import dev.adeengineer.platform.test.base.BaseIntegrationTest;
+
+class OrchestrationIntegrationTest extends BaseIntegrationTest {
+
+    private AgentRegistry agentRegistry;
+    private ParallelAgentExecutor executor;
+
+    @BeforeEach
+    void setUp() {
+        super.setUpIntegration(); // Sets up mockLLMProvider
+
+        agentRegistry = new AgentRegistry();
+        executor = new ParallelAgentExecutor(agentRegistry, mockLLMProvider);
+    }
+
+    @Test
+    void shouldOrchestrate() {
+        configureMockLLMResponse("Integration test response");
+        // Test logic with multiple components...
+    }
+}
 ```
 
 ## Migration from Duplicated Utilities
