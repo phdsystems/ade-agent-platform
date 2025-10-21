@@ -12,7 +12,7 @@ import adeengineer.dev.agent.OutputFormatter;
 
 import dev.adeengineer.llm.model.LLMResponse;
 import dev.adeengineer.llm.model.UsageInfo;
-import dev.adeengineer.platform.testutil.TestData;
+import dev.adeengineer.platform.test.factory.TestData;
 
 @DisplayName("OutputFormatter Tests")
 class OutputFormatterTest {

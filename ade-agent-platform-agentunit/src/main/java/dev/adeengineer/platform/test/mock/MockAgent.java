@@ -1,4 +1,4 @@
-package dev.adeengineer.platform.spring.testutil;
+package dev.adeengineer.platform.test.mock;
 
 import java.util.HashMap;
 import java.util.List;

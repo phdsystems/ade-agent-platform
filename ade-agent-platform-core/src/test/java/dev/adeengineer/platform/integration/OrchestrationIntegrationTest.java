@@ -13,7 +13,7 @@ import dev.adeengineer.llm.model.UsageInfo;
 import dev.adeengineer.platform.core.AgentRegistry;
 import dev.adeengineer.platform.orchestration.ParallelAgentExecutor;
 import dev.adeengineer.platform.orchestration.WorkflowEngine;
-import dev.adeengineer.platform.testutil.MockAgent;
+import dev.adeengineer.platform.test.mock.MockAgent;
 
 /**
  * Integration tests for orchestration components.

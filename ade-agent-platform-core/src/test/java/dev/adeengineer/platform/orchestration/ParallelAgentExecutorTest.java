@@ -17,7 +17,7 @@ import adeengineer.dev.agent.TaskResult;
 
 import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.platform.core.AgentRegistry;
-import dev.adeengineer.platform.testutil.MockAgent;
+import dev.adeengineer.platform.test.mock.MockAgent;
 
 /** Unit tests for ParallelAgentExecutor. */
 @ExtendWith(MockitoExtension.class)

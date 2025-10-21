@@ -1,14 +1,14 @@
-package dev.adeengineer.platform.spring.testutil;
+package dev.adeengineer.platform.test.mock;
 
 import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.llm.model.LLMResponse;
 import dev.adeengineer.llm.model.UsageInfo;
 
 /**
- * Test implementation of LLMProvider for unit testing. Provides configurable responses without
+ * Mock implementation of LLMProvider for unit testing. Provides configurable responses without
  * making actual API calls.
  */
-public class TestLLMProvider implements LLMProvider {
+public class MockLLMProvider implements LLMProvider {
 
     private final String providerName;
     private final String model;
@@ -16,11 +16,11 @@ public class TestLLMProvider implements LLMProvider {
     private String responseContent = "Test LLM response";
     private RuntimeException exceptionToThrow;
 
-    public TestLLMProvider() {
+    public MockLLMProvider() {
         this("test-provider", "test-model", true);
     }
 
-    public TestLLMProvider(String providerName, String model, boolean healthy) {
+    public MockLLMProvider(String providerName, String model, boolean healthy) {
         this.providerName = providerName;
         this.model = model;
         this.healthy = healthy;
@@ -58,12 +58,12 @@ public class TestLLMProvider implements LLMProvider {
     }
 
     // Configuration methods for testing
-    public TestLLMProvider withResponseContent(String content) {
+    public MockLLMProvider withResponseContent(String content) {
         this.responseContent = content;
         return this;
     }
 
-    public TestLLMProvider withException(RuntimeException exception) {
+    public MockLLMProvider withException(RuntimeException exception) {
         this.exceptionToThrow = exception;
         return this;
     }

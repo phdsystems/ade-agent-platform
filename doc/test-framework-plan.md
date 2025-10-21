@@ -6,7 +6,7 @@
 
 ## TL;DR
 
-**Goal**: Extract duplicated test utilities into reusable `ade-agent-platform-test-framework` module. **Problem**: MockAgent, TestData, TestLLMProvider duplicated across core and Spring Boot (3x copies, 100% identical). **Solution**: Create test-scoped dependency that all modules can use. **Benefit**: Single source of truth for test utilities, easier maintenance, consistent testing patterns.
+**Goal**: Extract duplicated test utilities into reusable `AgentUnit` module. **Problem**: MockAgent, TestData, TestLLMProvider duplicated across core and Spring Boot (3x copies, 100% identical). **Solution**: Create test-scoped dependency that all modules can use. **Benefit**: Single source of truth for test utilities, easier maintenance, consistent testing patterns.
 
 ---
 
@@ -121,7 +121,9 @@ ade-agent-platform-spring-boot/src/test
 
 ## Proposed Solution
 
-### Create `ade-agent-platform-test-framework` Module
+### Create `AgentUnit` Module
+
+**Artifact**: `ade-agent-platform-agentunit`
 
 **Purpose**: Reusable, framework-agnostic test utilities for all modules
 
@@ -138,10 +140,10 @@ ade-agent-platform-spring-boot/src/test
 
 ## Module Structure
 
-### New Module: `ade-agent-platform-test-framework`
+### New Module: `AgentUnit` (`ade-agent-platform-agentunit`)
 
 ```
-ade-agent-platform-test-framework/
+ade-agent-platform-agentunit/
 ├── pom.xml                                    # Test-scoped module
 └── src/main/java/                             # Main source (for test utilities)
     └── dev/adeengineer/platform/test/
@@ -175,7 +177,7 @@ Test framework utilities go in `src/main/java` (NOT `src/test/java`) because:
 ```xml
 <dependency>
     <groupId>adeengineer.dev</groupId>
-    <artifactId>ade-agent-platform-test-framework</artifactId>
+    <artifactId>ade-agent-platform-agentunit</artifactId>
     <version>${project.version}</version>
     <scope>test</scope>  <!-- Only available in test classpath -->
 </dependency>
@@ -185,16 +187,16 @@ Test framework utilities go in `src/main/java` (NOT `src/test/java`) because:
 
 ```
 ade-agent-platform-core
-    └── (test scope) → ade-agent-platform-test-framework
+    └── (test scope) → ade-agent-platform-agentunit
 
 ade-agent-platform-spring-boot
-    └── (test scope) → ade-agent-platform-test-framework
+    └── (test scope) → ade-agent-platform-agentunit
 
 ade-agent-platform-quarkus
-    └── (test scope) → ade-agent-platform-test-framework
+    └── (test scope) → ade-agent-platform-agentunit
 
 ade-agent-platform-micronaut
-    └── (test scope) → ade-agent-platform-test-framework
+    └── (test scope) → ade-agent-platform-agentunit
 ```
 
 ---
@@ -204,7 +206,7 @@ ade-agent-platform-micronaut
 ### Phase 1: Create Test Framework Module
 
 **Tasks**:
-1. ✅ Create `ade-agent-platform-test-framework/pom.xml`
+1. ✅ Create `ade-agent-platform-agentunit/pom.xml`
    - Packaging: `jar`
    - Scope: Intended for `test` scope consumers
    - Dependencies: JUnit 5, AssertJ, Mockito, SDK interfaces
@@ -254,7 +256,7 @@ ade-agent-platform-micronaut
 
 **Migration Steps** (per module):
 
-1. Add test-framework dependency to `pom.xml`
+1. Add AgentUnit dependency to `pom.xml`
 2. Update imports:
    ```java
    // Old
@@ -276,7 +278,7 @@ ade-agent-platform-micronaut
 ### Phase 4: Documentation and Examples
 
 **Deliverables**:
-1. `ade-agent-platform-test-framework/README.md` - Usage guide
+1. `ade-agent-platform-agentunit/README.md` - Usage guide
 2. Example test class showing all utilities
 3. Update `doc/4-development/testing-guide.md`
 
@@ -306,7 +308,7 @@ ade-agent-platform-micronaut
 ### Migration Checklist
 
 **Per Module**:
-- [ ] Add `ade-agent-platform-test-framework` test dependency to `pom.xml`
+- [ ] Add `ade-agent-platform-agentunit` test dependency to `pom.xml`
 - [ ] Find and replace imports:
   ```bash
   # Example for core module

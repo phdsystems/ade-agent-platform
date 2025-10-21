@@ -24,6 +24,8 @@ import adeengineer.dev.agent.TaskResult;
 
 import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.llm.model.LLMResponse;
+import dev.adeengineer.platform.core.AgentRegistry;
+import dev.adeengineer.platform.core.DomainLoader;
 import dev.adeengineer.llm.model.UsageInfo;
 import dev.adeengineer.platform.spring.config.AgentConfigLoader;
 

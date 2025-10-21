@@ -11,6 +11,7 @@
     <description>Parent POM for ade Agent Platform - Framework-agnostic multi-agent AI platform</description>
 
     <modules>
+        <module>ade-agent-platform-agentunit</module>
         <module>ade-agent-platform-core</module>
         <module>ade-agent-platform-spring-boot</module>
         <module>ade-agent-platform-quarkus</module>

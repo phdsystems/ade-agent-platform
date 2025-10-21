@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import adeengineer.dev.agent.Agent;
 import adeengineer.dev.agent.AgentInfo;
 
-import dev.adeengineer.platform.testutil.MockAgent;
+import dev.adeengineer.platform.test.mock.MockAgent;
 
 @DisplayName("AgentRegistry Tests")
 class AgentRegistryTest {

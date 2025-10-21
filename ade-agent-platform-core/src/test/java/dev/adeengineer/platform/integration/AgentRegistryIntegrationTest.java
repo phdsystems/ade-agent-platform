@@ -11,7 +11,7 @@ import adeengineer.dev.agent.Agent;
 import adeengineer.dev.agent.AgentInfo;
 
 import dev.adeengineer.platform.core.AgentRegistry;
-import dev.adeengineer.platform.testutil.MockAgent;
+import dev.adeengineer.platform.test.mock.MockAgent;
 
 /**
  * Integration tests for AgentRegistry with actual Agent implementations.
