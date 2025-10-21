@@ -67,12 +67,10 @@ This document explains why they MUST remain separate.
 │   │       └── ...
 │   └── pom.xml (depends on aiagent-sdk + inference-orchestr8a)
 │
-├── examples/                       # TIER 3: Domain Plugins
-│   ├── software-engineering/
-│   ├── healthcare/
-│   └── legal/
-│
-└── software-engineering-agent/    # Legacy (archived)
+└── examples/                       # TIER 3: Domain Plugins
+    ├── software-engineering/
+    ├── healthcare/
+    └── legal/
 ```
 
 ---

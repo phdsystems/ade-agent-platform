@@ -14,11 +14,50 @@
 
 # ade Agent Platform
 
-A generic, domain-agnostic platform for building intelligent multi-agent AI systems across unlimited domains. Built on the **ade Agent SDK** framework.
+**A generic, domain-agnostic infrastructure platform for building intelligent multi-agent AI systems.**
+
+Built on the **ade Agent SDK** framework.
+
+---
+
+## ⚠️ Important: Platform vs Domain Packages
+
+**This is INFRASTRUCTURE ONLY - No domain implementations are included.**
+
+The ade Agent Platform provides the **infrastructure** (registry, loaders, APIs, orchestration) but **does NOT bundle any domain-specific agents**. This keeps the platform lean, extensible, and focused on its core responsibility: providing generic multi-agent infrastructure.
+
+### What This Platform Provides
+
+✅ **Infrastructure Components:**
+- Agent Registry
+- Domain Plugin Loader (loads external domain packages)
+- Multi-Agent Orchestration Engine
+- REST API + Spring Shell CLI
+- LLM Provider Abstraction
+- Circuit breaker, retry logic, caching
+- Monitoring and observability
+
+❌ **What This Platform Does NOT Provide:**
+- Domain-specific agent configurations
+- Pre-bundled agents (software engineering, healthcare, etc.)
+- Business logic implementations
+
+### Where to Get Domain Implementations
+
+Domain implementations are **separate packages** that you load into this platform:
+
+- **[Software Engineering Agents](../software-engineer-agent)** - 13 SDLC agents
+- **Healthcare Agents** - Medical domain (create your own)
+- **Legal Agents** - Legal domain (create your own)
+- **Finance Agents** - Financial domain (create your own)
+
+**Example:** To use software engineering agents, you load the `software-engineer-agent` package into this platform at runtime.
+
+---
 
 ## Overview
 
-The **ade Agent Platform** is an enterprise-grade application platform that enables rapid deployment of multi-agent AI systems for any domain—software engineering, healthcare, legal, finance, and more. Using a plugin-based architecture, you can configure new agents and domains through YAML configuration files without writing code.
+The **ade Agent Platform** is an enterprise-grade infrastructure that enables rapid deployment of multi-agent AI systems for unlimited domains. Using a plugin-based architecture, you load domain packages containing YAML-configured agents without modifying the platform code.
 
 ### What is ade?
 
@@ -142,42 +181,55 @@ ade Agent Platform
 └── CLI (Spring Shell)      # Command-line interface
 ```
 
-## Supported Domains
+## Example Domain Packages (NOT Bundled)
 
-### 1. Software Engineering (13 agents)
-```
-domains/software-engineering/
-├── developer.yaml
-├── qa.yaml
-├── security.yaml
-├── devops.yaml
-├── manager.yaml
-└── ... (8 more)
-```
+**Note:** These are examples of domain packages you can create and load. They are NOT included with the platform.
 
-**Agents:** Developer, QA Engineer, Security Engineer, DevOps, Engineering Manager, Product Owner, SRE, Data Engineer, Compliance, Executive, UI/UX Designer, Technical Writer, Customer Support
+### 1. Software Engineering (AVAILABLE)
 
-### 2. Healthcare (4 agents)
-```
-domains/healthcare/
-├── triage.yaml
-├── diagnostics.yaml
-├── treatment.yaml
-└── pharmacy.yaml
+**Package:** [software-engineer-agent](../software-engineer-agent)
+**Status:** ✅ Production-ready
+**Agents:** 13 specialized SDLC agents
+
+```bash
+# Load at runtime
+curl -X POST http://localhost:8080/api/domains/load \
+  -d '{"path": "/path/to/software-engineer-agent"}'
 ```
 
-**Agents:** Triage Coordinator, Diagnostic Specialist, Treatment Planner, Pharmacy Assistant
+**Included Agents:** Developer, QA Engineer, Security Engineer, DevOps, Engineering Manager, Product Owner, SRE, Data Engineer, Compliance, Executive, UI/UX Designer, Technical Writer, Customer Support
 
-### 3. Legal (4 agents)
+### 2. Healthcare (Example - Not Implemented)
+
+**Status:** 📋 Template/Example only
+**Agents:** 4 example agent configs
+
+You would create:
 ```
-domains/legal/
-├── contract-analyst.yaml
-├── compliance-officer.yaml
-├── legal-researcher.yaml
-└── litigation-strategist.yaml
+healthcare-agent/
+├── domain.yaml
+└── config/agents/
+    ├── triage.yaml
+    ├── diagnostics.yaml
+    ├── treatment.yaml
+    └── pharmacy.yaml
 ```
 
-**Agents:** Contract Analyst, Compliance Officer, Legal Researcher, Litigation Strategist
+### 3. Legal (Example - Not Implemented)
+
+**Status:** 📋 Template/Example only
+**Agents:** 4 example agent configs
+
+You would create:
+```
+legal-agent/
+├── domain.yaml
+└── config/agents/
+    ├── contract-analyst.yaml
+    ├── compliance-officer.yaml
+    ├── legal-researcher.yaml
+    └── litigation-strategist.yaml
+```
 
 ### Create Your Own Domain
 
@@ -354,8 +406,6 @@ curl http://localhost:8080/actuator/prometheus
 - **Backward Compatibility:** 100%
 
 See **[Migration Guide](doc/guide/migration-to-generic-summary.md)** for details.
-
-Legacy code preserved in `/home/developer/software-engineer/software-engineering-agent/` for reference.
 
 ## Contributing
 
