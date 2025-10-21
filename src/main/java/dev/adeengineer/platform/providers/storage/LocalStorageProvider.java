@@ -187,9 +187,6 @@ public final class LocalStorageProvider implements StorageProvider {
      */
     @Override
     public Flux<Document> query(final StorageQuery query) {
-        System.out.println("DEBUG: Query called - metadataIndex size: " + metadataIndex.size() +
-                ", filters: " + query.filters() + ", offset: " + query.offset() + ", limit: " + query.limit());
-
         // Collect results to list first to avoid stream consumption issues
         Stream<Document> stream = metadataIndex.values().stream();
 
@@ -210,7 +207,6 @@ public final class LocalStorageProvider implements StorageProvider {
 
         // Convert to list and return as Flux
         final java.util.List<Document> results = stream.toList();
-        System.out.println("DEBUG: Query returning " + results.size() + " results");
         return Flux.fromIterable(results);
     }
 
