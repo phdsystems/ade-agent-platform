@@ -8,12 +8,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import adeengineer.dev.agent.OutputFormatterRegistry;
 import adeengineer.dev.agent.TaskRequest;
 import adeengineer.dev.agent.TaskResult;
 import adeengineer.dev.llm.model.LLMResponse;
 import adeengineer.dev.llm.model.UsageInfo;
 import adeengineer.dev.platform.core.AgentRegistry;
-import adeengineer.dev.platform.core.OutputFormatter;
 import adeengineer.dev.platform.core.RoleManager;
 
 /**
@@ -27,7 +27,7 @@ class AgentOutputFormattingIntegrationTest extends BaseIntegrationTest {
 
     @Autowired private AgentRegistry registry;
 
-    @Autowired private OutputFormatter formatter;
+    @Autowired private OutputFormatterRegistry formatterRegistry;
 
     @Test
     @DisplayName("Should format technical output for Developer agent")
@@ -116,7 +116,7 @@ class AgentOutputFormattingIntegrationTest extends BaseIntegrationTest {
                 new LLMResponse("Technical analysis content", usage, "test-provider", "test-model");
 
         // When
-        String formatted = formatter.format(response, "technical");
+        String formatted = formatterRegistry.format(response, "technical");
 
         // Then
         assertThat(formatted).contains("Technical analysis content");
@@ -135,7 +135,7 @@ class AgentOutputFormattingIntegrationTest extends BaseIntegrationTest {
                 new LLMResponse("Business insights content", usage, "test-provider", "test-model");
 
         // When
-        String formatted = formatter.format(response, "business");
+        String formatted = formatterRegistry.format(response, "business");
 
         // Then
         assertThat(formatted).contains("Business Summary");
@@ -153,7 +153,7 @@ class AgentOutputFormattingIntegrationTest extends BaseIntegrationTest {
                 new LLMResponse("Executive summary content", usage, "test-provider", "test-model");
 
         // When
-        String formatted = formatter.format(response, "executive");
+        String formatted = formatterRegistry.format(response, "executive");
 
         // Then
         assertThat(formatted).contains("Executive Summary");
@@ -174,7 +174,7 @@ class AgentOutputFormattingIntegrationTest extends BaseIntegrationTest {
         LLMResponse response = new LLMResponse("Raw content", usage, "test-provider", "test-model");
 
         // When
-        String formatted = formatter.format(response, "unknown-format");
+        String formatted = formatterRegistry.format(response, "unknown-format");
 
         // Then
         assertThat(formatted).isEqualTo("Raw content");
@@ -187,7 +187,7 @@ class AgentOutputFormattingIntegrationTest extends BaseIntegrationTest {
     @DisplayName("Should handle null response gracefully")
     void shouldHandleNullResponseGracefully() {
         // When
-        String formatted = formatter.format(null, "technical");
+        String formatted = formatterRegistry.format(null, "technical");
 
         // Then
         assertThat(formatted).isEmpty();
@@ -228,9 +228,9 @@ class AgentOutputFormattingIntegrationTest extends BaseIntegrationTest {
                 new LLMResponse(originalContent, usage, "test-provider", "test-model");
 
         // When
-        String technicalFormat = formatter.format(response, "technical");
-        String businessFormat = formatter.format(response, "business");
-        String executiveFormat = formatter.format(response, "executive");
+        String technicalFormat = formatterRegistry.format(response, "technical");
+        String businessFormat = formatterRegistry.format(response, "business");
+        String executiveFormat = formatterRegistry.format(response, "executive");
 
         // Then - All formats should preserve the original content
         assertThat(technicalFormat).contains(originalContent);
@@ -246,7 +246,7 @@ class AgentOutputFormattingIntegrationTest extends BaseIntegrationTest {
         LLMResponse response = new LLMResponse("Content", usage, "test", "test");
 
         // When
-        String formatted = formatter.format(response, "business");
+        String formatted = formatterRegistry.format(response, "business");
 
         // Then
         assertThat(formatted).contains("Estimated Cost: $0.1235");
@@ -260,7 +260,7 @@ class AgentOutputFormattingIntegrationTest extends BaseIntegrationTest {
         LLMResponse response = new LLMResponse("Content", usage, "test-provider", "test-model");
 
         // When
-        String formatted = formatter.format(response, "technical");
+        String formatted = formatterRegistry.format(response, "technical");
 
         // Then
         assertThat(formatted).contains("Tokens: 6912");

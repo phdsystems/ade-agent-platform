@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import adeengineer.dev.agent.Agent;
+import adeengineer.dev.agent.OutputFormatterRegistry;
 import adeengineer.dev.agent.TaskRequest;
 import adeengineer.dev.agent.TaskResult;
 import adeengineer.dev.llm.LLMProvider;
@@ -40,7 +41,6 @@ class DomainLoadingIntegrationTest {
         agentRegistry = new AgentRegistry();
         agentConfigLoader = new AgentConfigLoader("config/agents");
         formatterRegistry = new OutputFormatterRegistry();
-        formatterRegistry.registerBuiltInFormats();
 
         mockLLMProvider = mock(LLMProvider.class);
 

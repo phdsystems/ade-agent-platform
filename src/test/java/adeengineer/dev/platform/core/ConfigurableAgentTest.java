@@ -18,6 +18,7 @@ import org.mockito.ArgumentCaptor;
 
 import adeengineer.dev.agent.AgentConfig;
 import adeengineer.dev.agent.AgentInfo;
+import adeengineer.dev.agent.OutputFormatterRegistry;
 import adeengineer.dev.agent.TaskRequest;
 import adeengineer.dev.agent.TaskResult;
 import adeengineer.dev.llm.LLMProvider;

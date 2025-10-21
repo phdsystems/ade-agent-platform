@@ -16,6 +16,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import adeengineer.dev.agent.Agent;
 import adeengineer.dev.agent.AgentConfig;
+import adeengineer.dev.agent.OutputFormatterRegistry;
 import adeengineer.dev.llm.LLMProvider;
 import adeengineer.dev.platform.config.AgentConfigLoader;
 import adeengineer.dev.platform.model.DomainConfig;

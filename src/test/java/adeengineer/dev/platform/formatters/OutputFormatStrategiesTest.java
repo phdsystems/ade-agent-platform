@@ -5,9 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import adeengineer.dev.agent.OutputFormatStrategy;
+import adeengineer.dev.agent.formatters.BusinessOutputFormatter;
+import adeengineer.dev.agent.formatters.ExecutiveOutputFormatter;
+import adeengineer.dev.agent.formatters.RawOutputFormatter;
+import adeengineer.dev.agent.formatters.TechnicalOutputFormatter;
 import adeengineer.dev.llm.model.LLMResponse;
 import adeengineer.dev.llm.model.UsageInfo;
-import adeengineer.dev.platform.core.OutputFormatStrategy;
 
 /** Unit tests for output format strategy implementations. */
 class OutputFormatStrategiesTest {

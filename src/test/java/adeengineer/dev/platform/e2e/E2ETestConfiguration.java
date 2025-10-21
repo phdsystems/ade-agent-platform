@@ -9,10 +9,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 
 import adeengineer.dev.agent.AgentConfig;
+import adeengineer.dev.agent.OutputFormatterRegistry;
 import adeengineer.dev.llm.LLMProvider;
 import adeengineer.dev.platform.core.AgentRegistry;
 import adeengineer.dev.platform.core.ConfigurableAgent;
-import adeengineer.dev.platform.core.OutputFormatterRegistry;
 
 /**
  * Test configuration for E2E tests that provides mock agent setup. Uses ConfigurableAgent for

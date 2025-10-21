@@ -8,6 +8,8 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import adeengineer.dev.agent.OutputFormatStrategy;
+import adeengineer.dev.agent.OutputFormatterRegistry;
 import adeengineer.dev.llm.model.LLMResponse;
 import adeengineer.dev.llm.model.UsageInfo;
 
@@ -20,7 +22,6 @@ class OutputFormatterRegistryTest {
     @BeforeEach
     void setUp() {
         registry = new OutputFormatterRegistry();
-        registry.registerBuiltInFormats();
 
         // Create mock LLM response
         UsageInfo usage = new UsageInfo(100, 200, 300, 0.001);
