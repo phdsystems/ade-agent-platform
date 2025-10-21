@@ -222,7 +222,7 @@ public final class SimpleOrchestrationProvider implements OrchestrationProvider 
 
             // Execute each step sequentially
             for (WorkflowStep step : workflow.steps()) {
-                // Check if cancelled
+                // Check if cancelled before each step
                 final WorkflowExecution currentExecution = executionRegistry.get(executionId);
                 if (currentExecution.status() == WorkflowExecution.ExecutionStatus.CANCELLED) {
                     log.info("Workflow execution cancelled: {}", executionId);
@@ -233,7 +233,7 @@ public final class SimpleOrchestrationProvider implements OrchestrationProvider 
                 Map<String, Object> updatedResults = new ConcurrentHashMap<>(currentExecution.results());
                 updatedResults.put("current_step", step.id());
 
-                // Update current step
+                // Update current step - always use RUNNING status for ongoing steps
                 final WorkflowExecution stepExecution = new WorkflowExecution(
                         workflow.id(),
                         executionId,
@@ -244,7 +244,21 @@ public final class SimpleOrchestrationProvider implements OrchestrationProvider 
                         null
                 );
 
-                executionRegistry.put(executionId, stepExecution);
+                // Use computeIfPresent to atomically update only if status is still RUNNING
+                executionRegistry.computeIfPresent(executionId, (key, existing) -> {
+                    // Don't overwrite if already cancelled or completed
+                    if (existing.status() == WorkflowExecution.ExecutionStatus.CANCELLED ||
+                        existing.status() == WorkflowExecution.ExecutionStatus.COMPLETED) {
+                        return existing;
+                    }
+                    return stepExecution;
+                });
+
+                // Check again if cancelled after registry update
+                if (executionRegistry.get(executionId).status() == WorkflowExecution.ExecutionStatus.CANCELLED) {
+                    log.info("Workflow execution cancelled: {}", executionId);
+                    return;
+                }
 
                 // Emit step progress
                 final Sinks.Many<WorkflowExecution> sink = executionSinks.get(executionId);
