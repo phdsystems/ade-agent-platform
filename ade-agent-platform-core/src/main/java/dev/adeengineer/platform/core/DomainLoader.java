@@ -52,7 +52,6 @@ import lombok.extern.slf4j.Slf4j;
 public class DomainLoader {
 
     private final AgentRegistry agentRegistry;
-    private final AgentConfigLoader agentConfigLoader;
     private final OutputFormatterRegistry formatterRegistry;
     private final ObjectMapper yamlMapper;
 
@@ -60,15 +59,12 @@ public class DomainLoader {
      * Constructs a new DomainLoader.
      *
      * @param agentRegistry Registry to store loaded agents
-     * @param agentConfigLoader Loader for agent YAML files
      * @param formatterRegistry Registry for output formatters
      */
     public DomainLoader(
             final AgentRegistry agentRegistry,
-            final AgentConfigLoader agentConfigLoader,
             final OutputFormatterRegistry formatterRegistry) {
         this.agentRegistry = agentRegistry;
-        this.agentConfigLoader = agentConfigLoader;
         this.formatterRegistry = formatterRegistry;
         this.yamlMapper = new ObjectMapper(new YAMLFactory());
     }
@@ -190,8 +186,9 @@ public class DomainLoader {
                     .forEach(
                             path -> {
                                 try {
+                                    // Parse agent YAML file directly
                                     AgentConfig config =
-                                            agentConfigLoader.loadConfig(path.toFile());
+                                            yamlMapper.readValue(path.toFile(), AgentConfig.class);
                                     configs.add(config);
                                     log.debug(
                                             "Loaded agent config: {} from {}",

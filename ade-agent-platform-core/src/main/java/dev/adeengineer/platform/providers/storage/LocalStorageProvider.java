@@ -56,6 +56,7 @@ public final class LocalStorageProvider implements StorageProvider {
      * @throws IOException if storage directory cannot be created
      */
     public LocalStorageProvider(
+            final String storagePath,
             final ObjectMapper mapper) throws IOException {
         this.storageRoot = Paths.get(storagePath).toAbsolutePath();
         this.objectMapper = mapper;

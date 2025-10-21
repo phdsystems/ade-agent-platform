@@ -1,18 +1,26 @@
 package dev.adeengineer.platform.spring.config;
 
+import adeengineer.dev.agent.OutputFormatterRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.adeengineer.embeddings.EmbeddingsProvider;
 import dev.adeengineer.evaluation.EvaluationProvider;
 import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.memory.MemoryProvider;
 import dev.adeengineer.orchestration.OrchestrationProvider;
+import dev.adeengineer.platform.core.AgentRegistry;
+import dev.adeengineer.platform.core.DomainLoader;
+import dev.adeengineer.platform.core.DomainManager;
+import dev.adeengineer.platform.core.RoleManager;
 import dev.adeengineer.platform.factory.LLMProviderFactory;
 import dev.adeengineer.platform.factory.NoOpLLMProviderFactory;
+import dev.adeengineer.platform.orchestration.ParallelAgentExecutor;
+import dev.adeengineer.platform.orchestration.WorkflowEngine;
 import dev.adeengineer.platform.providers.evaluation.LLMEvaluationProvider;
 import dev.adeengineer.platform.providers.memory.InMemoryMemoryProvider;
 import dev.adeengineer.platform.providers.orchestration.SimpleOrchestrationProvider;
 import dev.adeengineer.platform.providers.storage.LocalStorageProvider;
 import dev.adeengineer.platform.providers.tools.SimpleToolProvider;
+import dev.adeengineer.platform.template.PromptTemplateEngine;
 import dev.adeengineer.storage.StorageProvider;
 import dev.adeengineer.tools.ToolProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -122,5 +130,111 @@ public class ProvidersAutoConfiguration {
     public LLMProviderFactory noOpLLMProviderFactory() {
         log.info("Auto-configuring NoOpLLMProviderFactory");
         return new NoOpLLMProviderFactory();
+    }
+
+    /**
+     * Creates an agent registry bean.
+     *
+     * @return AgentRegistry instance
+     */
+    @Bean
+    @ConditionalOnMissingBean(AgentRegistry.class)
+    public AgentRegistry agentRegistry() {
+        log.info("Auto-configuring AgentRegistry");
+        return new AgentRegistry();
+    }
+
+    /**
+     * Creates output formatter registry bean.
+     *
+     * @return OutputFormatterRegistry instance
+     */
+    @Bean
+    @ConditionalOnMissingBean(OutputFormatterRegistry.class)
+    public OutputFormatterRegistry outputFormatterRegistry() {
+        log.info("Auto-configuring OutputFormatterRegistry");
+        return new OutputFormatterRegistry();
+    }
+
+    /**
+     * Creates a domain loader bean.
+     *
+     * @param agentRegistry Agent registry
+     * @param formatterRegistry Output formatter registry
+     * @return DomainLoader instance
+     */
+    @Bean
+    @ConditionalOnMissingBean(DomainLoader.class)
+    public DomainLoader domainLoader(
+            AgentRegistry agentRegistry, OutputFormatterRegistry formatterRegistry) {
+        log.info("Auto-configuring DomainLoader");
+        return new DomainLoader(agentRegistry, formatterRegistry);
+    }
+
+    /**
+     * Creates a domain manager bean.
+     *
+     * @param domainLoader Domain loader
+     * @param agentRegistry Agent registry
+     * @return DomainManager instance
+     */
+    @Bean
+    @ConditionalOnMissingBean(DomainManager.class)
+    public DomainManager domainManager(DomainLoader domainLoader, AgentRegistry agentRegistry) {
+        log.info("Auto-configuring DomainManager");
+        return new DomainManager(domainLoader, agentRegistry);
+    }
+
+    /**
+     * Creates a role manager bean.
+     *
+     * @param agentRegistry Agent registry
+     * @return RoleManager instance
+     */
+    @Bean
+    @ConditionalOnMissingBean(RoleManager.class)
+    public RoleManager roleManager(AgentRegistry agentRegistry) {
+        log.info("Auto-configuring RoleManager");
+        return new RoleManager(agentRegistry);
+    }
+
+    /**
+     * Creates a parallel agent executor bean.
+     *
+     * @param agentRegistry Agent registry
+     * @param llmProviderFactory LLM provider factory
+     * @return ParallelAgentExecutor instance
+     */
+    @Bean
+    @ConditionalOnMissingBean(ParallelAgentExecutor.class)
+    public ParallelAgentExecutor parallelAgentExecutor(
+            AgentRegistry agentRegistry, LLMProviderFactory llmProviderFactory) {
+        log.info("Auto-configuring ParallelAgentExecutor");
+        return new ParallelAgentExecutor(agentRegistry, llmProviderFactory.getProviderWithFailover());
+    }
+
+    /**
+     * Creates a workflow engine bean.
+     *
+     * @param parallelAgentExecutor Parallel agent executor
+     * @return WorkflowEngine instance
+     */
+    @Bean
+    @ConditionalOnMissingBean(WorkflowEngine.class)
+    public WorkflowEngine workflowEngine(ParallelAgentExecutor parallelAgentExecutor) {
+        log.info("Auto-configuring WorkflowEngine");
+        return new WorkflowEngine(parallelAgentExecutor);
+    }
+
+    /**
+     * Creates a prompt template engine bean.
+     *
+     * @return PromptTemplateEngine instance
+     */
+    @Bean
+    @ConditionalOnMissingBean(PromptTemplateEngine.class)
+    public PromptTemplateEngine promptTemplateEngine() {
+        log.info("Auto-configuring PromptTemplateEngine");
+        return new PromptTemplateEngine();
     }
 }
