@@ -13,6 +13,9 @@
     <modules>
         <module>ade-agent-platform-core</module>
         <module>ade-agent-platform-spring-boot</module>
+        <module>ade-agent-platform-quarkus</module>
+        <!-- Micronaut module temporarily disabled - requires dependency resolution -->
+        <!-- <module>ade-agent-platform-micronaut</module> -->
     </modules>
 
     <properties>
