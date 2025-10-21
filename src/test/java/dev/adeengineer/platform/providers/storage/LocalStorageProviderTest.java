@@ -203,7 +203,7 @@ class LocalStorageProviderTest {
         provider.store(doc3).block();
 
         // When & Then - filter for category A
-        StorageQuery query = new StorageQuery(Map.of("category", "A"), 0, 10, null, true);
+        StorageQuery query = new StorageQuery(Map.of("category", "A"), 10, 0, null, true);
 
         StepVerifier.create(provider.query(query))
                 .expectNextCount(2)
@@ -227,7 +227,7 @@ class LocalStorageProviderTest {
         }
 
         // When & Then
-        StorageQuery query = new StorageQuery(Map.of(), 0, 3, null, true);
+        StorageQuery query = new StorageQuery(Map.of(), 3, 0, null, true);
 
         StepVerifier.create(provider.query(query))
                 .expectNextCount(3)
@@ -251,7 +251,7 @@ class LocalStorageProviderTest {
         }
 
         // When & Then - skip first 2 documents
-        StorageQuery query = new StorageQuery(Map.of(), 2, 10, null, true);
+        StorageQuery query = new StorageQuery(Map.of(), 10, 2, null, true);
 
         StepVerifier.create(provider.query(query))
                 .expectNextCount(3)
