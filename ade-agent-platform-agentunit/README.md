@@ -31,9 +31,15 @@ ade-agent-platform-agentunit/
     ├── assertion/                     # Custom AssertJ assertions
     │   ├── TaskResultAssert.java     # TaskResult assertions
     │   └── AgentAssertions.java      # Entry point for assertions
-    └── base/                          # Base test classes
-        ├── BaseAgentTest.java        # Base for agent unit tests
-        └── BaseIntegrationTest.java  # Base for integration tests
+    ├── base/                          # Base test classes
+    │   ├── BaseAgentTest.java        # Base for agent unit tests
+    │   └── BaseIntegrationTest.java  # Base for integration tests
+    ├── quarkus/                       # Quarkus-specific utilities
+    │   ├── BaseQuarkusTest.java      # Base for Quarkus tests
+    │   └── QuarkusTestProfiles.java  # Common test profiles
+    └── micronaut/                     # Micronaut-specific utilities
+        ├── BaseMicronautTest.java    # Base for Micronaut tests
+        └── MicronautTestProperties.java  # Common test properties
 ```
 
 ## Usage
@@ -289,6 +295,121 @@ class OrchestrationIntegrationTest extends BaseIntegrationTest {
     }
 }
 ```
+
+### Phase 3: Framework-Specific Utilities (v0.2.0)
+
+#### Quarkus Test Utilities
+
+**BaseQuarkusTest** - Base class for Quarkus-based tests:
+```java
+import dev.adeengineer.platform.test.quarkus.BaseQuarkusTest;
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
+class MyQuarkusServiceTest extends BaseQuarkusTest {
+
+    @Inject
+    MyService myService;
+
+    @Test
+    void shouldExecuteWithMockLLM() {
+        configureMockLLM("Quarkus test response");
+        String result = myService.process("test input");
+        assertThat(result).isEqualTo("Quarkus test response");
+    }
+}
+```
+
+**QuarkusTestProfiles** - Common test configuration profiles:
+```java
+import dev.adeengineer.platform.test.quarkus.QuarkusTestProfiles;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
+
+// Use MockLLMProfile for tests with mock LLM configuration
+@QuarkusTest
+@TestProfile(QuarkusTestProfiles.MockLLMProfile.class)
+class MyServiceTest {
+    // Test uses mock LLM provider settings
+}
+
+// Use IsolatedProfile to disable external services (Redis, DB, etc.)
+@QuarkusTest
+@TestProfile(QuarkusTestProfiles.IsolatedProfile.class)
+class UnitTestWithoutExternalDeps {
+    // Test runs without Redis, database, etc.
+}
+
+// Use FastTestProfile for faster tests (disables metrics, health, tracing)
+@QuarkusTest
+@TestProfile(QuarkusTestProfiles.FastTestProfile.class)
+class FastUnitTest {
+    // Test runs with minimal overhead
+}
+```
+
+**Available Quarkus Test Profiles:**
+- `MockLLMProfile` - Mock LLM provider configuration
+- `IsolatedProfile` - Disables external services (Redis, database, caching)
+- `FastTestProfile` - Disables heavy features (metrics, health, tracing)
+
+#### Micronaut Test Utilities
+
+**BaseMicronautTest** - Base class for Micronaut-based tests:
+```java
+import dev.adeengineer.platform.test.micronaut.BaseMicronautTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+
+@MicronautTest
+class MyMicronautServiceTest extends BaseMicronautTest {
+
+    @Inject
+    MyService myService;
+
+    @Test
+    void shouldExecuteWithMockLLM() {
+        configureMockLLM("Micronaut test response");
+        String result = myService.process("test input");
+        assertThat(result).isEqualTo("Micronaut test response");
+    }
+}
+```
+
+**MicronautTestProperties** - Common test property providers:
+```java
+import dev.adeengineer.platform.test.micronaut.MicronautTestProperties;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+
+// Use MockLLMProperties for mock LLM configuration
+@MicronautTest
+class MyServiceTest implements MicronautTestProperties.MockLLMProperties {
+    // Test uses mock LLM provider settings
+}
+
+// Use IsolatedProperties to disable external services
+@MicronautTest
+class UnitTestWithoutExternalDeps implements MicronautTestProperties.IsolatedProperties {
+    // Test runs without Redis, database, etc.
+}
+
+// Use FastTestProperties for faster tests
+@MicronautTest
+class FastUnitTest implements MicronautTestProperties.FastTestProperties {
+    // Test runs with minimal overhead
+}
+
+// Use FastIsolatedProperties for fastest tests with no external dependencies
+@MicronautTest
+class VeryFastUnitTest implements MicronautTestProperties.FastIsolatedProperties {
+    // Test runs at maximum speed with no external services
+}
+```
+
+**Available Micronaut Test Property Providers:**
+- `MockLLMProperties` - Mock LLM provider configuration
+- `IsolatedProperties` - Disables external services (Redis, database, caching)
+- `FastTestProperties` - Disables heavy features (metrics, health, tracing)
+- `FastIsolatedProperties` - Combined fast + isolated for maximum speed
 
 ## Migration from Duplicated Utilities
 

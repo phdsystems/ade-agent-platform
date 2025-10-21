@@ -69,6 +69,30 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <!-- Quarkus Test - Optional (only needed if using Quarkus utilities) -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-junit5</artifactId>
+            <version>3.15.1</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Micronaut Test - Optional (only needed if using Micronaut utilities) -->
+        <dependency>
+            <groupId>io.micronaut.test</groupId>
+            <artifactId>micronaut-test-junit5</artifactId>
+            <version>4.5.0</version>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- Jakarta Inject - Optional (only needed for framework-specific utilities) -->
+        <dependency>
+            <groupId>jakarta.inject</groupId>
+            <artifactId>jakarta.inject-api</artifactId>
+            <version>2.0.1</version>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>
