@@ -25,6 +25,7 @@ import adeengineer.dev.agent.TaskResult;
 import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.llm.model.LLMResponse;
 import dev.adeengineer.platform.core.AgentRegistry;
+import dev.adeengineer.platform.core.ConfigurableAgent;
 import dev.adeengineer.platform.core.DomainLoader;
 import dev.adeengineer.llm.model.UsageInfo;
 import dev.adeengineer.platform.spring.config.AgentConfigLoader;
@@ -54,7 +55,8 @@ class DomainLoadingIntegrationTest {
                 new LLMResponse("Test response", usage, "mock-provider", "mock-model");
         when(mockLLMProvider.generate(anyString(), anyDouble(), anyInt())).thenReturn(mockResponse);
 
-        domainLoader = new DomainLoader(agentRegistry, agentConfigLoader, formatterRegistry);
+        // DomainLoader now only takes agentRegistry and formatterRegistry
+        domainLoader = new DomainLoader(agentRegistry, formatterRegistry);
     }
 
     @Test
