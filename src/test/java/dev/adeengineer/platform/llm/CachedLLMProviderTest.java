@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
 import org.springframework.test.context.TestPropertySource;
 
+import dev.adeengineer.embeddings.EmbeddingsProvider;
 import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.llm.cache.CachedLLMProvider;
 import dev.adeengineer.llm.model.LLMResponse;
@@ -31,6 +32,8 @@ import dev.adeengineer.llm.model.UsageInfo;
 class CachedLLMProviderTest {
 
     @MockBean private LLMProvider mockProvider;
+
+    @MockBean private EmbeddingsProvider embeddingsProvider;
 
     private CachedLLMProvider cachedProvider;
 

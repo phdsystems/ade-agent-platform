@@ -5,7 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.TestPropertySource;
+
+import dev.adeengineer.embeddings.EmbeddingsProvider;
+import dev.adeengineer.llm.LLMProvider;
 
 /**
  * Unit tests for Redis cache configuration. Tests cache manager setup without requiring actual
@@ -20,6 +24,10 @@ import org.springframework.test.context.TestPropertySource;
         })
 @DisplayName("Redis Cache Configuration Tests")
 class RedisCacheConfigTest {
+
+    @MockBean private EmbeddingsProvider embeddingsProvider;
+
+    @MockBean private LLMProvider llmProvider;
 
     @Test
     @DisplayName("Should use Caffeine cache when Redis is disabled")
