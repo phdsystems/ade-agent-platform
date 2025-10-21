@@ -29,7 +29,7 @@ agents:
 logging:
   level:
     root: WARN
-    adeengineer.dev.platform: INFO
+    dev.adeengineer.platform: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 

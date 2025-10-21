@@ -43,9 +43,9 @@
 **Example: Testing DeveloperAgent**
 
 ```java
-package adeengineer.dev.platform.agents;
+package dev.adeengineer.platform.agents;
 
-import adeengineer.dev.platform.llm.*;
+import dev.adeengineer.platform.llm.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -136,10 +136,10 @@ class DeveloperAgentTest {
 ### Testing RoleManager Service
 
 ```java
-package adeengineer.dev.platform.core;
+package dev.adeengineer.platform.core;
 
-import adeengineer.dev.platform.agents.DeveloperAgent;
-import adeengineer.dev.platform.llm.*;
+import dev.adeengineer.platform.agents.DeveloperAgent;
+import dev.adeengineer.platform.llm.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -229,10 +229,10 @@ export OPENAI_API_KEY=sk-xxx
 **Example: Integration Test**
 
 ```java
-package adeengineer.dev.platform.integration;
+package dev.adeengineer.platform.integration;
 
-import adeengineer.dev.platform.core.RoleManager;
-import adeengineer.dev.platform.core.TaskResult;
+import dev.adeengineer.platform.core.RoleManager;
+import dev.adeengineer.platform.core.TaskResult;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -317,11 +317,11 @@ llm.max-retries=2
 **Example: Multi-Agent Collaboration**
 
 ```java
-package adeengineer.dev.platform.e2e;
+package dev.adeengineer.platform.e2e;
 
-import adeengineer.dev.platform.core.RoleManager;
-import adeengineer.dev.platform.core.TaskResult;
-import adeengineer.dev.platform.llm.*;
+import dev.adeengineer.platform.core.RoleManager;
+import dev.adeengineer.platform.core.TaskResult;
+import dev.adeengineer.platform.llm.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -502,7 +502,7 @@ E2E test results are generated in:
 cat target/failsafe-reports/failsafe-summary.xml
 
 # View detailed results for a test class
-cat target/failsafe-reports/adeengineer.dev.platform.e2e.DeveloperAgentE2ETest.txt
+cat target/failsafe-reports/dev.adeengineer.platform.e2e.DeveloperAgentE2ETest.txt
 ```
 
 ### Manual E2E Testing

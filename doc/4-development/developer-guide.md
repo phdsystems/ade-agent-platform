@@ -538,8 +538,8 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 // 4. Project imports
-import adeengineer.dev.agent.AgentConfig;
-import adeengineer.dev.platform.core.AgentRegistry;
+import dev.adeengineer.agent.AgentConfig;
+import dev.adeengineer.platform.core.AgentRegistry;
 ```
 
 **Lombok Usage:**
@@ -592,7 +592,7 @@ public class AgentRegistry {
 **Class Structure Order:**
 ```java
 // 1. Package declaration
-package adeengineer.dev.platform.core;
+package dev.adeengineer.platform.core;
 
 // 2. Imports
 

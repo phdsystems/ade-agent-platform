@@ -106,8 +106,8 @@ Integration tests run with DEBUG logging to validate error handling:
 ```yaml
 logging:
   level:
-    adeengineer.dev.platform: DEBUG
-    adeengineer.dev.platform.llm: DEBUG
+    dev.adeengineer.platform: DEBUG
+    dev.adeengineer.platform.llm: DEBUG
 ```
 
 This lets you see:

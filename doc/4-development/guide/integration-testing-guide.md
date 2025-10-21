@@ -290,7 +290,7 @@ public abstract class BaseProviderFailoverTest {
 ```java
 @TestConfiguration
 @ComponentScan(
-    basePackages = "adeengineer.dev.platform",
+    basePackages = "dev.adeengineer.platform",
     excludeFilters = @ComponentScan.Filter(
         type = FilterType.ASSIGNABLE_TYPE,
         classes = {
@@ -369,7 +369,7 @@ mvn test -Dtest="*IntegrationTest" -X
 Extend `BaseIntegrationTest` and use descriptive class name:
 
 ```java
-package adeengineer.dev.platform.integration;
+package dev.adeengineer.platform.integration;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -471,7 +471,7 @@ llm:
 logging:
   level:
     root: INFO
-    adeengineer.dev.platform: DEBUG
+    dev.adeengineer.platform: DEBUG
 ```
 
 ### Agent Profile Exclusion

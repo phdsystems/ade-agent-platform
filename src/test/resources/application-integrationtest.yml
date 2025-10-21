@@ -43,8 +43,8 @@ agents:
 logging:
   level:
     root: WARN
-    adeengineer.dev.platform: DEBUG  # DEBUG to see error handling in action
-    adeengineer.dev.platform.llm: DEBUG  # See provider calls and errors
+    dev.adeengineer.platform: DEBUG  # DEBUG to see error handling in action
+    dev.adeengineer.platform.llm: DEBUG  # See provider calls and errors
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
 

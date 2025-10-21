@@ -194,18 +194,18 @@ mvn spring-boot:run | grep "Mapped.*Agent"
 2. **Agent Not in Scanned Package**
    ```java
    // Verify package structure
-   // Should be: adeengineer.dev.platform.agents.DeveloperAgent
+   // Should be: dev.adeengineer.platform.agents.DeveloperAgent
 
    // If in different package, add component scan:
    @SpringBootApplication
-   @ComponentScan(basePackages = {"adeengineer.dev.platform", "com.custom.agents"})
+   @ComponentScan(basePackages = {"dev.adeengineer.platform", "com.custom.agents"})
    public class RoleManagerApplication {
    ```
 
 3. **Check Agent Registration**
    ```bash
    # Enable debug logging
-   mvn spring-boot:run -Dlogging.level.adeengineer.dev.platform.core.AgentRegistry=DEBUG
+   mvn spring-boot:run -Dlogging.level.dev.adeengineer.platform.core.AgentRegistry=DEBUG
    ```
 
 ---
@@ -358,8 +358,8 @@ cat target/surefire-reports/DeveloperAgentTest.txt
 ```yaml
 logging:
   level:
-    adeengineer.dev.platform: DEBUG
-    adeengineer.dev.platform.llm: TRACE
+    dev.adeengineer.platform: DEBUG
+    dev.adeengineer.platform.llm: TRACE
     org.springframework: INFO
 ```
 
@@ -383,7 +383,7 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
   "type": "java",
   "name": "Debug Role Manager",
   "request": "launch",
-  "mainClass": "adeengineer.dev.platform.RoleManagerApplication",
+  "mainClass": "dev.adeengineer.platform.RoleManagerApplication",
   "env": {
     "ANTHROPIC_API_KEY": "sk-ant-xxx"
   }
@@ -442,7 +442,7 @@ curl http://localhost:8080/actuator/metrics
 curl http://localhost:8080/actuator/beans | jq '.contexts.application.beans'
 
 # Change log level at runtime
-curl -X POST http://localhost:8080/actuator/loggers/adeengineer.dev.platform \
+curl -X POST http://localhost:8080/actuator/loggers/dev.adeengineer.platform \
   -H "Content-Type: application/json" \
   -d '{"configuredLevel": "DEBUG"}'
 ```
@@ -554,7 +554,7 @@ spring:
 
 logging:
   level:
-    adeengineer.dev.platform: DEBUG
+    dev.adeengineer.platform: DEBUG
 
 llm:
   default-provider: ollama  # Use local for faster development
@@ -571,7 +571,7 @@ llm:
 
 logging:
   level:
-    adeengineer.dev.platform: INFO
+    dev.adeengineer.platform: INFO
 ```
 
 ### Production Environment
@@ -580,8 +580,8 @@ logging:
 # application-prod.yml
 logging:
   level:
-    adeengineer.dev.platform: WARN
-    adeengineer.dev.platform.llm: INFO
+    dev.adeengineer.platform: WARN
+    dev.adeengineer.platform.llm: INFO
   file:
     name: /var/log/role-manager/app.log
 

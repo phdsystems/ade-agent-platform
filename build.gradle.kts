@@ -5,7 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.6"
 }
 
-group = "com.rolemanager"
+group = "dev.adeengineer"
 version = "0.1.0-SNAPSHOT"
 
 java {
@@ -107,8 +107,8 @@ tasks.jacocoTestCoverageVerification {
                 minimum = "0.70".toBigDecimal()
             }
             excludes = listOf(
-                "com.rolemanager.RoleManagerApplication",
-                "com.rolemanager.config.*"
+                "dev.adeengineer.platform.PlatformApplication",
+                "dev.adeengineer.platform.config.*"
             )
         }
     }

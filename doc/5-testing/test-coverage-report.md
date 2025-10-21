@@ -56,14 +56,14 @@
 
 | Package | Instructions | Branches | Lines | Status |
 |---------|--------------|----------|-------|--------|
-| **adeengineer.dev.platform.model** | **100%** | **100%** | **100%** | 🟢 Excellent |
-| **adeengineer.dev.platform.api** | **100%** | n/a | **100%** | 🟢 Excellent |
-| **adeengineer.dev.platform.agents** | **100%** | n/a | **100%** | 🟢 Excellent |
-| **adeengineer.dev.platform.core** | **92%** | **90%** | **94%** | 🟢 Excellent |
-| **adeengineer.dev.platform.config** | **78%** | **60%** | **85%** | 🟢 Good |
-| **adeengineer.dev.platform** | **38%** | n/a | **33%** | 🟡 Fair |
-| **adeengineer.dev.platform.llm** | **16%** | **38%** | **17%** | 🔴 Low |
-| **adeengineer.dev.platform.cli** | **2%** | **0%** | **6%** | 🔴 Very Low |
+| **dev.adeengineer.platform.model** | **100%** | **100%** | **100%** | 🟢 Excellent |
+| **dev.adeengineer.platform.api** | **100%** | n/a | **100%** | 🟢 Excellent |
+| **dev.adeengineer.platform.agents** | **100%** | n/a | **100%** | 🟢 Excellent |
+| **dev.adeengineer.platform.core** | **92%** | **90%** | **94%** | 🟢 Excellent |
+| **dev.adeengineer.platform.config** | **78%** | **60%** | **85%** | 🟢 Good |
+| **dev.adeengineer.platform** | **38%** | n/a | **33%** | 🟡 Fair |
+| **dev.adeengineer.platform.llm** | **16%** | **38%** | **17%** | 🔴 Low |
+| **dev.adeengineer.platform.cli** | **2%** | **0%** | **6%** | 🔴 Very Low |
 
 ### Visual Coverage by Package
 
@@ -470,8 +470,8 @@ xdg-open target/site/jacoco/index.html  # Linux
 
 **View Package Details**:
 ```bash
-# Example: View adeengineer.dev.platform.core package details
-open target/site/jacoco/adeengineer.dev.platform.core/index.html
+# Example: View dev.adeengineer.platform.core package details
+open target/site/jacoco/dev.adeengineer.platform.core/index.html
 ```
 
 ---

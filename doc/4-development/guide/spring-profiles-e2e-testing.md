@@ -336,7 +336,7 @@ class DeveloperAgentE2ETest {
 **Error Message**:
 ```
 Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException:
-No qualifying bean of type 'adeengineer.dev.platform.model.AgentConfig' available:
+No qualifying bean of type 'dev.adeengineer.platform.model.AgentConfig' available:
 expected at least 1 bean which qualifies as autowire candidate.
 ```
 
@@ -427,7 +427,7 @@ public class SecurityAgent extends BaseAgent { }
 
 **BaseE2ETest.java**:
 ```java
-package adeengineer.dev.platform.e2e;
+package dev.adeengineer.platform.e2e;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -475,13 +475,13 @@ public abstract class BaseE2ETest {
 
 **E2ETestConfiguration.java**:
 ```java
-package adeengineer.dev.platform.e2e;
+package dev.adeengineer.platform.e2e;
 
-import adeengineer.dev.platform.core.AgentRegistry;
-import adeengineer.dev.platform.core.OutputFormatter;
-import adeengineer.dev.platform.agents.*;
-import adeengineer.dev.platform.llm.LLMProvider;
-import adeengineer.dev.platform.model.AgentConfig;
+import dev.adeengineer.platform.core.AgentRegistry;
+import dev.adeengineer.platform.core.OutputFormatter;
+import dev.adeengineer.platform.agents.*;
+import dev.adeengineer.platform.llm.LLMProvider;
+import dev.adeengineer.platform.model.AgentConfig;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -491,7 +491,7 @@ import java.util.List;
 
 @TestConfiguration
 @ComponentScan(
-    basePackages = "adeengineer.dev.platform",
+    basePackages = "dev.adeengineer.platform",
     excludeFilters = @ComponentScan.Filter(
         type = FilterType.ASSIGNABLE_TYPE,
         classes = {DeveloperAgent.class, ManagerAgent.class, QAAgent.class, SecurityAgent.class}
@@ -602,7 +602,7 @@ agents:
 logging:
   level:
     root: WARN
-    adeengineer.dev.platform: DEBUG
+    dev.adeengineer.platform: DEBUG
     org.springframework.web: INFO
 
 # Actuator endpoints
@@ -617,10 +617,10 @@ management:
 
 **DeveloperAgentE2ETest.java**:
 ```java
-package adeengineer.dev.platform.e2e;
+package dev.adeengineer.platform.e2e;
 
-import adeengineer.dev.platform.model.TaskRequest;
-import adeengineer.dev.platform.model.TaskResult;
+import dev.adeengineer.platform.model.TaskRequest;
+import dev.adeengineer.platform.model.TaskResult;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -921,7 +921,7 @@ E2E Test Startup (profile: e2etest)
 **Symptom**:
 ```
 Caused by: org.springframework.beans.factory.NoSuchBeanDefinitionException:
-No qualifying bean of type 'adeengineer.dev.platform.model.AgentConfig' available
+No qualifying bean of type 'dev.adeengineer.platform.model.AgentConfig' available
 ```
 
 **Cause**: Agent classes missing `@Profile("!e2etest")` annotation
@@ -938,7 +938,7 @@ public class DeveloperAgent extends BaseAgent { }
 
 **Symptom**:
 ```
-No qualifying bean of type 'adeengineer.dev.platform.llm.LLMProvider' available:
+No qualifying bean of type 'dev.adeengineer.platform.llm.LLMProvider' available:
 expected single matching bean but found 3:
 anthropicProvider, openAIProvider, ollamaProvider
 ```

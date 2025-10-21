@@ -470,7 +470,7 @@ log.error("Error executing task: {}", e.getMessage(), e);  // Note the ", e"
 logging:
   level:
     root: INFO
-    adeengineer.dev.platform: DEBUG
+    dev.adeengineer.platform: DEBUG
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 ```
@@ -795,7 +795,7 @@ java.net.SocketTimeoutException: Read timed out
 
 [ERROR] Task execution failed for role Developer: Failed to execute task: Read timed out
 java.lang.RuntimeException: Failed to execute task: Read timed out
-    at adeengineer.dev.platform.core.BaseAgent.executeTask(BaseAgent.java:38)
+    at dev.adeengineer.platform.core.BaseAgent.executeTask(BaseAgent.java:38)
     ...
 ```
 

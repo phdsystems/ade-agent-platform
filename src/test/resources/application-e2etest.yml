@@ -36,7 +36,7 @@ agents:
 logging:
   level:
     root: WARN
-    adeengineer.dev.platform: DEBUG
+    dev.adeengineer.platform: DEBUG
     org.springframework.web: INFO
     org.springframework.test: INFO
   pattern:

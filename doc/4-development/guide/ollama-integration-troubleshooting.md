@@ -279,8 +279,8 @@ After fixing timeout issue, test fails with empty response:
 
 ```
 Caused by: java.lang.IllegalArgumentException: Content cannot be null or blank
-  at adeengineer.dev.platform.model.LLMResponse.<init>(LLMResponse.java:19)
-  at adeengineer.dev.platform.llm.OllamaProvider.generate(OllamaProvider.java:88)
+  at dev.adeengineer.platform.model.LLMResponse.<init>(LLMResponse.java:19)
+  at dev.adeengineer.platform.llm.OllamaProvider.generate(OllamaProvider.java:88)
 
 Test duration: 37.11 seconds (FAILED)
 Result: success=false

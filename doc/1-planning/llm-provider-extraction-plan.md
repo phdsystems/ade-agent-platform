@@ -133,7 +133,7 @@ software-engineer/
 
 **Steps**:
 1. Create `inference-engine-jvm/` module with Java core + Kotlin/Scala extension modules
-2. Move `adeengineer.dev.platform.llm` → `com.phdsystems.llm` (Java core)
+2. Move `dev.adeengineer.platform.llm` → `com.phdsystems.llm` (Java core)
 3. Add Kotlin extension module with coroutines support
 4. Add Scala extension module with functional programming support
 5. Update `role-manager-app` to depend on new module
@@ -404,9 +404,9 @@ com.phdsystems.llm
 
 **Before** (current state):
 ```java
-import adeengineer.dev.platform.llm.LLMProvider;
-import adeengineer.dev.platform.llm.AnthropicProvider;
-import adeengineer.dev.platform.llm.LLMProviderFactory;
+import dev.adeengineer.platform.llm.LLMProvider;
+import dev.adeengineer.platform.llm.AnthropicProvider;
+import dev.adeengineer.platform.llm.LLMProviderFactory;
 ```
 
 **After** (post-extraction):
@@ -425,7 +425,7 @@ import com.phdsystems.llm.LLMProviderFactory;
        <version>1.0.0</version>
    </dependency>
    ```
-2. Find-replace imports: `adeengineer.dev.platform.llm` → `com.phdsystems.llm`
+2. Find-replace imports: `dev.adeengineer.platform.llm` → `com.phdsystems.llm`
 3. Update Spring Boot autoconfiguration (if needed)
 4. Run tests to verify
 
