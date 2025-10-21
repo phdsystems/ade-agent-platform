@@ -9,8 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import dev.adeengineer.agent.Agent;
-import dev.adeengineer.agent.AgentConfig;
+import adeengineer.dev.agent.Agent;
+import adeengineer.dev.agent.AgentConfig;
+
 import dev.adeengineer.platform.config.AgentConfigLoader;
 import dev.adeengineer.platform.core.AgentRegistry;
 

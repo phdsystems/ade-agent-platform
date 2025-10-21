@@ -4,10 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dev.adeengineer.agent.AgentConfig;
-import dev.adeengineer.agent.AgentInfo;
-import dev.adeengineer.agent.TaskRequest;
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.AgentConfig;
+import adeengineer.dev.agent.AgentInfo;
+import adeengineer.dev.agent.TaskRequest;
+import adeengineer.dev.agent.TaskResult;
+
 import dev.adeengineer.llm.model.LLMResponse;
 import dev.adeengineer.llm.model.UsageInfo;
 

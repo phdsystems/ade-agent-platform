@@ -7,11 +7,11 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
-import dev.adeengineer.agent.AgentInfo;
-import dev.adeengineer.agent.TaskRequest;
-import dev.adeengineer.agent.TaskResult;
-import dev.adeengineer.platform.core.RoleManager;
+import adeengineer.dev.agent.AgentInfo;
+import adeengineer.dev.agent.TaskRequest;
+import adeengineer.dev.agent.TaskResult;
 
+import dev.adeengineer.platform.core.RoleManager;
 import lombok.extern.slf4j.Slf4j;
 
 /** Spring Shell CLI commands for the Role Manager application. */

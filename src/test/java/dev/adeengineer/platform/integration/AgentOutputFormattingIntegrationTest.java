@@ -8,9 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import dev.adeengineer.agent.OutputFormatterRegistry;
-import dev.adeengineer.agent.TaskRequest;
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.OutputFormatterRegistry;
+import adeengineer.dev.agent.TaskRequest;
+import adeengineer.dev.agent.TaskResult;
+
 import dev.adeengineer.llm.model.LLMResponse;
 import dev.adeengineer.llm.model.UsageInfo;
 import dev.adeengineer.platform.core.AgentRegistry;

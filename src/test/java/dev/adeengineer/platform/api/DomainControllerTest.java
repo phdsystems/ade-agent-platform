@@ -16,8 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import dev.adeengineer.llm.LLMProvider;
-import dev.adeengineer.llm.LLMProviderFactory;
 import dev.adeengineer.platform.core.DomainManager;
+import dev.adeengineer.platform.factory.LLMProviderFactory;
 import dev.adeengineer.platform.core.DomainManager.DomainMetadata;
 import dev.adeengineer.platform.model.DomainConfig;
 

@@ -50,18 +50,22 @@ public class PromptTemplateEngine {
     /**
      * Render a template with variables.
      *
-     * @param templateName Template name
+     * <p>This method supports two modes: 1. If templateNameOrContent matches a registered template
+     * name, that template is rendered 2. Otherwise, templateNameOrContent is treated as template
+     * content and rendered directly
+     *
+     * @param templateNameOrContent Template name or template content string
      * @param variables Variable values
      * @return Rendered prompt
-     * @throws IllegalArgumentException if template not found
      */
-    public String render(final String templateName, final Map<String, Object> variables) {
-        PromptTemplate template = templates.get(templateName);
-        if (template == null) {
-            throw new IllegalArgumentException("Template not found: " + templateName);
+    public String render(final String templateNameOrContent, final Map<String, Object> variables) {
+        PromptTemplate template = templates.get(templateNameOrContent);
+        if (template != null) {
+            return renderContent(template.content(), variables);
         }
 
-        return renderContent(template.content(), variables);
+        // Treat as direct template content
+        return renderContent(templateNameOrContent, variables);
     }
 
     /**

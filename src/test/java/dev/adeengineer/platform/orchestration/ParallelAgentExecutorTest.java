@@ -1,9 +1,6 @@
 package dev.adeengineer.platform.orchestration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
@@ -15,11 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import dev.adeengineer.agent.TaskRequest;
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.TaskRequest;
+import adeengineer.dev.agent.TaskResult;
+
 import dev.adeengineer.llm.LLMProvider;
-import dev.adeengineer.llm.model.LLMResponse;
-import dev.adeengineer.llm.model.UsageInfo;
 import dev.adeengineer.platform.core.AgentRegistry;
 import dev.adeengineer.platform.testutil.MockAgent;
 
@@ -47,15 +43,6 @@ class ParallelAgentExecutorTest {
         when(agentRegistry.getAgent("Developer")).thenReturn(developerAgent);
         when(agentRegistry.getAgent("QA Engineer")).thenReturn(qaAgent);
 
-        LLMResponse devResponse =
-                new LLMResponse(
-                        "Code implementation", new UsageInfo(10, 50, 60, 0.001), "openai", "gpt-4");
-        LLMResponse qaResponse =
-                new LLMResponse("Test plan", new UsageInfo(10, 40, 50, 0.001), "openai", "gpt-4");
-
-        when(llmProvider.generate(any(), anyDouble(), anyInt()))
-                .thenReturn(devResponse, qaResponse);
-
         List<TaskRequest> tasks =
                 List.of(
                         new TaskRequest("Developer", "Implement feature X", null),
@@ -67,9 +54,9 @@ class ParallelAgentExecutorTest {
         // Then
         assertThat(results).hasSize(2);
         assertThat(results.get(0).success()).isTrue();
-        assertThat(results.get(0).output()).isEqualTo("Code implementation");
+        assertThat(results.get(0).output()).contains("Mock response from Developer");
         assertThat(results.get(1).success()).isTrue();
-        assertThat(results.get(1).output()).isEqualTo("Test plan");
+        assertThat(results.get(1).output()).contains("Mock response from QA Engineer");
     }
 
     @Test
@@ -77,14 +64,6 @@ class ParallelAgentExecutorTest {
         // Given
         MockAgent developerAgent = new MockAgent("Developer");
         when(agentRegistry.getAgent("Developer")).thenReturn(developerAgent);
-
-        LLMResponse response =
-                new LLMResponse(
-                        "Implementation with context",
-                        new UsageInfo(10, 50, 60, 0.001),
-                        "openai",
-                        "gpt-4");
-        when(llmProvider.generate(any(), anyDouble(), anyInt())).thenReturn(response);
 
         Map<String, Object> context =
                 Map.of(
@@ -98,7 +77,7 @@ class ParallelAgentExecutorTest {
         // Then
         assertThat(results).hasSize(1);
         assertThat(results.get(0).success()).isTrue();
-        assertThat(results.get(0).output()).contains("Implementation");
+        assertThat(results.get(0).output()).contains("Mock response");
     }
 
     @Test
@@ -123,10 +102,6 @@ class ParallelAgentExecutorTest {
         MockAgent developerAgent = new MockAgent("Developer");
         when(agentRegistry.getAgent("Developer")).thenReturn(developerAgent);
 
-        LLMResponse response =
-                new LLMResponse("Response", new UsageInfo(10, 50, 60, 0.001), "openai", "gpt-4");
-        when(llmProvider.generate(any(), anyDouble(), anyInt())).thenReturn(response);
-
         List<TaskRequest> tasks =
                 List.of(
                         new TaskRequest("Developer", "Task 1", null),
@@ -148,10 +123,6 @@ class ParallelAgentExecutorTest {
         // Given
         MockAgent developerAgent = new MockAgent("Developer");
         when(agentRegistry.getAgent("Developer")).thenReturn(developerAgent);
-
-        LLMResponse response =
-                new LLMResponse("Response", new UsageInfo(10, 50, 60, 0.001), "openai", "gpt-4");
-        when(llmProvider.generate(any(), anyDouble(), anyInt())).thenReturn(response);
 
         List<TaskRequest> tasks =
                 List.of(
@@ -175,10 +146,6 @@ class ParallelAgentExecutorTest {
         MockAgent developerAgent = new MockAgent("Developer");
         when(agentRegistry.getAgent("Developer")).thenReturn(developerAgent);
 
-        LLMResponse response =
-                new LLMResponse("Response", new UsageInfo(10, 50, 60, 0.001), "openai", "gpt-4");
-        when(llmProvider.generate(any(), anyDouble(), anyInt())).thenReturn(response);
-
         List<TaskRequest> tasks =
                 List.of(
                         new TaskRequest("Developer", "Task 1", null),
@@ -194,7 +161,7 @@ class ParallelAgentExecutorTest {
                                         .reduce("", (a, b) -> a + " | " + b));
 
         // Then
-        assertThat(aggregated).contains("Response | Response");
+        assertThat(aggregated).contains("Mock response");
     }
 
     @Test
@@ -202,10 +169,6 @@ class ParallelAgentExecutorTest {
         // Given
         MockAgent developerAgent = new MockAgent("Developer");
         when(agentRegistry.getAgent("Developer")).thenReturn(developerAgent);
-
-        LLMResponse response =
-                new LLMResponse("Response", new UsageInfo(10, 50, 60, 0.001), "openai", "gpt-4");
-        when(llmProvider.generate(any(), anyDouble(), anyInt())).thenReturn(response);
 
         TaskRequest task = new TaskRequest("Developer", "Task", null);
 
@@ -227,12 +190,11 @@ class ParallelAgentExecutorTest {
     }
 
     @Test
-    void shouldHandleLLMProviderException() {
+    void shouldHandleAgentException() {
         // Given
         MockAgent developerAgent = new MockAgent("Developer");
+        developerAgent.setExceptionToThrow(new RuntimeException("Agent execution error"));
         when(agentRegistry.getAgent("Developer")).thenReturn(developerAgent);
-        when(llmProvider.generate(any(), anyDouble(), anyInt()))
-                .thenThrow(new RuntimeException("LLM error"));
 
         TaskRequest task = new TaskRequest("Developer", "Task", null);
 

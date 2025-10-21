@@ -14,7 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.TaskResult;
+
 import dev.adeengineer.platform.orchestration.WorkflowEngine.Workflow;
 import dev.adeengineer.platform.orchestration.WorkflowEngine.WorkflowResult;
 import dev.adeengineer.platform.orchestration.WorkflowEngine.WorkflowStep;

@@ -9,8 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import dev.adeengineer.agent.TaskRequest;
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.TaskRequest;
+import adeengineer.dev.agent.TaskResult;
 
 /**
  * E2E tests for Data Engineer Agent workflows. Tests data pipeline design and ETL workflows through

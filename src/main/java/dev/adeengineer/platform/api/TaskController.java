@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.adeengineer.agent.TaskRequest;
-import dev.adeengineer.agent.TaskResult;
-import dev.adeengineer.platform.core.RoleManager;
+import adeengineer.dev.agent.TaskRequest;
+import adeengineer.dev.agent.TaskResult;
 
+import dev.adeengineer.platform.core.RoleManager;
 import lombok.extern.slf4j.Slf4j;
 
 /** REST API controller for task execution. */

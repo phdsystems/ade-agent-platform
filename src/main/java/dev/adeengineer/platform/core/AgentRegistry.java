@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import dev.adeengineer.agent.Agent;
-import dev.adeengineer.agent.AgentInfo;
+import adeengineer.dev.agent.Agent;
+import adeengineer.dev.agent.AgentInfo;
 
 import lombok.extern.slf4j.Slf4j;
 

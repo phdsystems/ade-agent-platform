@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.adeengineer.agent.AgentInfo;
-import dev.adeengineer.platform.core.RoleManager;
+import adeengineer.dev.agent.AgentInfo;
 
+import dev.adeengineer.platform.core.RoleManager;
 import lombok.extern.slf4j.Slf4j;
 
 /** REST API controller for role discovery and information. */

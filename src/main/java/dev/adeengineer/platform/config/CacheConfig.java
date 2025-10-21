@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 @EnableCaching
-public final class CacheConfig {
+public class CacheConfig {
 
     /** Whether LLM response caching is enabled. */
     @Value("${llm.cache.enabled:true}")

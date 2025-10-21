@@ -1,10 +1,10 @@
 package dev.adeengineer.platform.core;
 
-import dev.adeengineer.agent.AgentConfig;
-import dev.adeengineer.agent.BaseAgent;
-import dev.adeengineer.agent.OutputFormatterRegistry;
-import dev.adeengineer.llm.LLMProvider;
+import adeengineer.dev.agent.AgentConfig;
+import adeengineer.dev.agent.BaseAgent;
+import adeengineer.dev.agent.OutputFormatterRegistry;
 
+import dev.adeengineer.llm.LLMProvider;
 import lombok.extern.slf4j.Slf4j;
 
 /**

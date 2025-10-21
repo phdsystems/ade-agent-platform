@@ -14,11 +14,11 @@ import java.util.concurrent.TimeoutException;
 
 import org.springframework.stereotype.Service;
 
-import dev.adeengineer.agent.TaskRequest;
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.TaskRequest;
+import adeengineer.dev.agent.TaskResult;
+
 import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.platform.core.AgentRegistry;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**

@@ -14,7 +14,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import dev.adeengineer.agent.AgentInfo;
+import adeengineer.dev.agent.AgentInfo;
+
 import dev.adeengineer.platform.core.RoleManager;
 import dev.adeengineer.platform.testutil.TestData;
 
@@ -69,8 +70,8 @@ class RoleControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].roleName").value("Developer"))
-                .andExpect(jsonPath("$[1].roleName").value("QA"));
+                .andExpect(jsonPath("$[0].name").value("Developer"))
+                .andExpect(jsonPath("$[1].name").value("QA"));
     }
 
     @Test
@@ -83,7 +84,7 @@ class RoleControllerTest {
         // When/Then
         mockMvc.perform(get("/api/roles/Developer"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.roleName").value("Developer"))
+                .andExpect(jsonPath("$.name").value("Developer"))
                 .andExpect(jsonPath("$.description").exists())
                 .andExpect(jsonPath("$.capabilities").isArray());
     }
@@ -109,6 +110,6 @@ class RoleControllerTest {
         // When/Then
         mockMvc.perform(get("/api/roles/Senior Developer"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.roleName").value("Senior Developer"));
+                .andExpect(jsonPath("$.name").value("Senior Developer"));
     }
 }

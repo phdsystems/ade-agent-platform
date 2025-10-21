@@ -15,10 +15,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import dev.adeengineer.agent.Agent;
-import dev.adeengineer.agent.AgentInfo;
-import dev.adeengineer.agent.TaskRequest;
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.Agent;
+import adeengineer.dev.agent.AgentInfo;
+import adeengineer.dev.agent.TaskRequest;
+import adeengineer.dev.agent.TaskResult;
+
 import dev.adeengineer.platform.testutil.MockAgent;
 import dev.adeengineer.platform.testutil.TestData;
 

@@ -3,7 +3,7 @@ package dev.adeengineer.platform.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import dev.adeengineer.agent.OutputFormatterRegistry;
+import adeengineer.dev.agent.OutputFormatterRegistry;
 
 /**
  * Spring configuration for output formatters.

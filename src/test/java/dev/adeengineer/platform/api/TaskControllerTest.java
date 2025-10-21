@@ -21,8 +21,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import dev.adeengineer.agent.TaskRequest;
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.TaskRequest;
+import adeengineer.dev.agent.TaskResult;
+
 import dev.adeengineer.platform.core.RoleManager;
 import dev.adeengineer.platform.testutil.TestData;
 
@@ -50,7 +51,7 @@ class TaskControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.roleName").value(result.agentName()))
+                .andExpect(jsonPath("$.agentName").value(result.agentName()))
                 .andExpect(jsonPath("$.success").value(true));
     }
 

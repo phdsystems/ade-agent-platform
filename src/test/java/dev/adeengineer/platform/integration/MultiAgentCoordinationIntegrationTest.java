@@ -10,7 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.TaskResult;
+
 import dev.adeengineer.platform.core.RoleManager;
 
 /**

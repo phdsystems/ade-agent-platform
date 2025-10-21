@@ -8,8 +8,9 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import dev.adeengineer.agent.OutputFormatStrategy;
-import dev.adeengineer.agent.OutputFormatterRegistry;
+import adeengineer.dev.agent.OutputFormatStrategy;
+import adeengineer.dev.agent.OutputFormatterRegistry;
+
 import dev.adeengineer.llm.model.LLMResponse;
 import dev.adeengineer.llm.model.UsageInfo;
 

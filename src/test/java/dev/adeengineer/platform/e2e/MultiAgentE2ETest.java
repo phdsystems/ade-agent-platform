@@ -12,7 +12,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.TaskResult;
+
 import dev.adeengineer.platform.api.TaskController;
 
 /**

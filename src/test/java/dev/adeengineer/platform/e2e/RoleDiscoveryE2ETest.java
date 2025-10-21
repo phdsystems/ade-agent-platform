@@ -11,7 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import dev.adeengineer.agent.AgentInfo;
+import adeengineer.dev.agent.AgentInfo;
 
 /**
  * E2E tests for Role Discovery API endpoints. Tests listing, querying, and discovering available

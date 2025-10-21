@@ -7,10 +7,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import dev.adeengineer.agent.Agent;
-import dev.adeengineer.agent.AgentInfo;
-import dev.adeengineer.agent.TaskRequest;
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.Agent;
+import adeengineer.dev.agent.AgentInfo;
+import adeengineer.dev.agent.TaskRequest;
+import adeengineer.dev.agent.TaskResult;
 
 import lombok.extern.slf4j.Slf4j;
 

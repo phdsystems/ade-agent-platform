@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
-import dev.adeengineer.agent.Agent;
-import dev.adeengineer.agent.AgentConfig;
-import dev.adeengineer.agent.OutputFormatterRegistry;
+import adeengineer.dev.agent.Agent;
+import adeengineer.dev.agent.AgentConfig;
+import adeengineer.dev.agent.OutputFormatterRegistry;
+
 import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.platform.config.AgentConfigLoader;
 import dev.adeengineer.platform.model.DomainConfig;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**

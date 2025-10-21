@@ -16,11 +16,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
-import dev.adeengineer.agent.AgentConfig;
-import dev.adeengineer.agent.AgentInfo;
-import dev.adeengineer.agent.OutputFormatterRegistry;
-import dev.adeengineer.agent.TaskRequest;
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.AgentConfig;
+import adeengineer.dev.agent.AgentInfo;
+import adeengineer.dev.agent.OutputFormatterRegistry;
+import adeengineer.dev.agent.TaskRequest;
+import adeengineer.dev.agent.TaskResult;
+
 import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.llm.model.LLMResponse;
 import dev.adeengineer.llm.model.UsageInfo;
@@ -46,8 +47,8 @@ class ConfigurableAgentTest {
                         List.of("testing", "validation"),
                         0.7,
                         2048,
-                        "technical",
-                        "You are a {role}. Task: {task}. Context: {context}");
+                        "You are a {role}. Task: {task}. Context: {context}",
+                        "technical");
 
         agent = new ConfigurableAgent(testConfig, mockLLMProvider, mockRegistry);
     }

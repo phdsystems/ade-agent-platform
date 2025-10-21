@@ -142,14 +142,15 @@ class PromptTemplateEngineTest {
     }
 
     @Test
-    void shouldThrowExceptionForUnknownTemplate() {
+    void shouldTreatUnregisteredTemplateAsContent() {
         // Given
         Map<String, Object> variables = Map.of("name", "Alice");
 
-        // When/Then
-        assertThatThrownBy(() -> engine.render("nonexistent", variables))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Template not found");
+        // When - unregistered template name is treated as direct template content
+        String result = engine.render("nonexistent", variables);
+
+        // Then - renders literally (no variables to substitute)
+        assertThat(result).isEqualTo("nonexistent");
     }
 
     @Test

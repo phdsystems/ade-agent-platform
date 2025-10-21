@@ -1,6 +1,7 @@
 package dev.adeengineer.platform.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.anyDouble;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -16,10 +17,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import dev.adeengineer.agent.Agent;
-import dev.adeengineer.agent.OutputFormatterRegistry;
-import dev.adeengineer.agent.TaskRequest;
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.Agent;
+import adeengineer.dev.agent.OutputFormatterRegistry;
+import adeengineer.dev.agent.TaskRequest;
+import adeengineer.dev.agent.TaskResult;
+
 import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.llm.model.LLMResponse;
 import dev.adeengineer.llm.model.UsageInfo;
@@ -123,14 +125,14 @@ class DomainLoadingIntegrationTest {
         Path domainPath = createTestDomain(tempDir, "test", true);
         domainLoader.loadDomain(domainPath.toString(), mockLLMProvider);
 
-        // Get agent
-        Agent agent = agentRegistry.getAgent("Healthcare Test Agent");
+        // Get agent (domain "test" creates "Test Test Agent")
+        Agent agent = agentRegistry.getAgent("Test Test Agent");
         assertThat(agent).isNotNull();
 
         // Execute task
         TaskRequest request =
                 new TaskRequest(
-                        "Healthcare Test Agent",
+                        "Test Test Agent",
                         "Diagnose patient",
                         Map.of("symptoms", "fever, cough"));
 
@@ -138,7 +140,7 @@ class DomainLoadingIntegrationTest {
 
         // Verify result
         assertThat(result.success()).isTrue();
-        assertThat(result.agentName()).isEqualTo("Healthcare Test Agent");
+        assertThat(result.agentName()).isEqualTo("Test Test Agent");
         assertThat(result.task()).isEqualTo("Diagnose patient");
         assertThat(result.output()).contains("Test response");
     }
@@ -149,7 +151,8 @@ class DomainLoadingIntegrationTest {
         Path domainPath = createTestDomain(tempDir, "test", true);
         domainLoader.loadDomain(domainPath.toString(), mockLLMProvider);
 
-        Agent newSystemAgent = agentRegistry.getAgent("Healthcare Test Agent");
+        // Get agent (domain "test" creates "Test Test Agent")
+        Agent newSystemAgent = agentRegistry.getAgent("Test Test Agent");
 
         // Verify it's a ConfigurableAgent
         assertThat(newSystemAgent).isInstanceOf(ConfigurableAgent.class);
@@ -179,11 +182,10 @@ class DomainLoadingIntegrationTest {
 
         Files.writeString(domainPath.resolve("domain.yaml"), invalidDomainYaml);
 
-        // Attempt to load should fail gracefully
-        int agentCount = domainLoader.loadDomain(domainPath.toString(), mockLLMProvider);
-
-        // Should load 0 agents due to validation failure
-        assertThat(agentCount).isZero();
+        // Attempt to load should throw validation exception
+        assertThatThrownBy(() -> domainLoader.loadDomain(domainPath.toString(), mockLLMProvider))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Domain name cannot be null or blank");
     }
 
     /** Helper method to create a test domain structure. */
@@ -211,11 +213,11 @@ class DomainLoadingIntegrationTest {
 
         Files.writeString(basePath.resolve("domain.yaml"), domainYaml);
 
-        // Create agent YAML
+        // Create agent YAML with unique name per domain
         String agentYaml =
                 String.format(
                         """
-                name: "Healthcare Test Agent"
+                name: "%s Test Agent"
                 description: "Test agent for %s domain"
                 capabilities:
                   - "Testing"
@@ -228,10 +230,18 @@ class DomainLoadingIntegrationTest {
                   Task: {task}
                   Context: {context}
                 """,
-                        domainName);
+                        capitalize(domainName), domainName);
 
         Files.writeString(agentsDir.resolve("test-agent.yaml"), agentYaml);
 
         return basePath;
+    }
+
+    /** Helper to capitalize first letter of a string. */
+    private String capitalize(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 }

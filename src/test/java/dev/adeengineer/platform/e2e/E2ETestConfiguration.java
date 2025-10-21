@@ -8,8 +8,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 
-import dev.adeengineer.agent.AgentConfig;
-import dev.adeengineer.agent.OutputFormatterRegistry;
+import adeengineer.dev.agent.AgentConfig;
+import adeengineer.dev.agent.OutputFormatterRegistry;
+
 import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.platform.core.AgentRegistry;
 import dev.adeengineer.platform.core.ConfigurableAgent;

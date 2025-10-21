@@ -8,7 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import dev.adeengineer.agent.OutputFormatter;
+import adeengineer.dev.agent.OutputFormatter;
+
 import dev.adeengineer.llm.model.LLMResponse;
 import dev.adeengineer.llm.model.UsageInfo;
 import dev.adeengineer.platform.testutil.TestData;

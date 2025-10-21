@@ -8,8 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import dev.adeengineer.agent.Agent;
-import dev.adeengineer.agent.AgentInfo;
+import adeengineer.dev.agent.Agent;
+import adeengineer.dev.agent.AgentInfo;
+
 import dev.adeengineer.platform.testutil.MockAgent;
 
 @DisplayName("AgentRegistry Tests")

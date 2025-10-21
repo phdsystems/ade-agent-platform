@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dev.adeengineer.agent.Agent;
-import dev.adeengineer.agent.AgentInfo;
-import dev.adeengineer.agent.TaskRequest;
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.Agent;
+import adeengineer.dev.agent.AgentInfo;
+import adeengineer.dev.agent.TaskRequest;
+import adeengineer.dev.agent.TaskResult;
 
 /** Mock implementation of Agent for testing. */
 public class MockAgent implements Agent {

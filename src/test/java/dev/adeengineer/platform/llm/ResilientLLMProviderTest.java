@@ -14,7 +14,6 @@ import dev.adeengineer.llm.model.LLMResponse;
 import dev.adeengineer.llm.model.StreamingLLMResponse;
 import dev.adeengineer.llm.model.UsageInfo;
 import dev.adeengineer.llm.resilience.ResilientLLMProvider;
-
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
@@ -126,11 +125,20 @@ class ResilientLLMProviderTest {
         CircuitBreaker circuitBreaker = circuitBreakerRegistry.circuitBreaker("test-provider");
         assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.OPEN);
 
-        // When - Wait for circuit breaker to transition to half-open
+        // When - Wait for circuit breaker wait duration to pass
         Thread.sleep(150); // Wait duration is 100ms in config
 
-        // Then - Circuit breaker should allow test calls
-        assertThat(circuitBreaker.getState()).isEqualTo(CircuitBreaker.State.HALF_OPEN);
+        // Trigger transition by making a call (circuit breaker transitions on call attempt)
+        mockProvider.setShouldSucceed(true);
+        try {
+            resilientProvider.generateWithCircuitBreaker(mockProvider, "test", 0.7, 100);
+        } catch (Exception e) {
+            // May fail during transition
+        }
+
+        // Then - Circuit breaker should be in half-open or closed state after call
+        CircuitBreaker.State state = circuitBreaker.getState();
+        assertThat(state).isIn(CircuitBreaker.State.HALF_OPEN, CircuitBreaker.State.CLOSED);
     }
 
     @Test

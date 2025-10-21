@@ -1,6 +1,6 @@
 package dev.adeengineer.platform.util;
 
-import dev.adeengineer.agent.TaskResult;
+import adeengineer.dev.agent.TaskResult;
 
 /**
  * Utility methods for type-safe access to TaskResult metadata.
