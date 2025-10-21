@@ -18,6 +18,19 @@
 
 Built on the **ade Agent SDK** framework.
 
+## 🚀 Framework-Agnostic Architecture (v0.2.0+)
+
+Choose your framework - or use none at all:
+
+| Module | Framework | Use Case |
+|--------|-----------|----------|
+| **`ade-agent-platform-core`** | None (Vanilla Java) | CLI tools, batch processing, embedded systems |
+| **`ade-agent-platform-spring-boot`** | Spring Boot | Web applications, microservices, REST APIs |
+| **`ade-agent-platform-quarkus`** | Quarkus (future) | Cloud-native, serverless, GraalVM |
+| **`ade-agent-platform-micronaut`** | Micronaut (future) | Microservices, lightweight apps |
+
+**New in 0.2.0:** Platform core is now completely framework-agnostic. See [MIGRATION.md](MIGRATION.md) for upgrade guide.
+
 ---
 
 ## ⚠️ Important: Platform vs Domain Packages

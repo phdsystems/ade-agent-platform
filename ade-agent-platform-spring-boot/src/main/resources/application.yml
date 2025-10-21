@@ -1,0 +1,167 @@
+spring:
+  application:
+    name: ade-agent-platform
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+
+server:
+  port: 8080
+
+# LLM Provider Configuration
+llm:
+  primary-provider: ollama
+
+  # Response Caching
+  cache:
+    enabled: true
+    ttl-minutes: 60
+    max-size: 1000
+    redis:
+      enabled: false  # Set to true to use Redis instead of Caffeine
+
+  anthropic:
+    api-key: ${ANTHROPIC_API_KEY:}
+    model: claude-3-5-sonnet-20241022
+
+  openai:
+    api-key: ${OPENAI_API_KEY:}
+    model: gpt-4-turbo-preview
+
+  ollama:
+    base-url: ${OLLAMA_BASE_URL:http://ade-srv:11434}
+    model: qwen3:0.6b
+
+  huggingface:
+    api-key: ${HF_API_KEY:}
+    model: Qwen/Qwen2-0.5B
+
+  vllm:
+    base-url: ${VLLM_BASE_URL:http://localhost:8000}
+    model: meta-llama/Llama-3.2-3B-Instruct
+    api-key: ${VLLM_API_KEY:dummy}
+
+  tgi:
+    base-url: ${TGI_BASE_URL:http://localhost:8080}
+    model: meta-llama/Llama-3.2-3B-Instruct
+    api-key: ${TGI_API_KEY:dummy}
+
+  rayserve:
+    base-url: ${RAYSERVE_BASE_URL:http://localhost:8000}
+    model: meta-llama/Llama-3.2-3B-Instruct
+
+  bentoml:
+    base-url: ${BENTOML_BASE_URL:http://localhost:3000}
+    model: meta-llama/Llama-3.2-3B-Instruct
+
+# Agent Configuration
+agents:
+  # Domain plugin system (v0.2.0+)
+  domain-plugin-enabled: true
+  # Path to domain plugins (default: ../examples for demonstration)
+  # Applications should override this to point to their own domains
+  domains-path: ../examples
+
+# Logging
+logging:
+  level:
+    root: INFO
+    dev.adeengineer.platform: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+# WebClient Connection Pooling
+webclient:
+  connection-pool:
+    max-connections: 500
+    pending-acquire-timeout: 45
+    max-idle-time: 20
+  timeout:
+    connect: 10
+    read: 60
+    write: 60
+
+# Actuator endpoints for monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,caches
+  endpoint:
+    health:
+      show-details: always
+
+# Redis Configuration (already merged into spring: section above)
+
+# Circuit Breaker Configuration (Resilience4j)
+resilience4j:
+  circuitbreaker:
+    instances:
+      anthropic:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+      openai:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+      ollama:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+      vllm:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+      tgi:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+      rayserve:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+      bentoml:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+      huggingface:
+        failure-rate-threshold: 50
+        minimum-number-of-calls: 5
+        wait-duration-in-open-state: 30s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 10
+  timelimiter:
+    instances:
+      default:
+        timeout-duration: 60s
