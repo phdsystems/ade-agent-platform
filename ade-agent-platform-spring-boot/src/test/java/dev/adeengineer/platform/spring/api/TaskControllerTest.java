@@ -25,7 +25,7 @@ import adeengineer.dev.agent.TaskRequest;
 import adeengineer.dev.agent.TaskResult;
 
 import dev.adeengineer.platform.core.RoleManager;
-import dev.adeengineer.platform.testutil.TestData;
+import dev.adeengineer.platform.spring.testutil.TestData;
 
 @WebMvcTest(TaskController.class)
 @DisplayName("TaskController REST API Tests")

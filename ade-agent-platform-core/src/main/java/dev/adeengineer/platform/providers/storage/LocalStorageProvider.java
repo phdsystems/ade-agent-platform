@@ -1,13 +1,5 @@
 package dev.adeengineer.platform.providers.storage;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.adeengineer.storage.StorageProvider;
-import dev.adeengineer.storage.model.Document;
-import dev.adeengineer.storage.model.StorageQuery;
-import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -16,27 +8,28 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import dev.adeengineer.storage.StorageProvider;
+import dev.adeengineer.storage.model.Document;
+import dev.adeengineer.storage.model.StorageQuery;
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 /**
- * Local filesystem implementation of StorageProvider.
- * Stores documents and artifacts on local disk with metadata indexing.
+ * Local filesystem implementation of StorageProvider. Stores documents and artifacts on local disk
+ * with metadata indexing.
  *
- * <p>Features:
- * - Persistent file storage
- * - Metadata-based querying
- * - Automatic directory creation
- * - Size tracking
+ * <p>Features: - Persistent file storage - Metadata-based querying - Automatic directory creation -
+ * Size tracking
  *
- * <p>Use cases:
- * - Development and testing
- * - Small-scale deployments
- * - Artifact archival
- * - Document management
+ * <p>Use cases: - Development and testing - Small-scale deployments - Artifact archival - Document
+ * management
  */
 @Slf4j
-
 public final class LocalStorageProvider implements StorageProvider {
 
     /** Base directory for document storage. */
@@ -55,9 +48,8 @@ public final class LocalStorageProvider implements StorageProvider {
      * @param mapper JSON mapper for metadata
      * @throws IOException if storage directory cannot be created
      */
-    public LocalStorageProvider(
-            final String storagePath,
-            final ObjectMapper mapper) throws IOException {
+    public LocalStorageProvider(final String storagePath, final ObjectMapper mapper)
+            throws IOException {
         this.storageRoot = Paths.get(storagePath).toAbsolutePath();
         this.objectMapper = mapper;
 
@@ -80,36 +72,38 @@ public final class LocalStorageProvider implements StorageProvider {
      */
     @Override
     public Mono<Document> store(final Document document) {
-        return Mono.fromCallable(() -> {
-            // Generate ID if not provided
-            final String id = document.id() != null ? document.id() : UUID.randomUUID().toString();
+        return Mono.fromCallable(
+                () -> {
+                    // Generate ID if not provided
+                    final String id =
+                            document.id() != null ? document.id() : UUID.randomUUID().toString();
 
-            // Create document path
-            final Path docPath = storageRoot.resolve(id);
-            final Path metadataPath = storageRoot.resolve(id + ".metadata.json");
+                    // Create document path
+                    final Path docPath = storageRoot.resolve(id);
+                    final Path metadataPath = storageRoot.resolve(id + ".metadata.json");
 
-            // Write document content
-            Files.write(docPath, document.content());
+                    // Write document content
+                    Files.write(docPath, document.content());
 
-            // Update document with actual timestamp and size
-            final Document storedDoc = new Document(
-                    id,
-                    document.content(),
-                    document.contentType(),
-                    document.metadata(),
-                    Instant.now(),
-                    document.content().length
-            );
+                    // Update document with actual timestamp and size
+                    final Document storedDoc =
+                            new Document(
+                                    id,
+                                    document.content(),
+                                    document.contentType(),
+                                    document.metadata(),
+                                    Instant.now(),
+                                    document.content().length);
 
-            // Write metadata
-            objectMapper.writeValue(metadataPath.toFile(), storedDoc);
+                    // Write metadata
+                    objectMapper.writeValue(metadataPath.toFile(), storedDoc);
 
-            // Update in-memory index
-            metadataIndex.put(id, storedDoc);
+                    // Update in-memory index
+                    metadataIndex.put(id, storedDoc);
 
-            log.debug("Stored document: {} ({} bytes)", id, storedDoc.size());
-            return storedDoc;
-        });
+                    log.debug("Stored document: {} ({} bytes)", id, storedDoc.size());
+                    return storedDoc;
+                });
     }
 
     /**
@@ -120,29 +114,29 @@ public final class LocalStorageProvider implements StorageProvider {
      */
     @Override
     public Mono<Document> retrieve(final String id) {
-        return Mono.fromCallable(() -> {
-            final Document metadata = metadataIndex.get(id);
-            if (metadata == null) {
-                return null;
-            }
+        return Mono.fromCallable(
+                () -> {
+                    final Document metadata = metadataIndex.get(id);
+                    if (metadata == null) {
+                        return null;
+                    }
 
-            final Path docPath = storageRoot.resolve(id);
-            if (!Files.exists(docPath)) {
-                log.warn("Document file missing for ID: {}", id);
-                return null;
-            }
+                    final Path docPath = storageRoot.resolve(id);
+                    if (!Files.exists(docPath)) {
+                        log.warn("Document file missing for ID: {}", id);
+                        return null;
+                    }
 
-            final byte[] content = Files.readAllBytes(docPath);
+                    final byte[] content = Files.readAllBytes(docPath);
 
-            return new Document(
-                    metadata.id(),
-                    content,
-                    metadata.contentType(),
-                    metadata.metadata(),
-                    metadata.createdAt(),
-                    metadata.size()
-            );
-        });
+                    return new Document(
+                            metadata.id(),
+                            content,
+                            metadata.contentType(),
+                            metadata.metadata(),
+                            metadata.createdAt(),
+                            metadata.size());
+                });
     }
 
     /**
@@ -153,29 +147,30 @@ public final class LocalStorageProvider implements StorageProvider {
      */
     @Override
     public Mono<Boolean> delete(final String id) {
-        return Mono.fromCallable(() -> {
-            final Path docPath = storageRoot.resolve(id);
-            final Path metadataPath = storageRoot.resolve(id + ".metadata.json");
+        return Mono.fromCallable(
+                () -> {
+                    final Path docPath = storageRoot.resolve(id);
+                    final Path metadataPath = storageRoot.resolve(id + ".metadata.json");
 
-            boolean deleted = false;
+                    boolean deleted = false;
 
-            if (Files.exists(docPath)) {
-                Files.delete(docPath);
-                deleted = true;
-            }
+                    if (Files.exists(docPath)) {
+                        Files.delete(docPath);
+                        deleted = true;
+                    }
 
-            if (Files.exists(metadataPath)) {
-                Files.delete(metadataPath);
-                deleted = true;
-            }
+                    if (Files.exists(metadataPath)) {
+                        Files.delete(metadataPath);
+                        deleted = true;
+                    }
 
-            if (deleted) {
-                metadataIndex.remove(id);
-                log.debug("Deleted document: {}", id);
-            }
+                    if (deleted) {
+                        metadataIndex.remove(id);
+                        log.debug("Deleted document: {}", id);
+                    }
 
-            return deleted;
-        });
+                    return deleted;
+                });
     }
 
     /**
@@ -227,11 +222,8 @@ public final class LocalStorageProvider implements StorageProvider {
      */
     @Override
     public Mono<Long> getTotalSize() {
-        return Mono.fromCallable(() ->
-                metadataIndex.values().stream()
-                        .mapToLong(Document::size)
-                        .sum()
-        );
+        return Mono.fromCallable(
+                () -> metadataIndex.values().stream().mapToLong(Document::size).sum());
     }
 
     /**
@@ -266,17 +258,17 @@ public final class LocalStorageProvider implements StorageProvider {
 
         try (Stream<Path> paths = Files.list(storageRoot)) {
             paths.filter(path -> path.toString().endsWith(".metadata.json"))
-                    .forEach(metadataPath -> {
-                        try {
-                            Document doc = objectMapper.readValue(
-                                    metadataPath.toFile(),
-                                    Document.class
-                            );
-                            metadataIndex.put(doc.id(), doc);
-                        } catch (IOException e) {
-                            log.warn("Failed to load metadata: {}", metadataPath, e);
-                        }
-                    });
+                    .forEach(
+                            metadataPath -> {
+                                try {
+                                    Document doc =
+                                            objectMapper.readValue(
+                                                    metadataPath.toFile(), Document.class);
+                                    metadataIndex.put(doc.id(), doc);
+                                } catch (IOException e) {
+                                    log.warn("Failed to load metadata: {}", metadataPath, e);
+                                }
+                            });
         }
 
         log.info("Loaded {} documents from metadata index", metadataIndex.size());
@@ -299,9 +291,10 @@ public final class LocalStorageProvider implements StorageProvider {
         }
 
         return filters.entrySet().stream()
-                .allMatch(filter -> {
-                    Object docValue = document.metadata().get(filter.getKey());
-                    return docValue != null && docValue.equals(filter.getValue());
-                });
+                .allMatch(
+                        filter -> {
+                            Object docValue = document.metadata().get(filter.getKey());
+                            return docValue != null && docValue.equals(filter.getValue());
+                        });
     }
 }

@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 
 import adeengineer.dev.agent.TaskResult;
 
-import dev.adeengineer.platform.api.TaskController;
+import dev.adeengineer.platform.spring.api.TaskController;
 
 /**
  * E2E tests for Multi-Agent collaboration workflows. Tests parallel execution of multiple agents

@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContext;
 import adeengineer.dev.agent.Agent;
 import adeengineer.dev.agent.AgentConfig;
 
-import dev.adeengineer.platform.config.AgentConfigLoader;
+import dev.adeengineer.platform.spring.config.AgentConfigLoader;
 import dev.adeengineer.platform.core.AgentRegistry;
 
 /**

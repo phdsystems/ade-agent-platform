@@ -13,9 +13,9 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
 import dev.adeengineer.llm.LLMProvider;
-import dev.adeengineer.platform.factory.LLMProviderFactory;
 import dev.adeengineer.platform.core.DomainManager;
 import dev.adeengineer.platform.core.DomainManager.DomainMetadata;
+import dev.adeengineer.platform.factory.LLMProviderFactory;
 import lombok.extern.slf4j.Slf4j;
 
 /**

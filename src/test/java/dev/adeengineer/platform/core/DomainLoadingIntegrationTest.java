@@ -132,9 +132,7 @@ class DomainLoadingIntegrationTest {
         // Execute task
         TaskRequest request =
                 new TaskRequest(
-                        "Test Test Agent",
-                        "Diagnose patient",
-                        Map.of("symptoms", "fever, cough"));
+                        "Test Test Agent", "Diagnose patient", Map.of("symptoms", "fever, cough"));
 
         TaskResult result = agent.executeTask(request);
 

@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import adeengineer.dev.agent.AgentInfo;
 
 import dev.adeengineer.platform.core.RoleManager;
-import dev.adeengineer.platform.testutil.TestData;
+import dev.adeengineer.platform.spring.testutil.TestData;
 
 @WebMvcTest(RoleController.class)
 @DisplayName("RoleController REST API Tests")

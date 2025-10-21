@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
@@ -62,8 +61,7 @@ public class DomainLoader {
      * @param formatterRegistry Registry for output formatters
      */
     public DomainLoader(
-            final AgentRegistry agentRegistry,
-            final OutputFormatterRegistry formatterRegistry) {
+            final AgentRegistry agentRegistry, final OutputFormatterRegistry formatterRegistry) {
         this.agentRegistry = agentRegistry;
         this.formatterRegistry = formatterRegistry;
         this.yamlMapper = new ObjectMapper(new YAMLFactory());

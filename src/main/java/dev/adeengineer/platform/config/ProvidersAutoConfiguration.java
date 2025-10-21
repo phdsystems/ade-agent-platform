@@ -1,6 +1,14 @@
 package dev.adeengineer.platform.config;
 
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import dev.adeengineer.embeddings.EmbeddingsProvider;
 import dev.adeengineer.evaluation.EvaluationProvider;
 import dev.adeengineer.llm.LLMProvider;
@@ -16,24 +24,20 @@ import dev.adeengineer.platform.providers.tools.SimpleToolProvider;
 import dev.adeengineer.storage.StorageProvider;
 import dev.adeengineer.tools.ToolProvider;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
-import java.io.IOException;
 
 /**
  * Spring Boot auto-configuration for ade-agent-platform providers.
  *
- * <p>This configuration class automatically creates beans for all infrastructure providers
- * when used in a Spring Boot application. Providers are created with {@code @ConditionalOnMissingBean}
+ * <p>This configuration class automatically creates beans for all infrastructure providers when
+ * used in a Spring Boot application. Providers are created with {@code @ConditionalOnMissingBean}
  * so applications can override them with custom implementations.
  *
- * <p><b>Note:</b> The underlying provider implementations are pure POJOs with no Spring dependencies.
- * This configuration is only needed for Spring Boot applications that want automatic bean registration.
+ * <p><b>Note:</b> The underlying provider implementations are pure POJOs with no Spring
+ * dependencies. This configuration is only needed for Spring Boot applications that want automatic
+ * bean registration.
  *
  * <p><b>Non-Spring Usage:</b> Applications not using Spring can instantiate providers directly:
+ *
  * <pre>{@code
  * EmbeddingsProvider embeddings = ...;
  * MemoryProvider memory = new InMemoryMemoryProvider(embeddings);
@@ -70,7 +74,8 @@ public class ProvidersAutoConfiguration {
     @ConditionalOnMissingBean(StorageProvider.class)
     public StorageProvider localStorageProvider(
             @Value("${ade.storage.path:./data/storage}") String storagePath,
-            ObjectMapper objectMapper) throws IOException {
+            ObjectMapper objectMapper)
+            throws IOException {
         log.info("Auto-configuring LocalStorageProvider with path: {}", storagePath);
         return new LocalStorageProvider(storagePath, objectMapper);
     }

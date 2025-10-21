@@ -25,7 +25,7 @@ import adeengineer.dev.agent.TaskResult;
 import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.llm.model.LLMResponse;
 import dev.adeengineer.llm.model.UsageInfo;
-import dev.adeengineer.platform.config.AgentConfigLoader;
+import dev.adeengineer.platform.spring.config.AgentConfigLoader;
 
 /** Integration tests for domain loading system. */
 class DomainLoadingIntegrationTest {
@@ -132,9 +132,7 @@ class DomainLoadingIntegrationTest {
         // Execute task
         TaskRequest request =
                 new TaskRequest(
-                        "Test Test Agent",
-                        "Diagnose patient",
-                        Map.of("symptoms", "fever, cough"));
+                        "Test Test Agent", "Diagnose patient", Map.of("symptoms", "fever, cough"));
 
         TaskResult result = agent.executeTask(request);
 

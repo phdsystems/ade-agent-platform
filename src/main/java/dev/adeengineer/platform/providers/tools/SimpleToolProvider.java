@@ -1,5 +1,10 @@
 package dev.adeengineer.platform.providers.tools;
 
+import java.time.Instant;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+
 import dev.adeengineer.tools.ToolProvider;
 import dev.adeengineer.tools.model.Tool;
 import dev.adeengineer.tools.model.ToolInvocation;
@@ -8,29 +13,17 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Instant;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-
 /**
- * Simple in-memory implementation of ToolProvider.
- * Manages tool registration and invocation with synchronous execution.
+ * Simple in-memory implementation of ToolProvider. Manages tool registration and invocation with
+ * synchronous execution.
  *
- * <p>Features:
- * - Dynamic tool registration
- * - Thread-safe concurrent access
- * - Function-based tool implementation
- * - Automatic result wrapping
+ * <p>Features: - Dynamic tool registration - Thread-safe concurrent access - Function-based tool
+ * implementation - Automatic result wrapping
  *
- * <p>Use cases:
- * - Custom function calling
- * - API integrations
- * - External service connectors
- * - Plugin systems
+ * <p>Use cases: - Custom function calling - API integrations - External service connectors - Plugin
+ * systems
  */
 @Slf4j
-
 public final class SimpleToolProvider implements ToolProvider {
 
     /** Registry of available tools. */
@@ -40,9 +33,7 @@ public final class SimpleToolProvider implements ToolProvider {
     private final Map<String, Function<Map<String, Object>, Object>> toolImplementations =
             new ConcurrentHashMap<>();
 
-    /**
-     * Creates a simple tool provider.
-     */
+    /** Creates a simple tool provider. */
     public SimpleToolProvider() {
         log.info("Initialized SimpleToolProvider");
         registerBuiltInTools();
@@ -69,8 +60,7 @@ public final class SimpleToolProvider implements ToolProvider {
      * @return Mono emitting the registered tool
      */
     public Mono<Tool> registerTool(
-            final Tool tool,
-            final Function<Map<String, Object>, Object> implementation) {
+            final Tool tool, final Function<Map<String, Object>, Object> implementation) {
         toolRegistry.put(tool.name(), tool);
         toolImplementations.put(tool.name(), implementation);
         log.info("Registered tool with implementation: {}", tool.name());
@@ -85,64 +75,67 @@ public final class SimpleToolProvider implements ToolProvider {
      */
     @Override
     public Mono<ToolResult> invoke(final ToolInvocation invocation) {
-        return Mono.fromCallable(() -> {
-            final Tool tool = toolRegistry.get(invocation.toolName());
-            if (tool == null) {
-                return new ToolResult(
-                        invocation.toolName(),
-                        false,
-                        null,
-                        "Tool not found: " + invocation.toolName(),
-                        0L,
-                        Instant.now()
-                );
-            }
+        return Mono.fromCallable(
+                () -> {
+                    final Tool tool = toolRegistry.get(invocation.toolName());
+                    if (tool == null) {
+                        return new ToolResult(
+                                invocation.toolName(),
+                                false,
+                                null,
+                                "Tool not found: " + invocation.toolName(),
+                                0L,
+                                Instant.now());
+                    }
 
-            final Function<Map<String, Object>, Object> implementation =
-                    toolImplementations.get(invocation.toolName());
-            if (implementation == null) {
-                return new ToolResult(
-                        invocation.toolName(),
-                        false,
-                        null,
-                        "No implementation registered for tool: " + invocation.toolName(),
-                        0L,
-                        Instant.now()
-                );
-            }
+                    final Function<Map<String, Object>, Object> implementation =
+                            toolImplementations.get(invocation.toolName());
+                    if (implementation == null) {
+                        return new ToolResult(
+                                invocation.toolName(),
+                                false,
+                                null,
+                                "No implementation registered for tool: " + invocation.toolName(),
+                                0L,
+                                Instant.now());
+                    }
 
-            // Execute tool
-            final long startTime = System.currentTimeMillis();
-            try {
-                final Object result = implementation.apply(invocation.arguments());
-                final long executionTime = System.currentTimeMillis() - startTime;
+                    // Execute tool
+                    final long startTime = System.currentTimeMillis();
+                    try {
+                        final Object result = implementation.apply(invocation.arguments());
+                        final long executionTime = System.currentTimeMillis() - startTime;
 
-                log.debug("Tool {} executed successfully in {}ms",
-                        invocation.toolName(), executionTime);
+                        log.debug(
+                                "Tool {} executed successfully in {}ms",
+                                invocation.toolName(),
+                                executionTime);
 
-                return new ToolResult(
-                        invocation.toolName(),
-                        true,
-                        result,
-                        null,
-                        executionTime,
-                        Instant.now()
-                );
+                        return new ToolResult(
+                                invocation.toolName(),
+                                true,
+                                result,
+                                null,
+                                executionTime,
+                                Instant.now());
 
-            } catch (Exception e) {
-                final long executionTime = System.currentTimeMillis() - startTime;
-                log.error("Tool {} execution failed: {}", invocation.toolName(), e.getMessage(), e);
+                    } catch (Exception e) {
+                        final long executionTime = System.currentTimeMillis() - startTime;
+                        log.error(
+                                "Tool {} execution failed: {}",
+                                invocation.toolName(),
+                                e.getMessage(),
+                                e);
 
-                return new ToolResult(
-                        invocation.toolName(),
-                        false,
-                        null,
-                        "Execution failed: " + e.getMessage(),
-                        executionTime,
-                        Instant.now()
-                );
-            }
-        });
+                        return new ToolResult(
+                                invocation.toolName(),
+                                false,
+                                null,
+                                "Execution failed: " + e.getMessage(),
+                                executionTime,
+                                Instant.now());
+                    }
+                });
     }
 
     /**
@@ -211,77 +204,80 @@ public final class SimpleToolProvider implements ToolProvider {
      */
     @Override
     public boolean isHealthy() {
-        return true;  // Always healthy for in-memory implementation
+        return true; // Always healthy for in-memory implementation
     }
 
-    /**
-     * Register built-in tools that are always available.
-     */
+    /** Register built-in tools that are always available. */
     private void registerBuiltInTools() {
         // Echo tool - returns input unchanged
-        final Tool echoTool = new Tool(
-                "echo",
-                "Returns the input text unchanged (useful for testing)",
-                Map.of(
-                        "text", Map.of(
-                                "type", "string",
-                                "description", "The text to echo",
-                                "required", true
-                        )
-                ),
-                "utility"
-        );
+        final Tool echoTool =
+                new Tool(
+                        "echo",
+                        "Returns the input text unchanged (useful for testing)",
+                        Map.of(
+                                "text",
+                                Map.of(
+                                        "type", "string",
+                                        "description", "The text to echo",
+                                        "required", true)),
+                        "utility");
 
-        registerTool(echoTool, params -> {
-            String text = (String) params.get("text");
-            return text != null ? text : "";
-        }).subscribe();
+        registerTool(
+                        echoTool,
+                        params -> {
+                            String text = (String) params.get("text");
+                            return text != null ? text : "";
+                        })
+                .subscribe();
 
         // Calculator tool - performs basic arithmetic
-        final Tool calculatorTool = new Tool(
-                "calculator",
-                "Performs basic arithmetic operations (+, -, *, /)",
-                Map.of(
-                        "operation", Map.of(
-                                "type", "string",
-                                "description", "The operation to perform: add, subtract, multiply, divide",
-                                "required", true
-                        ),
-                        "a", Map.of(
-                                "type", "number",
-                                "description", "First operand",
-                                "required", true
-                        ),
-                        "b", Map.of(
-                                "type", "number",
-                                "description", "Second operand",
-                                "required", true
-                        )
-                ),
-                "computation"
-        );
+        final Tool calculatorTool =
+                new Tool(
+                        "calculator",
+                        "Performs basic arithmetic operations (+, -, *, /)",
+                        Map.of(
+                                "operation",
+                                        Map.of(
+                                                "type", "string",
+                                                "description",
+                                                        "The operation to perform: add, subtract, multiply, divide",
+                                                "required", true),
+                                "a",
+                                        Map.of(
+                                                "type", "number",
+                                                "description", "First operand",
+                                                "required", true),
+                                "b",
+                                        Map.of(
+                                                "type", "number",
+                                                "description", "Second operand",
+                                                "required", true)),
+                        "computation");
 
-        registerTool(calculatorTool, params -> {
-            String operation = (String) params.get("operation");
-            double a = ((Number) params.get("a")).doubleValue();
-            double b = ((Number) params.get("b")).doubleValue();
+        registerTool(
+                        calculatorTool,
+                        params -> {
+                            String operation = (String) params.get("operation");
+                            double a = ((Number) params.get("a")).doubleValue();
+                            double b = ((Number) params.get("b")).doubleValue();
 
-            return switch (operation) {
-                case "add" -> a + b;
-                case "subtract" -> a - b;
-                case "multiply" -> a * b;
-                case "divide" -> b != 0 ? a / b : Double.NaN;
-                default -> "Unknown operation: " + operation;
-            };
-        }).subscribe();
+                            return switch (operation) {
+                                case "add" -> a + b;
+                                case "subtract" -> a - b;
+                                case "multiply" -> a * b;
+                                case "divide" -> b != 0 ? a / b : Double.NaN;
+                                default -> "Unknown operation: " + operation;
+                            };
+                        })
+                .subscribe();
 
         // Timestamp tool - returns current timestamp
-        final Tool timestampTool = new Tool(
-                "get_timestamp",
-                "Returns the current Unix timestamp in milliseconds",
-                Map.of(),
-                "utility"
-        );
+        final Tool timestampTool =
+                new Tool(
+                        "get_timestamp",
+                        "Returns the current Unix timestamp in milliseconds",
+                        Map.of(),
+                        "utility");
 
         registerTool(timestampTool, params -> System.currentTimeMillis()).subscribe();
 

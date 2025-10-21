@@ -1,14 +1,5 @@
 package dev.adeengineer.platform.providers.memory;
 
-import dev.adeengineer.embeddings.EmbeddingsProvider;
-import dev.adeengineer.embeddings.model.Embedding;
-import dev.adeengineer.memory.MemoryProvider;
-import dev.adeengineer.memory.model.MemoryEntry;
-import dev.adeengineer.memory.model.VectorSearchResult;
-import lombok.extern.slf4j.Slf4j;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.List;
@@ -17,23 +8,26 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import dev.adeengineer.embeddings.EmbeddingsProvider;
+import dev.adeengineer.memory.MemoryProvider;
+import dev.adeengineer.memory.model.MemoryEntry;
+import dev.adeengineer.memory.model.VectorSearchResult;
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
 /**
- * In-memory implementation of MemoryProvider.
- * Suitable for development, testing, and small-scale deployments.
+ * In-memory implementation of MemoryProvider. Suitable for development, testing, and small-scale
+ * deployments.
  *
- * <p>Features:
- * - Vector similarity search using cosine similarity
- * - Conversation history tracking via metadata
- * - Metadata filtering
- * - Thread-safe concurrent operations
+ * <p>Features: - Vector similarity search using cosine similarity - Conversation history tracking
+ * via metadata - Metadata filtering - Thread-safe concurrent operations
  *
- * <p>Limitations:
- * - Not persistent (data lost on restart)
- * - Limited scalability (single-node only)
+ * <p>Limitations: - Not persistent (data lost on restart) - Limited scalability (single-node only)
  * - Memory bounded by JVM heap size
  *
- * <p><b>Framework-agnostic:</b> This is a pure POJO with no Spring dependencies.
- * Can be used in any Java application.
+ * <p><b>Framework-agnostic:</b> This is a pure POJO with no Spring dependencies. Can be used in any
+ * Java application.
  */
 @Slf4j
 public final class InMemoryMemoryProvider implements MemoryProvider {
@@ -65,35 +59,39 @@ public final class InMemoryMemoryProvider implements MemoryProvider {
      */
     @Override
     public Mono<MemoryEntry> store(final MemoryEntry entry) {
-        return Mono.fromCallable(() -> {
-            // Generate ID if not provided
-            final String id = entry.id() != null ? entry.id() : UUID.randomUUID().toString();
+        return Mono.fromCallable(
+                () -> {
+                    // Generate ID if not provided
+                    final String id =
+                            entry.id() != null ? entry.id() : UUID.randomUUID().toString();
 
-            // Create entry with ID and current timestamp
-            final MemoryEntry storedEntry = new MemoryEntry(
-                    id,
-                    entry.content(),
-                    entry.metadata(),
-                    Instant.now(),
-                    entry.importance()
-            );
+                    // Create entry with ID and current timestamp
+                    final MemoryEntry storedEntry =
+                            new MemoryEntry(
+                                    id,
+                                    entry.content(),
+                                    entry.metadata(),
+                                    Instant.now(),
+                                    entry.importance());
 
-            // Store memory entry
-            memoryStore.put(id, storedEntry);
+                    // Store memory entry
+                    memoryStore.put(id, storedEntry);
 
-            // Generate and store embedding asynchronously
-            if (entry.content() != null && !entry.content().isBlank()) {
-                embeddingsProvider.embed(entry.content())
-                        .subscribe(embedding -> {
-                            vectorStore.put(id, embedding.vector());
-                            log.debug("Stored memory entry with embedding: {}", id);
-                        });
-            } else {
-                log.debug("Stored memory entry without embedding: {}", id);
-            }
+                    // Generate and store embedding asynchronously
+                    if (entry.content() != null && !entry.content().isBlank()) {
+                        embeddingsProvider
+                                .embed(entry.content())
+                                .subscribe(
+                                        embedding -> {
+                                            vectorStore.put(id, embedding.vector());
+                                            log.debug("Stored memory entry with embedding: {}", id);
+                                        });
+                    } else {
+                        log.debug("Stored memory entry without embedding: {}", id);
+                    }
 
-            return storedEntry;
-        });
+                    return storedEntry;
+                });
     }
 
     /**
@@ -118,39 +116,49 @@ public final class InMemoryMemoryProvider implements MemoryProvider {
      */
     @Override
     public Flux<VectorSearchResult> search(
-            final String query,
-            final int topK,
-            final Map<String, Object> filters) {
-        return embeddingsProvider.embed(query)
-                .flatMapMany(queryEmbedding -> {
-                    // Filter entries by metadata if filters provided
-                    List<String> filteredIds = memoryStore.entrySet().stream()
-                            .filter(e -> matchesFilters(e.getValue(), filters))
-                            .map(Map.Entry::getKey)
-                            .filter(vectorStore::containsKey)
-                            .toList();
+            final String query, final int topK, final Map<String, Object> filters) {
+        return embeddingsProvider
+                .embed(query)
+                .flatMapMany(
+                        queryEmbedding -> {
+                            // Filter entries by metadata if filters provided
+                            List<String> filteredIds =
+                                    memoryStore.entrySet().stream()
+                                            .filter(e -> matchesFilters(e.getValue(), filters))
+                                            .map(Map.Entry::getKey)
+                                            .filter(vectorStore::containsKey)
+                                            .toList();
 
-                    // Calculate cosine similarity for each entry
-                    List<VectorSearchResult> results = filteredIds.stream()
-                            .map(id -> {
-                                MemoryEntry entry = memoryStore.get(id);
-                                List<Float> vector = vectorStore.get(id);
+                            // Calculate cosine similarity for each entry
+                            List<VectorSearchResult> results =
+                                    filteredIds.stream()
+                                            .map(
+                                                    id -> {
+                                                        MemoryEntry entry = memoryStore.get(id);
+                                                        List<Float> vector = vectorStore.get(id);
 
-                                double similarity = cosineSimilarity(
-                                        queryEmbedding.vector(),
-                                        vector
-                                );
+                                                        double similarity =
+                                                                cosineSimilarity(
+                                                                        queryEmbedding.vector(),
+                                                                        vector);
 
-                                double distance = 1.0 - similarity;  // Convert similarity to distance
+                                                        double distance =
+                                                                1.0 - similarity; // Convert
+                                                        // similarity
+                                                        // to distance
 
-                                return new VectorSearchResult(entry, similarity, distance);
-                            })
-                            .sorted(Comparator.comparingDouble(VectorSearchResult::score).reversed())
-                            .limit(topK)
-                            .collect(Collectors.toList());
+                                                        return new VectorSearchResult(
+                                                                entry, similarity, distance);
+                                                    })
+                                            .sorted(
+                                                    Comparator.comparingDouble(
+                                                                    VectorSearchResult::score)
+                                                            .reversed())
+                                            .limit(topK)
+                                            .collect(Collectors.toList());
 
-                    return Flux.fromIterable(results);
-                });
+                            return Flux.fromIterable(results);
+                        });
     }
 
     /**
@@ -178,12 +186,16 @@ public final class InMemoryMemoryProvider implements MemoryProvider {
      */
     @Override
     public Flux<MemoryEntry> getConversationHistory(final String conversationId, final int limit) {
-        List<MemoryEntry> history = memoryStore.values().stream()
-                .filter(entry -> entry.metadata() != null &&
-                        conversationId.equals(entry.metadata().get("conversation_id")))
-                .sorted(Comparator.comparing(MemoryEntry::timestamp))
-                .limit(limit)
-                .collect(Collectors.toList());
+        List<MemoryEntry> history =
+                memoryStore.values().stream()
+                        .filter(
+                                entry ->
+                                        entry.metadata() != null
+                                                && conversationId.equals(
+                                                        entry.metadata().get("conversation_id")))
+                        .sorted(Comparator.comparing(MemoryEntry::timestamp))
+                        .limit(limit)
+                        .collect(Collectors.toList());
 
         return Flux.fromIterable(history);
     }
@@ -271,9 +283,10 @@ public final class InMemoryMemoryProvider implements MemoryProvider {
         }
 
         return filters.entrySet().stream()
-                .allMatch(filter -> {
-                    Object entryValue = entry.metadata().get(filter.getKey());
-                    return entryValue != null && entryValue.equals(filter.getValue());
-                });
+                .allMatch(
+                        filter -> {
+                            Object entryValue = entry.metadata().get(filter.getKey());
+                            return entryValue != null && entryValue.equals(filter.getValue());
+                        });
     }
 }

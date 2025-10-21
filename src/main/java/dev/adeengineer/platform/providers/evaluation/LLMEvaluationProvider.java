@@ -1,5 +1,9 @@
 package dev.adeengineer.platform.providers.evaluation;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import dev.adeengineer.evaluation.EvaluationProvider;
 import dev.adeengineer.evaluation.model.EvaluationCriteria;
 import dev.adeengineer.evaluation.model.EvaluationResult;
@@ -10,46 +14,33 @@ import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
- * LLM-based implementation of EvaluationProvider.
- * Uses another LLM to evaluate LLM outputs for quality and correctness.
+ * LLM-based implementation of EvaluationProvider. Uses another LLM to evaluate LLM outputs for
+ * quality and correctness.
  *
- * <p>Features:
- * - Criteria-based evaluation
- * - Test case validation
- * - A/B comparison
- * - Multiple evaluation metrics
+ * <p>Features: - Criteria-based evaluation - Test case validation - A/B comparison - Multiple
+ * evaluation metrics
  *
- * <p>Evaluation approaches:
- * - Semantic similarity
- * - Fact checking
- * - Coherence analysis
- * - Relevance scoring
- * - Compliance verification
+ * <p>Evaluation approaches: - Semantic similarity - Fact checking - Coherence analysis - Relevance
+ * scoring - Compliance verification
  */
 @Slf4j
-
 public final class LLMEvaluationProvider implements EvaluationProvider {
 
     /** LLM provider for performing evaluations. */
     private final LLMProvider llmProvider;
 
     /** Supported evaluation metrics. */
-    private static final List<String> SUPPORTED_METRICS = List.of(
-            "accuracy",
-            "relevance",
-            "coherence",
-            "completeness",
-            "factuality",
-            "toxicity",
-            "bias",
-            "fluency"
-    );
+    private static final List<String> SUPPORTED_METRICS =
+            List.of(
+                    "accuracy",
+                    "relevance",
+                    "coherence",
+                    "completeness",
+                    "factuality",
+                    "toxicity",
+                    "bias",
+                    "fluency");
 
     /**
      * Creates an LLM-based evaluation provider.
@@ -70,46 +61,45 @@ public final class LLMEvaluationProvider implements EvaluationProvider {
      */
     @Override
     public Mono<EvaluationResult> evaluate(final String output, final EvaluationCriteria criteria) {
-        return Mono.fromCallable(() -> {
-            // Build evaluation prompt
-            final String evaluationPrompt = buildEvaluationPrompt(output, criteria);
+        return Mono.fromCallable(
+                () -> {
+                    // Build evaluation prompt
+                    final String evaluationPrompt = buildEvaluationPrompt(output, criteria);
 
-            // Get LLM evaluation (synchronous call)
-            final LLMResponse response = llmProvider.generate(
-                    evaluationPrompt,
-                    0.0,  // Low temperature for deterministic evaluation
-                    500
-            );
+                    // Get LLM evaluation (synchronous call)
+                    final LLMResponse response =
+                            llmProvider.generate(
+                                    evaluationPrompt,
+                                    0.0, // Low temperature for deterministic evaluation
+                                    500);
 
-            if (response == null) {
-                throw new RuntimeException("LLM evaluation failed: null response");
-            }
+                    if (response == null) {
+                        throw new RuntimeException("LLM evaluation failed: null response");
+                    }
 
-            // Parse evaluation result from LLM response
-            final Map<String, Double> scores = parseEvaluationScores(response.content());
-            final boolean passed = determinePass(scores, criteria);
+                    // Parse evaluation result from LLM response
+                    final Map<String, Double> scores = parseEvaluationScores(response.content());
+                    final boolean passed = determinePass(scores, criteria);
 
-            // Calculate average score
-            final double avgScore = scores.values().stream()
-                    .mapToDouble(Double::doubleValue)
-                    .average()
-                    .orElse(0.0);
+                    // Calculate average score
+                    final double avgScore =
+                            scores.values().stream()
+                                    .mapToDouble(Double::doubleValue)
+                                    .average()
+                                    .orElse(0.0);
 
-            // Use primary metric if available, otherwise "overall"
-            final String primaryMetric = criteria.metrics().isEmpty() ?
-                    "overall" : criteria.metrics().get(0);
+                    // Use primary metric if available, otherwise "overall"
+                    final String primaryMetric =
+                            criteria.metrics().isEmpty() ? "overall" : criteria.metrics().get(0);
 
-            return new EvaluationResult(
-                    primaryMetric,
-                    avgScore,
-                    passed,
-                    Map.of(
-                            "evaluator_model", llmProvider.getModel(),
-                            "all_scores", scores
-                    ),
-                    response.content()  // Full LLM explanation as feedback
-            );
-        });
+                    return new EvaluationResult(
+                            primaryMetric,
+                            avgScore,
+                            passed,
+                            Map.of("evaluator_model", llmProvider.getModel(), "all_scores", scores),
+                            response.content() // Full LLM explanation as feedback
+                            );
+                });
     }
 
     /**
@@ -121,37 +111,32 @@ public final class LLMEvaluationProvider implements EvaluationProvider {
      */
     @Override
     public Mono<EvaluationResult> runTestCase(final TestCase testCase, final String actualOutput) {
-        return Mono.fromCallable(() -> {
-            // Build test evaluation prompt
-            final String evaluationPrompt = buildTestCasePrompt(testCase, actualOutput);
+        return Mono.fromCallable(
+                () -> {
+                    // Build test evaluation prompt
+                    final String evaluationPrompt = buildTestCasePrompt(testCase, actualOutput);
 
-            // Get LLM evaluation (synchronous call)
-            final LLMResponse response = llmProvider.generate(
-                    evaluationPrompt,
-                    0.0,
-                    500
-            );
+                    // Get LLM evaluation (synchronous call)
+                    final LLMResponse response = llmProvider.generate(evaluationPrompt, 0.0, 500);
 
-            if (response == null) {
-                throw new RuntimeException("Test case evaluation failed: null response");
-            }
+                    if (response == null) {
+                        throw new RuntimeException("Test case evaluation failed: null response");
+                    }
 
-            // Parse test result
-            final boolean passed = parseTestResult(response.content());
-            final double score = passed ? 1.0 : 0.0;
+                    // Parse test result
+                    final boolean passed = parseTestResult(response.content());
+                    final double score = passed ? 1.0 : 0.0;
 
-            return new EvaluationResult(
-                    "test_match",
-                    score,
-                    passed,
-                    Map.of(
-                            "test_id", testCase.id(),
-                            "evaluator_model", llmProvider.getModel(),
-                            "expected", testCase.expectedOutput()
-                    ),
-                    response.content()
-            );
-        });
+                    return new EvaluationResult(
+                            "test_match",
+                            score,
+                            passed,
+                            Map.of(
+                                    "test_id", testCase.id(),
+                                    "evaluator_model", llmProvider.getModel(),
+                                    "expected", testCase.expectedOutput()),
+                            response.content());
+                });
     }
 
     /**
@@ -163,8 +148,7 @@ public final class LLMEvaluationProvider implements EvaluationProvider {
      */
     @Override
     public Flux<EvaluationResult> runTestSuite(
-            final Flux<TestCase> testCases,
-            final Flux<String> outputs) {
+            final Flux<TestCase> testCases, final Flux<String> outputs) {
         return Flux.zip(testCases, outputs)
                 .flatMap(tuple -> runTestCase(tuple.getT1(), tuple.getT2()));
     }
@@ -179,27 +163,23 @@ public final class LLMEvaluationProvider implements EvaluationProvider {
      */
     @Override
     public Mono<Integer> compare(
-            final String outputA,
-            final String outputB,
-            final EvaluationCriteria criteria) {
-        return Mono.fromCallable(() -> {
-            // Build comparison prompt
-            final String comparisonPrompt = buildComparisonPrompt(outputA, outputB, criteria);
+            final String outputA, final String outputB, final EvaluationCriteria criteria) {
+        return Mono.fromCallable(
+                () -> {
+                    // Build comparison prompt
+                    final String comparisonPrompt =
+                            buildComparisonPrompt(outputA, outputB, criteria);
 
-            // Get LLM comparison (synchronous call)
-            final LLMResponse response = llmProvider.generate(
-                    comparisonPrompt,
-                    0.0,
-                    300
-            );
+                    // Get LLM comparison (synchronous call)
+                    final LLMResponse response = llmProvider.generate(comparisonPrompt, 0.0, 300);
 
-            if (response == null) {
-                throw new RuntimeException("Comparison failed: null response");
-            }
+                    if (response == null) {
+                        throw new RuntimeException("Comparison failed: null response");
+                    }
 
-            // Parse comparison result
-            return parseComparisonResult(response.content());
-        });
+                    // Parse comparison result
+                    return parseComparisonResult(response.content());
+                });
     }
 
     /**
@@ -240,7 +220,8 @@ public final class LLMEvaluationProvider implements EvaluationProvider {
      * @return Evaluation prompt
      */
     private String buildEvaluationPrompt(final String output, final EvaluationCriteria criteria) {
-        return String.format("""
+        return String.format(
+                """
                 You are an expert evaluator. Evaluate the following output based on the given criteria.
 
                 EVALUATION CRITERIA:
@@ -265,8 +246,7 @@ public final class LLMEvaluationProvider implements EvaluationProvider {
                 String.join(", ", criteria.metrics()),
                 criteria.threshold(),
                 criteria.referenceData() != null ? criteria.referenceData() : "None",
-                output
-        );
+                output);
     }
 
     /**
@@ -277,7 +257,8 @@ public final class LLMEvaluationProvider implements EvaluationProvider {
      * @return Test evaluation prompt
      */
     private String buildTestCasePrompt(final TestCase testCase, final String actualOutput) {
-        return String.format("""
+        return String.format(
+                """
                 You are an expert test evaluator. Compare the actual output against the expected output.
 
                 TEST CASE:
@@ -296,11 +277,7 @@ public final class LLMEvaluationProvider implements EvaluationProvider {
                 MATCH: [YES or NO]
                 EXPLANATION: [Brief explanation of why it matches or doesn't match]
                 """,
-                testCase.id(),
-                testCase.input(),
-                testCase.expectedOutput(),
-                actualOutput
-        );
+                testCase.id(), testCase.input(), testCase.expectedOutput(), actualOutput);
     }
 
     /**
@@ -312,10 +289,9 @@ public final class LLMEvaluationProvider implements EvaluationProvider {
      * @return Comparison prompt
      */
     private String buildComparisonPrompt(
-            final String outputA,
-            final String outputB,
-            final EvaluationCriteria criteria) {
-        return String.format("""
+            final String outputA, final String outputB, final EvaluationCriteria criteria) {
+        return String.format(
+                """
                 You are an expert evaluator. Compare two outputs based on the given criteria.
 
                 EVALUATION CRITERIA:
@@ -337,8 +313,7 @@ public final class LLMEvaluationProvider implements EvaluationProvider {
                 String.join(", ", criteria.metrics()),
                 criteria.referenceData() != null ? criteria.referenceData() : "None",
                 outputA,
-                outputB
-        );
+                outputB);
     }
 
     /**
@@ -357,7 +332,7 @@ public final class LLMEvaluationProvider implements EvaluationProvider {
                 final String[] parts = line.split(":");
                 if (parts.length >= 2) {
                     final String metric = parts[0].trim().toLowerCase();
-                    final String scoreText = parts[1].trim().split(" ")[0];  // Take first word
+                    final String scoreText = parts[1].trim().split(" ")[0]; // Take first word
                     try {
                         final double score = Double.parseDouble(scoreText);
                         if (SUPPORTED_METRICS.contains(metric)) {
@@ -385,16 +360,15 @@ public final class LLMEvaluationProvider implements EvaluationProvider {
      * @param criteria Evaluation criteria
      * @return true if passed
      */
-    private boolean determinePass(final Map<String, Double> scores, final EvaluationCriteria criteria) {
+    private boolean determinePass(
+            final Map<String, Double> scores, final EvaluationCriteria criteria) {
         if (scores.isEmpty()) {
             return false;
         }
 
         // Calculate average score
-        final double avgScore = scores.values().stream()
-                .mapToDouble(Double::doubleValue)
-                .average()
-                .orElse(0.0);
+        final double avgScore =
+                scores.values().stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
 
         return avgScore >= criteria.threshold();
     }
@@ -423,7 +397,7 @@ public final class LLMEvaluationProvider implements EvaluationProvider {
         } else if (normalized.contains("winner: b")) {
             return 1;
         } else {
-            return 0;  // Tie or unclear
+            return 0; // Tie or unclear
         }
     }
 }

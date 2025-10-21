@@ -1,28 +1,23 @@
 package dev.adeengineer.platform.spring.e2e;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
-import dev.adeengineer.llm.model.LLMResponse;
-import dev.adeengineer.llm.model.UsageInfo;
-
 /**
  * Base class for E2E tests. Provides common setup and utilities for testing the full application
  * stack.
  *
- * <p><b>Note:</b> E2E tests are disabled by default as they require inferencestr8a dependency.
- * To enable E2E tests, add inferencestr8a-core to dependencies and remove @Disabled annotation.
+ * <p><b>Note:</b> E2E tests are disabled by default as they require inferencestr8a dependency. To
+ * enable E2E tests, add inferencestr8a-core to dependencies and remove @Disabled annotation.
  */
 @Disabled("E2E tests require inferencestr8a-core dependency")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

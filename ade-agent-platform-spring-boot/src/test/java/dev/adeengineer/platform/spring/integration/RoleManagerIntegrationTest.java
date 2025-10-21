@@ -16,7 +16,7 @@ import adeengineer.dev.agent.TaskResult;
 
 import dev.adeengineer.platform.core.AgentRegistry;
 import dev.adeengineer.platform.core.RoleManager;
-import dev.adeengineer.platform.testutil.TestData;
+import dev.adeengineer.platform.spring.testutil.TestData;
 
 /**
  * Integration tests for RoleManager with real AgentRegistry and agents. Tests service layer

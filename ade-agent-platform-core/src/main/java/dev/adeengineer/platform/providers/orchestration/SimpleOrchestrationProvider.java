@@ -1,5 +1,10 @@
 package dev.adeengineer.platform.providers.orchestration;
 
+import java.time.Instant;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+
 import dev.adeengineer.orchestration.OrchestrationProvider;
 import dev.adeengineer.orchestration.model.WorkflowDefinition;
 import dev.adeengineer.orchestration.model.WorkflowExecution;
@@ -9,29 +14,17 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
-import java.time.Instant;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
- * Simple in-memory implementation of OrchestrationProvider.
- * Provides basic workflow orchestration without external dependencies.
+ * Simple in-memory implementation of OrchestrationProvider. Provides basic workflow orchestration
+ * without external dependencies.
  *
- * <p>Features:
- * - Sequential workflow execution
- * - Execution status tracking
- * - Real-time execution streaming
- * - Workflow cancellation
+ * <p>Features: - Sequential workflow execution - Execution status tracking - Real-time execution
+ * streaming - Workflow cancellation
  *
- * <p>Limitations:
- * - No persistence (executions lost on restart)
- * - Single-node only (no distributed execution)
- * - Basic error handling
- * - Sequential execution only (no parallelism)
+ * <p>Limitations: - No persistence (executions lost on restart) - Single-node only (no distributed
+ * execution) - Basic error handling - Sequential execution only (no parallelism)
  */
 @Slf4j
-
 public final class SimpleOrchestrationProvider implements OrchestrationProvider {
 
     /** Registry of workflow definitions. */
@@ -44,9 +37,7 @@ public final class SimpleOrchestrationProvider implements OrchestrationProvider 
     private final Map<String, Sinks.Many<WorkflowExecution>> executionSinks =
             new ConcurrentHashMap<>();
 
-    /**
-     * Creates a simple orchestration provider.
-     */
+    /** Creates a simple orchestration provider. */
     public SimpleOrchestrationProvider() {
         log.info("Initialized SimpleOrchestrationProvider");
     }
@@ -73,41 +64,43 @@ public final class SimpleOrchestrationProvider implements OrchestrationProvider 
      */
     @Override
     public Mono<WorkflowExecution> executeWorkflow(
-            final String workflowId,
-            final Map<String, Object> input) {
-        return Mono.fromCallable(() -> {
-            final WorkflowDefinition workflow = workflowRegistry.get(workflowId);
-            if (workflow == null) {
-                throw new IllegalArgumentException("Workflow not found: " + workflowId);
-            }
+            final String workflowId, final Map<String, Object> input) {
+        return Mono.fromCallable(
+                () -> {
+                    final WorkflowDefinition workflow = workflowRegistry.get(workflowId);
+                    if (workflow == null) {
+                        throw new IllegalArgumentException("Workflow not found: " + workflowId);
+                    }
 
-            // Create execution
-            final String executionId = UUID.randomUUID().toString();
-            final WorkflowExecution execution = new WorkflowExecution(
-                    workflowId,
-                    executionId,
-                    WorkflowExecution.ExecutionStatus.RUNNING,
-                    Instant.now(),
-                    null,  // endTime
-                    Map.of("input", input),  // results
-                    null   // error
-            );
+                    // Create execution
+                    final String executionId = UUID.randomUUID().toString();
+                    final WorkflowExecution execution =
+                            new WorkflowExecution(
+                                    workflowId,
+                                    executionId,
+                                    WorkflowExecution.ExecutionStatus.RUNNING,
+                                    Instant.now(),
+                                    null, // endTime
+                                    Map.of("input", input), // results
+                                    null // error
+                                    );
 
-            executionRegistry.put(executionId, execution);
+                    executionRegistry.put(executionId, execution);
 
-            // Create event sink for streaming
-            final Sinks.Many<WorkflowExecution> sink = Sinks.many().multicast().onBackpressureBuffer();
-            executionSinks.put(executionId, sink);
-            sink.tryEmitNext(execution);
+                    // Create event sink for streaming
+                    final Sinks.Many<WorkflowExecution> sink =
+                            Sinks.many().multicast().onBackpressureBuffer();
+                    executionSinks.put(executionId, sink);
+                    sink.tryEmitNext(execution);
 
-            // Execute workflow asynchronously
-            Mono.fromRunnable(() -> executeWorkflowAsync(executionId, workflow, input))
-                    .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic())
-                    .subscribe();
+                    // Execute workflow asynchronously
+                    Mono.fromRunnable(() -> executeWorkflowAsync(executionId, workflow, input))
+                            .subscribeOn(reactor.core.scheduler.Schedulers.boundedElastic())
+                            .subscribe();
 
-            log.info("Started workflow execution: {}", executionId);
-            return execution;
-        });
+                    log.info("Started workflow execution: {}", executionId);
+                    return execution;
+                });
     }
 
     /**
@@ -130,35 +123,37 @@ public final class SimpleOrchestrationProvider implements OrchestrationProvider 
      */
     @Override
     public Mono<Boolean> cancelExecution(final String executionId) {
-        return Mono.fromCallable(() -> {
-            final WorkflowExecution execution = executionRegistry.get(executionId);
-            if (execution == null || execution.status() != WorkflowExecution.ExecutionStatus.RUNNING) {
-                return false;
-            }
+        return Mono.fromCallable(
+                () -> {
+                    final WorkflowExecution execution = executionRegistry.get(executionId);
+                    if (execution == null
+                            || execution.status() != WorkflowExecution.ExecutionStatus.RUNNING) {
+                        return false;
+                    }
 
-            // Update execution status
-            final WorkflowExecution cancelledExecution = new WorkflowExecution(
-                    execution.workflowId(),
-                    execution.executionId(),
-                    WorkflowExecution.ExecutionStatus.CANCELLED,
-                    execution.startTime(),
-                    Instant.now(),
-                    execution.results(),
-                    "Cancelled by user"
-            );
+                    // Update execution status
+                    final WorkflowExecution cancelledExecution =
+                            new WorkflowExecution(
+                                    execution.workflowId(),
+                                    execution.executionId(),
+                                    WorkflowExecution.ExecutionStatus.CANCELLED,
+                                    execution.startTime(),
+                                    Instant.now(),
+                                    execution.results(),
+                                    "Cancelled by user");
 
-            executionRegistry.put(executionId, cancelledExecution);
+                    executionRegistry.put(executionId, cancelledExecution);
 
-            // Emit cancellation event
-            final Sinks.Many<WorkflowExecution> sink = executionSinks.get(executionId);
-            if (sink != null) {
-                sink.tryEmitNext(cancelledExecution);
-                sink.tryEmitComplete();
-            }
+                    // Emit cancellation event
+                    final Sinks.Many<WorkflowExecution> sink = executionSinks.get(executionId);
+                    if (sink != null) {
+                        sink.tryEmitNext(cancelledExecution);
+                        sink.tryEmitComplete();
+                    }
 
-            log.info("Cancelled workflow execution: {}", executionId);
-            return true;
-        });
+                    log.info("Cancelled workflow execution: {}", executionId);
+                    return true;
+                });
     }
 
     /**
@@ -203,7 +198,7 @@ public final class SimpleOrchestrationProvider implements OrchestrationProvider 
      */
     @Override
     public boolean isHealthy() {
-        return true;  // Always healthy for in-memory implementation
+        return true; // Always healthy for in-memory implementation
     }
 
     /**
@@ -230,32 +225,37 @@ public final class SimpleOrchestrationProvider implements OrchestrationProvider 
                 }
 
                 // Update current step in results
-                Map<String, Object> updatedResults = new ConcurrentHashMap<>(currentExecution.results());
+                Map<String, Object> updatedResults =
+                        new ConcurrentHashMap<>(currentExecution.results());
                 updatedResults.put("current_step", step.id());
 
                 // Update current step - always use RUNNING status for ongoing steps
-                final WorkflowExecution stepExecution = new WorkflowExecution(
-                        workflow.id(),
-                        executionId,
-                        WorkflowExecution.ExecutionStatus.RUNNING,
-                        currentExecution.startTime(),
-                        null,
-                        updatedResults,
-                        null
-                );
+                final WorkflowExecution stepExecution =
+                        new WorkflowExecution(
+                                workflow.id(),
+                                executionId,
+                                WorkflowExecution.ExecutionStatus.RUNNING,
+                                currentExecution.startTime(),
+                                null,
+                                updatedResults,
+                                null);
 
                 // Use computeIfPresent to atomically update only if status is still RUNNING
-                executionRegistry.computeIfPresent(executionId, (key, existing) -> {
-                    // Don't overwrite if already cancelled or completed
-                    if (existing.status() == WorkflowExecution.ExecutionStatus.CANCELLED ||
-                        existing.status() == WorkflowExecution.ExecutionStatus.COMPLETED) {
-                        return existing;
-                    }
-                    return stepExecution;
-                });
+                executionRegistry.computeIfPresent(
+                        executionId,
+                        (key, existing) -> {
+                            // Don't overwrite if already cancelled or completed
+                            if (existing.status() == WorkflowExecution.ExecutionStatus.CANCELLED
+                                    || existing.status()
+                                            == WorkflowExecution.ExecutionStatus.COMPLETED) {
+                                return existing;
+                            }
+                            return stepExecution;
+                        });
 
                 // Check again if cancelled after registry update
-                if (executionRegistry.get(executionId).status() == WorkflowExecution.ExecutionStatus.CANCELLED) {
+                if (executionRegistry.get(executionId).status()
+                        == WorkflowExecution.ExecutionStatus.CANCELLED) {
                     log.info("Workflow execution cancelled: {}", executionId);
                     return;
                 }
@@ -269,7 +269,7 @@ public final class SimpleOrchestrationProvider implements OrchestrationProvider 
                 log.debug("Executing workflow step: {} - agent: {}", step.id(), step.agentName());
 
                 // Simulate step execution (in real implementation, would invoke actual step logic)
-                Thread.sleep(100);  // Simulate work
+                Thread.sleep(100); // Simulate work
 
                 // For now, pass output through (in real implementation, would process step)
                 currentOutput = Map.copyOf(step.input());
@@ -280,15 +280,15 @@ public final class SimpleOrchestrationProvider implements OrchestrationProvider 
             finalResults.put("input", input);
             finalResults.put("output", currentOutput);
 
-            final WorkflowExecution completedExecution = new WorkflowExecution(
-                    workflow.id(),
-                    executionId,
-                    WorkflowExecution.ExecutionStatus.COMPLETED,
-                    executionRegistry.get(executionId).startTime(),
-                    Instant.now(),
-                    finalResults,
-                    null
-            );
+            final WorkflowExecution completedExecution =
+                    new WorkflowExecution(
+                            workflow.id(),
+                            executionId,
+                            WorkflowExecution.ExecutionStatus.COMPLETED,
+                            executionRegistry.get(executionId).startTime(),
+                            Instant.now(),
+                            finalResults,
+                            null);
 
             executionRegistry.put(executionId, completedExecution);
 
@@ -306,15 +306,15 @@ public final class SimpleOrchestrationProvider implements OrchestrationProvider 
 
             // Mark as failed
             final WorkflowExecution currentState = executionRegistry.get(executionId);
-            final WorkflowExecution failedExecution = new WorkflowExecution(
-                    workflow.id(),
-                    executionId,
-                    WorkflowExecution.ExecutionStatus.FAILED,
-                    currentState != null ? currentState.startTime() : Instant.now(),
-                    Instant.now(),
-                    currentState != null ? currentState.results() : Map.of("input", input),
-                    "Execution failed: " + e.getMessage()
-            );
+            final WorkflowExecution failedExecution =
+                    new WorkflowExecution(
+                            workflow.id(),
+                            executionId,
+                            WorkflowExecution.ExecutionStatus.FAILED,
+                            currentState != null ? currentState.startTime() : Instant.now(),
+                            Instant.now(),
+                            currentState != null ? currentState.results() : Map.of("input", input),
+                            "Execution failed: " + e.getMessage());
 
             executionRegistry.put(executionId, failedExecution);
 

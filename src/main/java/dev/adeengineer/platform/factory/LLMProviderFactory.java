@@ -1,18 +1,18 @@
 package dev.adeengineer.platform.factory;
 
-import dev.adeengineer.llm.LLMProvider;
-
 import java.util.List;
 import java.util.Map;
+
+import dev.adeengineer.llm.LLMProvider;
 
 /**
  * Factory interface for creating LLM provider instances.
  *
- * <p>This interface defines the contract for creating LLM providers dynamically.
- * Implementations are responsible for provider-specific instantiation and configuration.
+ * <p>This interface defines the contract for creating LLM providers dynamically. Implementations
+ * are responsible for provider-specific instantiation and configuration.
  *
- * <p><b>Note:</b> This interface should eventually move to the ade-agent-sdk
- * as part of the core provider abstraction layer.
+ * <p><b>Note:</b> This interface should eventually move to the ade-agent-sdk as part of the core
+ * provider abstraction layer.
  *
  * @since 0.2.0
  */
@@ -56,9 +56,8 @@ public interface LLMProviderFactory {
     /**
      * Get an LLM provider with failover support.
      *
-     * <p>This method returns a provider that automatically fails over to backup
-     * providers if the primary provider fails. The exact failover strategy is
-     * implementation-specific.
+     * <p>This method returns a provider that automatically fails over to backup providers if the
+     * primary provider fails. The exact failover strategy is implementation-specific.
      *
      * @return LLMProvider with failover capabilities
      */
