@@ -8,10 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import adeengineer.dev.agent.OutputFormatterRegistry;
 
-import dev.adeengineer.embeddings.EmbeddingsProvider;
 import dev.adeengineer.evaluation.EvaluationProvider;
 import dev.adeengineer.llm.LLMProvider;
-import dev.adeengineer.memory.MemoryProvider;
 import dev.adeengineer.orchestration.OrchestrationProvider;
 import dev.adeengineer.platform.core.AgentRegistry;
 import dev.adeengineer.platform.core.DomainLoader;
@@ -22,7 +20,6 @@ import dev.adeengineer.platform.factory.NoOpLLMProviderFactory;
 import dev.adeengineer.platform.orchestration.ParallelAgentExecutor;
 import dev.adeengineer.platform.orchestration.WorkflowEngine;
 import dev.adeengineer.platform.providers.evaluation.LLMEvaluationProvider;
-import dev.adeengineer.platform.providers.memory.InMemoryMemoryProvider;
 import dev.adeengineer.platform.providers.orchestration.SimpleOrchestrationProvider;
 import dev.adeengineer.platform.providers.storage.LocalStorageProvider;
 import dev.adeengineer.platform.providers.tools.SimpleToolProvider;
@@ -60,15 +57,19 @@ public class PlatformFactory {
     /**
      * Creates an in-memory memory provider bean.
      *
+     * <p>NOTE: This factory method is commented out because it requires EmbeddingsProvider, which
+     * is not available in all contexts. Applications using memory features should provide their own
+     * MemoryProvider bean or ensure EmbeddingsProvider is available.
+     *
      * @param embeddingsProvider Embeddings provider for vector search
      * @return InMemoryMemoryProvider instance
      */
-    @Singleton
-    @Requires(missingBeans = MemoryProvider.class)
-    public MemoryProvider inMemoryMemoryProvider(EmbeddingsProvider embeddingsProvider) {
-        log.info("Creating InMemoryMemoryProvider");
-        return new InMemoryMemoryProvider(embeddingsProvider);
-    }
+    // @Singleton
+    // @Requires(missingBeans = MemoryProvider.class)
+    // public MemoryProvider inMemoryMemoryProvider(EmbeddingsProvider embeddingsProvider) {
+    //     log.info("Creating InMemoryMemoryProvider");
+    //     return new InMemoryMemoryProvider(embeddingsProvider);
+    // }
 
     /**
      * Creates a local storage provider bean.
@@ -150,7 +151,6 @@ public class PlatformFactory {
         log.info("Creating LLMProvider from factory");
         return factory.getProviderWithFailover();
     }
-
 
     /**
      * Creates an agent registry bean.

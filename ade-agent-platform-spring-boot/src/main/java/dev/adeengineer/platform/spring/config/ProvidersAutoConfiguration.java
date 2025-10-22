@@ -156,7 +156,6 @@ public class ProvidersAutoConfiguration {
         return factory.getProviderWithFailover();
     }
 
-
     /**
      * Creates an agent registry bean.
      *
