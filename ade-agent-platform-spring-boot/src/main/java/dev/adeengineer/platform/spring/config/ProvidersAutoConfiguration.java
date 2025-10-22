@@ -3,6 +3,7 @@ package dev.adeengineer.platform.spring.config;
 import java.io.IOException;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -61,11 +62,15 @@ public class ProvidersAutoConfiguration {
     /**
      * Creates an in-memory memory provider bean.
      *
+     * <p>NOTE: This bean is only created when an EmbeddingsProvider is available. If you need
+     * MemoryProvider without embeddings, provide your own implementation.
+     *
      * @param embeddingsProvider Embeddings provider for vector search
      * @return InMemoryMemoryProvider instance
      */
     @Bean
     @ConditionalOnMissingBean(MemoryProvider.class)
+    @ConditionalOnBean(EmbeddingsProvider.class)
     public MemoryProvider inMemoryMemoryProvider(EmbeddingsProvider embeddingsProvider) {
         log.info("Auto-configuring InMemoryMemoryProvider");
         return new InMemoryMemoryProvider(embeddingsProvider);
@@ -137,6 +142,20 @@ public class ProvidersAutoConfiguration {
         log.info("Auto-configuring NoOpLLMProviderFactory");
         return new NoOpLLMProviderFactory();
     }
+
+    /**
+     * Creates an LLM provider bean using the factory.
+     *
+     * @param factory LLM provider factory
+     * @return LLMProvider instance with failover support
+     */
+    @Bean
+    @ConditionalOnMissingBean(LLMProvider.class)
+    public LLMProvider llmProvider(LLMProviderFactory factory) {
+        log.info("Auto-configuring LLMProvider from factory");
+        return factory.getProviderWithFailover();
+    }
+
 
     /**
      * Creates an agent registry bean.

@@ -139,6 +139,20 @@ public class PlatformProducers {
     }
 
     /**
+     * Produces an LLM provider bean using the factory.
+     *
+     * @param factory LLM provider factory
+     * @return LLMProvider instance with failover support
+     */
+    @Produces
+    @Singleton
+    public LLMProvider llmProvider(LLMProviderFactory factory) {
+        log.info("Producing LLMProvider from factory");
+        return factory.getProviderWithFailover();
+    }
+
+
+    /**
      * Produces an agent registry bean.
      *
      * @return AgentRegistry instance

@@ -3,9 +3,9 @@ package dev.adeengineer.platform.spring.e2e;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Primary;
 
 import adeengineer.dev.agent.AgentConfig;
@@ -18,17 +18,23 @@ import dev.adeengineer.platform.core.ConfigurableAgent;
 /**
  * Test configuration for E2E tests that provides mock agent setup. Uses ConfigurableAgent for
  * domain-agnostic testing.
+ *
+ * <p>NOTE: This configuration is only for E2E tests. Import explicitly with @Import annotation
+ * where needed.
  */
 @TestConfiguration
-@ComponentScan(basePackages = "com.rolemanager")
 public class E2ETestConfiguration {
 
     /**
      * Provides a test AgentRegistry with manually created ConfigurableAgent instances. Uses
      * domain-agnostic ConfigurableAgent instead of legacy hardcoded classes.
+     *
+     * <p>This bean is only created when the required LLMProvider bean is available. For non-E2E
+     * tests (like @WebMvcTest), this bean won't be created.
      */
     @Bean
     @Primary
+    @ConditionalOnBean(name = "anthropicProvider")
     public AgentRegistry testAgentRegistry(
             @Qualifier("anthropicProvider") LLMProvider primaryProvider,
             OutputFormatterRegistry formatterRegistry) {
