@@ -29,11 +29,11 @@ Quick Links:
 ade-agent-platform-agentunit/
 └── src/main/java/dev/adeengineer/platform/test/
     ├── annotation/                    # Test annotations (NEW)
-    │   ├── AgenticTest.java         # Main test annotation
+    │   ├── AgenticBootTest.java         # Main test annotation
     │   ├── MockLLM.java              # Mock LLM provider injection
     │   └── MockAgent.java            # Mock agent injection
     ├── extension/                     # JUnit 5 extensions (NEW)
-    │   └── AgenticTestExtension.java # Annotation processing extension
+    │   └── AgenticBootTestExtension.java # Annotation processing extension
     ├── mock/                          # Mock implementations
     │   ├── MockAgent.java             # Mock Agent for testing
     │   └── MockLLMProvider.java       # Mock LLM provider
@@ -86,7 +86,7 @@ import dev.adeengineer.platform.test.mock.MockLLMProvider;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@AgenticTest  // Enables automatic mock injection
+@AgenticBootTest  // Enables automatic mock injection
 class AgentRegistryTest {
 
     @MockLLM(responseContent = "Test response")
@@ -161,9 +161,9 @@ AgentUnit supports **two testing approaches**:
 ✅ **Consistent** - Unified pattern across all modules
 ✅ **Auto-configured** - Mocks ready immediately
 
-**Use `@AgenticTest` with field annotations:**
+**Use `@AgenticBootTest` with field annotations:**
 ```java
-@AgenticTest
+@AgenticBootTest
 class MyTest {
     @MockLLM(responseContent = "Response")
     MockLLMProvider llm;
@@ -193,24 +193,35 @@ MockAgent agent = new MockAgent("agent");
 
 ## Framework Testing Annotations Comparison
 
-AgentUnit's **`@AgenticTest`** follows the same pattern as framework-specific testing annotations:
+AgentUnit's **`@AgenticBootTest`** follows the same pattern as framework-specific testing annotations.
+
+### The Pattern: Framework → @FrameworkTest
+
+```
+Spring Boot  → @SpringBootTest
+Quarkus      → @QuarkusTest
+Micronaut    → @MicronautTest
+AgenticBoot  → @AgenticBootTest  ✅
+```
+
+**Key Insight:** Just as `@SpringBootTest` is to Spring Boot, **`@AgenticBootTest` is to AgenticBoot**.
 
 | Framework | Testing Annotation | Purpose |
 |-----------|-------------------|---------|
-| **AgenticBoot** | `@AgenticTest` | AgenticBoot test infrastructure with auto-injection |
+| **AgenticBoot** | `@AgenticBootTest` | AgenticBoot test infrastructure with auto-injection |
 | **Spring Boot** | `@SpringBootTest` | Spring application context and dependency injection |
 | **Quarkus** | `@QuarkusTest` | Quarkus test infrastructure and CDI |
 | **Micronaut** | `@MicronautTest` | Micronaut application context and DI |
 
-### Using @AgenticTest for AgenticBoot Tests
+### Using @AgenticBootTest for AgenticBoot Tests
 
 **Pure AgenticBoot (Recommended):**
 ```java
-import dev.adeengineer.platform.test.annotation.AgenticTest;
+import dev.adeengineer.platform.test.annotation.AgenticBootTest;
 import dev.adeengineer.platform.test.annotation.MockLLM;
 import dev.adeengineer.platform.test.annotation.MockAgent;
 
-@AgenticTest  // AgenticBoot testing infrastructure
+@AgenticBootTest  // AgenticBoot testing infrastructure
 class AgentServiceTest {
 
     @MockLLM(responseContent = "Test response")
@@ -232,7 +243,7 @@ class AgentServiceTest {
 
 #### Pattern 1: AgenticBoot + Spring Boot
 
-Combine `@AgenticTest` with Spring's testing infrastructure:
+Combine `@AgenticBootTest` with Spring's testing infrastructure:
 
 ```java
 import dev.adeengineer.platform.test.annotation.AgenticTest;
@@ -240,7 +251,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SpringBootTest  // Spring application context
-@AgenticTest     // AgenticBoot mock injection
+@AgenticBootTest     // AgenticBoot mock injection
 class SpringAgentServiceTest {
 
     @Autowired
@@ -260,7 +271,7 @@ class SpringAgentServiceTest {
 
 #### Pattern 2: AgenticBoot + Quarkus
 
-Combine `@AgenticTest` with Quarkus testing:
+Combine `@AgenticBootTest` with Quarkus testing:
 
 ```java
 import dev.adeengineer.platform.test.annotation.AgenticTest;
@@ -268,7 +279,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 
 @QuarkusTest  // Quarkus CDI context
-@AgenticTest  // AgenticBoot mock injection
+@AgenticBootTest  // AgenticBoot mock injection
 class QuarkusAgentServiceTest {
 
     @Inject
@@ -288,7 +299,7 @@ class QuarkusAgentServiceTest {
 
 #### Pattern 3: AgenticBoot + Micronaut
 
-Combine `@AgenticTest` with Micronaut testing:
+Combine `@AgenticBootTest` with Micronaut testing:
 
 ```java
 import dev.adeengineer.platform.test.annotation.AgenticTest;
@@ -296,7 +307,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 
 @MicronautTest  // Micronaut DI context
-@AgenticTest    // AgenticBoot mock injection
+@AgenticBootTest    // AgenticBoot mock injection
 class MicronautAgentServiceTest {
 
     @Inject
@@ -316,8 +327,8 @@ class MicronautAgentServiceTest {
 
 ### Key Principles
 
-1. **`@AgenticTest` is framework-agnostic** - Works standalone or with any DI framework
-2. **Combine annotations** - Use both framework annotation + `@AgenticTest` for integration tests
+1. **`@AgenticBootTest` is framework-agnostic** - Works standalone or with any DI framework
+2. **Combine annotations** - Use both framework annotation + `@AgenticBootTest` for integration tests
 3. **Real beans + Mock utilities** - Inject real services, use AgenticBoot mocks for test data
 4. **Consistent pattern** - Same approach across Spring, Quarkus, Micronaut
 
@@ -327,7 +338,7 @@ class MicronautAgentServiceTest {
 
 ### Phase 0: Annotations (v0.2.0) - **NEW**
 
-#### @AgenticTest
+#### @AgenticBootTest
 
 Main annotation for enabling automatic mock injection in test classes.
 
@@ -340,7 +351,7 @@ Main annotation for enabling automatic mock injection in test classes.
 ```java
 import dev.adeengineer.platform.test.annotation.AgenticTest;
 
-@AgenticTest
+@AgenticBootTest
 class MyTest {
     // Test code - mocks auto-injected
 }
@@ -348,7 +359,7 @@ class MyTest {
 
 **Configuration:**
 ```java
-@AgenticTest(autoConfigureMocks = false)  // Disable auto-configuration if needed
+@AgenticBootTest(autoConfigureMocks = false)  // Disable auto-configuration if needed
 class MyTest {
     // Manual mock setup required
 }
@@ -368,7 +379,7 @@ Injects a configured `MockLLMProvider` into test fields.
 import dev.adeengineer.platform.test.annotation.MockLLM;
 import dev.adeengineer.platform.test.mock.MockLLMProvider;
 
-@AgenticTest
+@AgenticBootTest
 class MyTest {
     @MockLLM(responseContent = "Custom response")
     MockLLMProvider llmProvider;
@@ -399,7 +410,7 @@ Injects a configured `MockAgent` into test fields.
 ```java
 import dev.adeengineer.platform.test.annotation.MockAgent;
 
-@AgenticTest
+@AgenticBootTest
 class MyTest {
     @MockAgent(name = "developer", capabilities = {"coding", "testing"})
     dev.adeengineer.platform.test.mock.MockAgent agent;

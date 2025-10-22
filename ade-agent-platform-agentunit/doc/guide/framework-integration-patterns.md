@@ -5,9 +5,9 @@
 
 ## TL;DR
 
-**Key concept**: `@AgenticTest` is AgenticBoot's testing annotation, similar to `@SpringBootTest` for Spring, `@QuarkusTest` for Quarkus, and `@MicronautTest` for Micronaut. **Critical points**: Use `@AgenticTest` alone for pure AgenticBoot tests → Combine with framework annotations for integration tests → Real framework beans + AgenticBoot mocks = best of both worlds. **Quick rule**: Pure AgenticBoot test → `@AgenticTest` only. Integration test → Framework annotation + `@AgenticTest`.
+**Key concept**: `@AgenticBootTest` is AgenticBoot's testing annotation, similar to `@SpringBootTest` for Spring, `@QuarkusTest` for Quarkus, and `@MicronautTest` for Micronaut. **Critical points**: Use `@AgenticBootTest` alone for pure AgenticBoot tests → Combine with framework annotations for integration tests → Real framework beans + AgenticBoot mocks = best of both worlds. **Quick rule**: Pure AgenticBoot test → `@AgenticBootTest` only. Integration test → Framework annotation + `@AgenticBootTest`.
 
-**Quick decision**: Testing AgenticBoot components in isolation → use `@AgenticTest`. Testing framework integration → combine `@SpringBootTest` + `@AgenticTest` (or Quarkus/Micronaut equivalent).
+**Quick decision**: Testing AgenticBoot components in isolation → use `@AgenticBootTest`. Testing framework integration → combine `@SpringBootTest` + `@AgenticBootTest` (or Quarkus/Micronaut equivalent).
 
 ---
 
@@ -27,14 +27,28 @@
 
 ## Overview
 
-AgentUnit's **`@AgenticTest`** annotation follows the established pattern of framework-specific testing annotations. Each framework provides a testing annotation that bootstraps their test infrastructure:
+AgentUnit's **`@AgenticBootTest`** annotation follows the established pattern of framework-specific testing annotations.
 
-- **Spring Boot** uses `@SpringBootTest`
-- **Quarkus** uses `@QuarkusTest`
-- **Micronaut** uses `@MicronautTest`
-- **AgenticBoot** uses `@AgenticTest`
+### The Pattern: Framework → @FrameworkTest
 
-This guide explains how to use `@AgenticTest` effectively, both standalone and in combination with other frameworks.
+Each framework provides a testing annotation that bootstraps their test infrastructure:
+
+```
+Spring Boot  → @SpringBootTest
+Quarkus      → @QuarkusTest
+Micronaut    → @MicronautTest
+AgenticBoot  → @AgenticBootTest  ✅
+```
+
+**Key Insight:** Just as `@SpringBootTest` is to Spring Boot, **`@AgenticBootTest` is to AgenticBoot**.
+
+This consistent naming makes the relationship clear:
+- `@SpringBootTest` starts Spring Boot test infrastructure
+- `@QuarkusTest` starts Quarkus test infrastructure
+- `@MicronautTest` starts Micronaut test infrastructure
+- `@AgenticBootTest` starts AgenticBoot test infrastructure
+
+This guide explains how to use `@AgenticBootTest` effectively, both standalone and in combination with other frameworks.
 
 ---
 
@@ -44,18 +58,18 @@ This guide explains how to use `@AgenticTest` effectively, both standalone and i
 
 | Framework | Testing Annotation | What It Provides |
 |-----------|-------------------|------------------|
-| **AgenticBoot** | `@AgenticTest` | Mock injection (`@MockLLM`, `@MockAgent`), AgenticBoot test utilities |
+| **AgenticBoot** | `@AgenticBootTest` | Mock injection (`@MockLLM`, `@MockAgent`), AgenticBoot test utilities |
 | **Spring Boot** | `@SpringBootTest` | Spring application context, `@Autowired` injection, Spring beans |
 | **Quarkus** | `@QuarkusTest` | Quarkus CDI container, `@Inject` injection, Quarkus beans |
 | **Micronaut** | `@MicronautTest` | Micronaut DI container, `@Inject` injection, Micronaut beans |
 
-### Why @AgenticTest?
+### Why @AgenticBootTest?
 
 **Consistency with ecosystem:**
 - Spring developers expect `@SpringBootTest`
 - Quarkus developers expect `@QuarkusTest`
 - Micronaut developers expect `@MicronautTest`
-- AgenticBoot developers expect `@AgenticTest` ✅
+- AgenticBoot developers expect `@AgenticBootTest` ✅
 
 **Benefits:**
 - ✅ **Familiar pattern** - Follows framework conventions
@@ -69,7 +83,7 @@ This guide explains how to use `@AgenticTest` effectively, both standalone and i
 
 ### When to Use
 
-Use `@AgenticTest` alone when:
+Use `@AgenticBootTest` alone when:
 - Testing AgenticBoot components in isolation
 - No framework dependencies required
 - Pure unit tests for agents, tasks, LLM providers
@@ -86,7 +100,7 @@ import dev.adeengineer.platform.test.factory.TestData;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@AgenticTest  // Pure AgenticBoot test
+@AgenticBootTest  // Pure AgenticBoot test
 class AgentRegistryTest {
 
     @MockAgent(name = "developer", capabilities = {"coding", "testing"})
@@ -126,7 +140,7 @@ import dev.adeengineer.platform.test.annotation.AgenticTest;
 import dev.adeengineer.platform.test.annotation.MockLLM;
 import dev.adeengineer.platform.test.mock.MockLLMProvider;
 
-@AgenticTest
+@AgenticBootTest
 class LLMProviderTest {
 
     @MockLLM(
@@ -161,7 +175,7 @@ class LLMProviderTest {
 
 ### When to Use
 
-Combine `@SpringBootTest` + `@AgenticTest` when:
+Combine `@SpringBootTest` + `@AgenticBootTest` when:
 - Testing Spring services that use AgenticBoot components
 - Need Spring dependency injection + AgenticBoot mocks
 - Integration testing with Spring application context
@@ -181,7 +195,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.junit.jupiter.api.Test;
 
 @SpringBootTest  // Starts Spring application context
-@AgenticTest     // Enables AgenticBoot mock injection
+@AgenticBootTest     // Enables AgenticBoot mock injection
 class AgentServiceIntegrationTest {
 
     @Autowired
@@ -233,7 +247,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @DataJpaTest  // Spring Data JPA test slice
-@AgenticTest  // AgenticBoot mocks
+@AgenticBootTest  // AgenticBoot mocks
 class AgentRepositoryTest {
 
     @Autowired
@@ -262,7 +276,7 @@ class AgentRepositoryTest {
 
 ### When to Use
 
-Combine `@QuarkusTest` + `@AgenticTest` when:
+Combine `@QuarkusTest` + `@AgenticBootTest` when:
 - Testing Quarkus CDI beans with AgenticBoot components
 - Need Quarkus injection + AgenticBoot mocks
 - Integration testing with Quarkus application
@@ -281,7 +295,7 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 @QuarkusTest  // Starts Quarkus CDI container
-@AgenticTest  // Enables AgenticBoot mock injection
+@AgenticBootTest  // Enables AgenticBoot mock injection
 class QuarkusAgentServiceTest {
 
     @Inject
@@ -327,7 +341,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 
 @QuarkusTest
-@AgenticTest
+@AgenticBootTest
 class AgentResourceTest {
 
     @MockAgent(name = "rest-agent")
@@ -352,7 +366,7 @@ class AgentResourceTest {
 
 ### When to Use
 
-Combine `@MicronautTest` + `@AgenticTest` when:
+Combine `@MicronautTest` + `@AgenticBootTest` when:
 - Testing Micronaut DI beans with AgenticBoot components
 - Need Micronaut injection + AgenticBoot mocks
 - Integration testing with Micronaut application
@@ -371,7 +385,7 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 @MicronautTest  // Starts Micronaut DI container
-@AgenticTest    // Enables AgenticBoot mock injection
+@AgenticBootTest    // Enables AgenticBoot mock injection
 class MicronautAgentServiceTest {
 
     @Inject
@@ -421,7 +435,7 @@ import io.micronaut.http.client.annotation.Client;
 import jakarta.inject.Inject;
 
 @MicronautTest
-@AgenticTest
+@AgenticBootTest
 class AgentControllerTest {
 
     @Inject
@@ -445,11 +459,11 @@ class AgentControllerTest {
 
 ## Best Practices
 
-### 1. Use Pure @AgenticTest for Unit Tests
+### 1. Use Pure @AgenticBootTest for Unit Tests
 
 ✅ **DO:**
 ```java
-@AgenticTest  // Pure AgenticBoot test
+@AgenticBootTest  // Pure AgenticBoot test
 class AgentLogicTest {
     @MockAgent MockAgent agent;
     // Test agent logic in isolation
@@ -459,7 +473,7 @@ class AgentLogicTest {
 ❌ **DON'T:**
 ```java
 @SpringBootTest  // Unnecessary framework overhead
-@AgenticTest
+@AgenticBootTest
 class AgentLogicTest {
     @MockAgent MockAgent agent;
     // No Spring dependencies used
@@ -471,7 +485,7 @@ class AgentLogicTest {
 ✅ **DO:**
 ```java
 @SpringBootTest  // Need Spring beans
-@AgenticTest     // Need AgenticBoot mocks
+@AgenticBootTest     // Need AgenticBoot mocks
 class ServiceIntegrationTest {
     @Autowired MyService service;  // Spring bean
     @MockLLM MockLLMProvider llm;  // AgenticBoot mock
@@ -483,7 +497,7 @@ class ServiceIntegrationTest {
 ✅ **DO:**
 ```java
 @DataJpaTest  // Minimal Spring slice
-@AgenticTest
+@AgenticBootTest
 class RepositoryTest {
     // Only JPA infrastructure loaded
 }
@@ -492,7 +506,7 @@ class RepositoryTest {
 ❌ **DON'T:**
 ```java
 @SpringBootTest  // Loads entire application
-@AgenticTest
+@AgenticBootTest
 class RepositoryTest {
     // Too heavy for repository test
 }
@@ -503,7 +517,7 @@ class RepositoryTest {
 ✅ **DO:**
 ```java
 @QuarkusTest  // Correct Quarkus annotation
-@AgenticTest
+@AgenticBootTest
 class QuarkusTest {
     @Inject Service service;
 }
@@ -512,7 +526,7 @@ class QuarkusTest {
 ❌ **DON'T:**
 ```java
 @SpringBootTest  // Wrong framework!
-@AgenticTest
+@AgenticBootTest
 class QuarkusTest {
     @Inject Service service;  // Won't work
 }
@@ -526,7 +540,7 @@ class QuarkusTest {
 
 ```java
 @SpringBootTest
-@AgenticTest
+@AgenticBootTest
 class PaymentServiceTest {
 
     @Autowired
@@ -554,7 +568,7 @@ class PaymentServiceTest {
 
 ```java
 @MicronautTest
-@AgenticTest
+@AgenticBootTest
 class AsyncAgentServiceTest {
 
     @Inject
@@ -579,7 +593,7 @@ class AsyncAgentServiceTest {
 ```java
 @QuarkusTest
 @TestProfile(DevProfile.class)  // Quarkus test profile
-@AgenticTest
+@AgenticBootTest
 class ProfiledTest {
 
     @Inject
@@ -624,7 +638,7 @@ class ProfiledTest {
 
 5. **AgentUnit README**
    - [README.md](../../README.md)
-   - Complete API reference for `@AgenticTest` and utilities
+   - Complete API reference for `@AgenticBootTest` and utilities
 
 6. **Utilities vs Annotations Guide**
    - [utilities-vs-annotations-testing.md](utilities-vs-annotations-testing.md)

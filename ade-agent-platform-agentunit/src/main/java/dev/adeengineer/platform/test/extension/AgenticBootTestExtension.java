@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import dev.adeengineer.platform.test.annotation.AgenticTest;
+import dev.adeengineer.platform.test.annotation.AgenticBootTest;
 import dev.adeengineer.platform.test.annotation.MockAgent;
 import dev.adeengineer.platform.test.annotation.MockLLM;
 import dev.adeengineer.platform.test.mock.MockLLMProvider;
@@ -15,7 +15,7 @@ import dev.adeengineer.platform.test.mock.MockLLMProvider;
 /**
  * JUnit 5 extension that provides automatic mock injection for AgenticBoot tests.
  *
- * <p>This extension is automatically registered when using the {@link AgenticTest} annotation.
+ * <p>This extension is automatically registered when using the {@link AgenticBootTest} annotation.
  * It handles:
  *
  * <ul>
@@ -28,7 +28,7 @@ import dev.adeengineer.platform.test.mock.MockLLMProvider;
  * <p>Example:
  *
  * <pre>{@code
- * @AgenticTest
+ * @AgenticBootTest
  * class MyTest {
  *     @MockLLM(responseContent = "Test")
  *     MockLLMProvider llm;  // Automatically injected
@@ -38,7 +38,7 @@ import dev.adeengineer.platform.test.mock.MockLLMProvider;
  * }
  * }</pre>
  */
-public class AgenticTestExtension implements BeforeEachCallback {
+public class AgenticBootTestExtension implements BeforeEachCallback {
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
@@ -46,7 +46,7 @@ public class AgenticTestExtension implements BeforeEachCallback {
         Class<?> testClass = testInstance.getClass();
 
         // Check if auto-configuration is enabled
-        AgenticTest agenticTest = testClass.getAnnotation(AgenticTest.class);
+        AgenticBootTest agenticTest = testClass.getAnnotation(AgenticBootTest.class);
         if (agenticTest == null || !agenticTest.autoConfigureMocks()) {
             return;
         }

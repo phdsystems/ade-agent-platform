@@ -66,7 +66,7 @@ ade-agent-platform-agentunit/
 | File | Size | Purpose | Read Time |
 |------|------|---------|-----------|
 | [utilities-vs-annotations-testing.md](guide/utilities-vs-annotations-testing.md) | 803 lines | Philosophy guide comparing utilities-based vs annotation-based testing | 25 min |
-| [framework-integration-patterns.md](guide/framework-integration-patterns.md) | 450 lines | How to integrate @AgenticTest with Spring, Quarkus, Micronaut | 15 min |
+| [framework-integration-patterns.md](guide/framework-integration-patterns.md) | 450 lines | How to integrate @@AgenticBootTest with Spring, Quarkus, Micronaut | 15 min |
 
 #### utilities-vs-annotations-testing.md
 
@@ -89,7 +89,7 @@ ade-agent-platform-agentunit/
 #### framework-integration-patterns.md
 
 **Contents:**
-- Framework annotations comparison (@SpringBootTest, @QuarkusTest, @MicronautTest, @AgenticTest)
+- Framework annotations comparison (@SpringBootTest, @QuarkusTest, @MicronautTest, @@AgenticBootTest)
 - Pure AgenticBoot testing patterns
 - Spring Boot integration examples
 - Quarkus integration examples
@@ -99,8 +99,8 @@ ade-agent-platform-agentunit/
 - References (6 sources)
 
 **When to read:**
-- ✅ Using @AgenticTest with Spring/Quarkus/Micronaut
-- ✅ Understanding @AgenticTest as framework testing annotation
+- ✅ Using @@AgenticBootTest with Spring/Quarkus/Micronaut
+- ✅ Understanding @@AgenticBootTest as framework testing annotation
 - ✅ Integration testing with DI frameworks
 - ✅ Learning framework-specific patterns
 - ✅ Combining real beans with AgenticBoot mocks
@@ -164,11 +164,11 @@ ade-agent-platform-agentunit/
 
 ### Path 3: Framework Integration (Spring/Quarkus/Micronaut)
 
-**Goal:** Integrate @AgenticTest with DI frameworks
+**Goal:** Integrate @@AgenticBootTest with DI frameworks
 
 1. **Read Framework Annotations Comparison (5 min)**
    - [Framework Testing Annotations Comparison](../README.md#framework-testing-annotations-comparison)
-   - Understand @AgenticTest as framework testing annotation
+   - Understand @@AgenticBootTest as framework testing annotation
 
 2. **Study Framework Integration Patterns Guide (10 min)**
    - [Framework Integration Patterns](guide/framework-integration-patterns.md)
@@ -181,7 +181,7 @@ ade-agent-platform-agentunit/
 
 4. **Implement Combined Annotations (varies)**
    - Use framework annotation (@SpringBootTest, @QuarkusTest, etc.)
-   - Add @AgenticTest for mock injection
+   - Add @@AgenticBootTest for mock injection
    - Real framework beans + AgenticBoot mocks
 
 ---
@@ -228,7 +228,7 @@ ade-agent-platform-agentunit/
 - **Base Classes** → [Base Test Classes Section](../README.md#base-test-classes)
 
 ### Framework Integration
-- **@AgenticTest Overview** → [Framework Testing Annotations Comparison](../README.md#framework-testing-annotations-comparison)
+- **@@AgenticBootTest Overview** → [Framework Testing Annotations Comparison](../README.md#framework-testing-annotations-comparison)
 - **Complete Guide** → [Framework Integration Patterns](guide/framework-integration-patterns.md)
 - **Spring Boot** → [Spring Boot Integration](guide/framework-integration-patterns.md#spring-boot-integration)
 - **Quarkus** → [Quarkus Integration](guide/framework-integration-patterns.md#quarkus-integration)
