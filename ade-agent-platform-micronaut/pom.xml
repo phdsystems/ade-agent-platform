@@ -15,16 +15,16 @@
     <description>Micronaut integration for ade Agent Platform. Compile-time DI and native image support.</description>
 
     <properties>
-        <micronaut.version>4.6.3</micronaut.version>
+        <micronaut.version>4.9.4</micronaut.version>
         <micronaut.runtime>netty</micronaut.runtime>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <!-- Micronaut BOM -->
+            <!-- Micronaut Platform BOM -->
             <dependency>
-                <groupId>io.micronaut</groupId>
-                <artifactId>micronaut-bom</artifactId>
+                <groupId>io.micronaut.platform</groupId>
+                <artifactId>micronaut-platform</artifactId>
                 <version>${micronaut.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -76,6 +76,14 @@
         </dependency>
 
         <!-- Testing -->
+        <!-- AgentUnit Test Framework -->
+        <dependency>
+            <groupId>adeengineer.dev</groupId>
+            <artifactId>ade-agent-platform-agentunit</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>io.micronaut.test</groupId>
             <artifactId>micronaut-test-junit5</artifactId>
@@ -91,6 +99,18 @@
         <dependency>
             <groupId>io.micronaut</groupId>
             <artifactId>micronaut-http-client</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -109,7 +129,7 @@
                             <version>${micronaut.version}</version>
                         </path>
                         <path>
-                            <groupId>io.micronaut</groupId>
+                            <groupId>io.micronaut.validation</groupId>
                             <artifactId>micronaut-validation</artifactId>
                             <version>${micronaut.version}</version>
                         </path>

@@ -100,8 +100,7 @@ public class AgentResource {
             // TODO: Implement agent execution based on ade-agent SDK interface
             // The exact method depends on the Agent interface from ade-agent-sdk
             String result = "Agent execution - requires ade-agent SDK implementation";
-            return Response.ok(new AgentResponse(agentName, task.getDescription(), result))
-                    .build();
+            return Response.ok(new AgentResponse(agentName, task.getDescription(), result)).build();
         } catch (Exception e) {
             log.error("Failed to execute agent: {}", agentName, e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

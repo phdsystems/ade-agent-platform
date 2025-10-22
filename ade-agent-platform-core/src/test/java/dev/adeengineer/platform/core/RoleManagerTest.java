@@ -20,8 +20,8 @@ import adeengineer.dev.agent.AgentInfo;
 import adeengineer.dev.agent.TaskRequest;
 import adeengineer.dev.agent.TaskResult;
 
-import dev.adeengineer.platform.test.mock.MockAgent;
 import dev.adeengineer.platform.test.factory.TestData;
+import dev.adeengineer.platform.test.mock.MockAgent;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("RoleManager Tests")

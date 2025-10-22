@@ -2,10 +2,6 @@ package dev.adeengineer.platform.micronaut.factory;
 
 import java.io.IOException;
 
-import io.micronaut.context.annotation.Factory;
-import io.micronaut.context.annotation.Property;
-import io.micronaut.context.annotation.Requires;
-
 import jakarta.inject.Singleton;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +29,9 @@ import dev.adeengineer.platform.providers.tools.SimpleToolProvider;
 import dev.adeengineer.platform.template.PromptTemplateEngine;
 import dev.adeengineer.storage.StorageProvider;
 import dev.adeengineer.tools.ToolProvider;
+import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Requires;
 import lombok.extern.slf4j.Slf4j;
 
 /**

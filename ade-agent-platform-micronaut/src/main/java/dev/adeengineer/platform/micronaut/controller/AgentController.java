@@ -2,6 +2,10 @@ package dev.adeengineer.platform.micronaut.controller;
 
 import java.util.List;
 
+import adeengineer.dev.agent.Agent;
+import adeengineer.dev.agent.AgentInfo;
+
+import dev.adeengineer.platform.core.AgentRegistry;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Body;
@@ -10,11 +14,6 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.Produces;
-
-import adeengineer.dev.agent.Agent;
-import adeengineer.dev.agent.AgentInfo;
-
-import dev.adeengineer.platform.core.AgentRegistry;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -60,8 +59,7 @@ public class AgentController {
         if (!agentRegistry.hasAgent(agentName)) {
             return HttpResponse.notFound(
                     new ErrorResponse(
-                            "Agent not found: " + agentName,
-                            agentRegistry.getAvailableAgents()));
+                            "Agent not found: " + agentName, agentRegistry.getAvailableAgents()));
         }
 
         Agent agent = agentRegistry.getAgent(agentName);
@@ -84,8 +82,7 @@ public class AgentController {
         if (!agentRegistry.hasAgent(agentName)) {
             return HttpResponse.notFound(
                     new ErrorResponse(
-                            "Agent not found: " + agentName,
-                            agentRegistry.getAvailableAgents()));
+                            "Agent not found: " + agentName, agentRegistry.getAvailableAgents()));
         }
 
         try {

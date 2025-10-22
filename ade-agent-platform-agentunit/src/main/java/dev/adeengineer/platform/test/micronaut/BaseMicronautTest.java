@@ -1,12 +1,8 @@
 package dev.adeengineer.platform.test.micronaut;
 
-import jakarta.inject.Inject;
-
 import org.junit.jupiter.api.BeforeEach;
 
-import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.platform.test.mock.MockLLMProvider;
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 
 /**
  * Base class for Micronaut-based integration tests.

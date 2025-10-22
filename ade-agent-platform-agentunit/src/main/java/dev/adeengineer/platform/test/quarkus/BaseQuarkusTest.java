@@ -1,12 +1,8 @@
 package dev.adeengineer.platform.test.quarkus;
 
-import jakarta.inject.Inject;
-
 import org.junit.jupiter.api.BeforeEach;
 
-import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.platform.test.mock.MockLLMProvider;
-import io.quarkus.test.junit.QuarkusTest;
 
 /**
  * Base class for Quarkus-based integration tests.

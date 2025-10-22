@@ -9,8 +9,8 @@ import adeengineer.dev.agent.AgentConfig;
 /**
  * Fluent builder for creating AgentConfig instances in tests.
  *
- * <p>Provides a convenient way to create AgentConfig objects with sensible defaults and fluent
- * API for customization.
+ * <p>Provides a convenient way to create AgentConfig objects with sensible defaults and fluent API
+ * for customization.
  *
  * <p>Example usage:
  *
@@ -151,6 +151,12 @@ public class AgentConfigBuilder {
      */
     public AgentConfig build() {
         return new AgentConfig(
-                name, description, capabilities, temperature, maxTokens, promptTemplate, outputFormat);
+                name,
+                description,
+                capabilities,
+                temperature,
+                maxTokens,
+                promptTemplate,
+                outputFormat);
     }
 }

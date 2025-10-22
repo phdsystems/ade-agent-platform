@@ -82,8 +82,7 @@ public class TaskResultAssert extends AbstractAssert<TaskResultAssert, TaskResul
     public TaskResultAssert hasTask(String expectedTask) {
         isNotNull();
         if (!actual.task().equals(expectedTask)) {
-            failWithMessage(
-                    "Expected task to be <%s> but was <%s>", expectedTask, actual.task());
+            failWithMessage("Expected task to be <%s> but was <%s>", expectedTask, actual.task());
         }
         return this;
     }

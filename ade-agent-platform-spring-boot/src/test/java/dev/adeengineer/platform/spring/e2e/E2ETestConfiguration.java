@@ -13,7 +13,6 @@ import adeengineer.dev.agent.OutputFormatterRegistry;
 
 import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.platform.core.AgentRegistry;
-import dev.adeengineer.platform.core.AgentRegistry;
 import dev.adeengineer.platform.core.ConfigurableAgent;
 
 /**

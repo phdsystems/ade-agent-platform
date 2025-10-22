@@ -1,5 +1,10 @@
 package dev.adeengineer.platform.test.base;
 
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 
@@ -7,16 +12,11 @@ import dev.adeengineer.llm.LLMProvider;
 import dev.adeengineer.llm.model.LLMResponse;
 import dev.adeengineer.llm.model.UsageInfo;
 
-import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
-
 /**
  * Base class for integration tests.
  *
- * <p>Provides common setup for integration testing with mocked LLM provider.
- * Subclasses should initialize their own platform components (AgentRegistry, DomainLoader, etc.)
+ * <p>Provides common setup for integration testing with mocked LLM provider. Subclasses should
+ * initialize their own platform components (AgentRegistry, DomainLoader, etc.)
  *
  * <p>Example usage:
  *

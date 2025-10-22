@@ -70,6 +70,14 @@
         </dependency>
 
         <!-- Testing -->
+        <!-- AgentUnit Test Framework -->
+        <dependency>
+            <groupId>adeengineer.dev</groupId>
+            <artifactId>ade-agent-platform-agentunit</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
