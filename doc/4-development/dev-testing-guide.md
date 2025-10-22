@@ -860,6 +860,217 @@ mvn clean install -DskipTests
 mvn test
 ```
 
+### Multi-Module Maven Projects
+
+#### Understanding Maven Command Syntax
+
+In multi-module projects (like ade-agent-platform), Maven commands have special options for targeting specific modules:
+
+**Basic Syntax:**
+```bash
+mvn [lifecycle-phase] [options] [redirects]
+```
+
+**Common Options Explained:**
+
+| Option | Syntax | Purpose | Example |
+|--------|--------|---------|---------|
+| **-pl** | `-pl module-name` | Select specific module(s) | `-pl ade-agent-platform-spring-boot` |
+| **-am** | `-am` | Also build required modules | `-pl spring-boot -am` |
+| **-amd** | `-amd` | Also build dependent modules | `-pl core -amd` |
+| **-D** | `-Dproperty=value` | Set system property | `-Dtest=RoleControllerTest` |
+| **-X** | `-X` | Enable debug output | `mvn test -X` |
+| **-e** | `-e` | Show full error stacktraces | `mvn test -e` |
+| **-q** | `-q` | Quiet mode (errors only) | `mvn test -q` |
+| **-T** | `-T 4` | Parallel build (4 threads) | `mvn clean install -T 4` |
+
+#### Module Selection Examples
+
+```bash
+# Test only Spring Boot module (fastest)
+mvn clean test -pl ade-agent-platform-spring-boot
+
+# Test Spring Boot + all dependencies (core, agentunit)
+mvn clean test -pl ade-agent-platform-spring-boot -am
+
+# Test all modules that depend on core
+mvn clean test -pl ade-agent-platform-core -amd
+
+# Test multiple specific modules
+mvn clean test -pl ade-agent-platform-core,ade-agent-platform-spring-boot
+
+# Test everything except Quarkus
+mvn clean test -pl '!ade-agent-platform-quarkus'
+```
+
+#### Advanced Test Selection
+
+**Run single test in specific module:**
+```bash
+mvn clean test -pl ade-agent-platform-spring-boot -Dtest=RoleControllerTest
+```
+
+**Breakdown:**
+- `mvn` - Maven command
+- `clean` - Delete target/ directory (fresh build)
+- `test` - Run unit tests
+- `-pl ade-agent-platform-spring-boot` - Only this module
+- `-Dtest=RoleControllerTest` - Only this test class
+
+**Run single test method in specific module:**
+```bash
+mvn test -pl ade-agent-platform-spring-boot \
+  -Dtest=RoleControllerTest#shouldListAllRoles
+```
+
+**Run tests matching pattern in specific module:**
+```bash
+# All controller tests in Spring Boot module
+mvn test -pl ade-agent-platform-spring-boot -Dtest='*ControllerTest'
+
+# All E2E tests in Spring Boot module
+mvn test -pl ade-agent-platform-spring-boot -Dtest='*E2ETest'
+```
+
+#### Shell Redirection
+
+**`2>&1` - Merge error and output streams:**
+
+```bash
+# Without redirection (errors go to stderr, output to stdout)
+mvn test | grep "ERROR"  # Won't catch compilation errors
+
+# With redirection (everything to stdout)
+mvn test 2>&1 | grep "ERROR"  # Catches all errors
+```
+
+**Common redirection patterns:**
+
+```bash
+# Capture all output to file
+mvn test 2>&1 | tee test-output.log
+
+# Filter for errors only
+mvn test 2>&1 | grep -E "(ERROR|FAILURE)"
+
+# Show only test summary
+mvn test 2>&1 | grep "Tests run:"
+
+# Save errors to file, still show in console
+mvn test 2>&1 | tee /dev/stderr | grep ERROR > errors.log
+```
+
+#### Performance Optimization
+
+**Parallel module builds:**
+```bash
+# Build 4 modules in parallel (if independent)
+mvn clean install -T 4
+
+# Use 1 thread per CPU core
+mvn clean install -T 1C
+```
+
+**Skip expensive operations:**
+```bash
+# Skip tests (build only)
+mvn clean install -DskipTests
+
+# Skip tests AND compilation
+mvn clean install -Dmaven.test.skip=true
+
+# Skip Spotless formatting checks
+mvn test -Dspotless.check.skip=true
+
+# Skip all checks, tests only
+mvn test -DskipChecks
+```
+
+**Offline mode (use cached dependencies):**
+```bash
+# Don't check for updates
+mvn test -o
+
+# Or
+mvn test --offline
+```
+
+#### Complete Command Examples
+
+**Debug single test failure:**
+```bash
+# 1. Run with full debug output
+mvn clean test -pl ade-agent-platform-spring-boot \
+  -Dtest=RoleControllerTest#shouldDescribeRole \
+  -X 2>&1 | tee debug.log
+
+# 2. Check Spring context loading
+mvn test -pl ade-agent-platform-spring-boot \
+  -Dtest=RoleControllerTest \
+  -Dlogging.level.org.springframework=DEBUG
+
+# 3. Run with error stacktraces
+mvn test -pl ade-agent-platform-spring-boot \
+  -Dtest=RoleControllerTest -e
+```
+
+**Quick iterative testing:**
+```bash
+# First: Clean build with dependencies
+mvn clean install -am -pl ade-agent-platform-spring-boot -DskipTests
+
+# Then: Run tests repeatedly (no clean)
+mvn test -pl ade-agent-platform-spring-boot -Dtest=RoleControllerTest
+
+# Faster: Skip compilation if no code changes
+mvn surefire:test -pl ade-agent-platform-spring-boot \
+  -Dtest=RoleControllerTest
+```
+
+**CI/CD pipeline commands:**
+```bash
+# Full build with all checks (slow but thorough)
+mvn clean install -T 1C
+
+# Quick feedback (unit tests only)
+mvn clean test -T 4 -Dtest='!*IntegrationTest,!*E2ETest'
+
+# Verify with coverage
+mvn clean verify jacoco:report jacoco:check
+```
+
+#### Module Structure Reference
+
+```
+ade-agent-platform/
+├── ade-agent-platform-parent     (POM - parent)
+├── ade-agent-platform-agentunit  (Test framework)
+├── ade-agent-platform-core       (Core logic)
+├── ade-agent-platform-spring-boot (Spring integration)
+├── ade-agent-platform-quarkus    (Quarkus integration)
+└── ade-agent-platform-micronaut  (Micronaut integration)
+```
+
+**Dependency chain:**
+- `spring-boot` → depends on → `core` → depends on → `agentunit`
+- `quarkus` → depends on → `core` → depends on → `agentunit`
+- `micronaut` → depends on → `core` → depends on → `agentunit`
+
+**Testing implications:**
+```bash
+# Test core: Only tests core (no framework modules)
+mvn test -pl ade-agent-platform-core
+
+# Test spring-boot: Needs core and agentunit built
+mvn test -pl ade-agent-platform-spring-boot -am
+
+# Test everything: All modules sequentially
+mvn clean test
+
+# Test everything in parallel: Faster
+mvn clean test -T 4
+```
+
 ### Gradle Commands (Alternative)
 
 **Note**: Gradle wrapper needs to be fixed first if corrupted.
@@ -1288,4 +1499,4 @@ mvn test -Dtest=RoleManagerTest -X 2>&1 | grep "RoleManagerTest"
 
 ---
 
-*Last Updated: 2025-10-18*
+*Last Updated: 2025-10-22*
