@@ -14,6 +14,15 @@ AgentUnit is a test framework module providing reusable mock implementations, te
 - **Eliminates code duplication** - test utilities defined once, used everywhere
 - **Consistent testing patterns** across core, Spring Boot, Quarkus, and Micronaut modules
 
+## Documentation
+
+**For comprehensive documentation, see [doc/overview.md](doc/overview.md)**
+
+Quick Links:
+- **Getting Started** → [Usage](#usage) section below
+- **Design Philosophy** → [Utilities vs Annotations Guide](doc/guide/utilities-vs-annotations-testing.md)
+- **Complete Documentation Index** → [doc/overview.md](doc/overview.md)
+
 ## Module Structure
 
 ```
