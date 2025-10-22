@@ -7,10 +7,10 @@ import java.lang.annotation.Target;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import dev.adeengineer.platform.test.extension.AdeAgentTestExtension;
+import dev.adeengineer.platform.test.extension.AgenticTestExtension;
 
 /**
- * Annotation for ade Agent Platform test classes.
+ * Annotation for AgenticBoot test classes.
  *
  * <p>Enables automatic mock injection and test infrastructure setup for agent-related tests.
  * Use with {@link MockLLM} and {@link MockAgent} annotations for automatic mock configuration.
@@ -18,7 +18,7 @@ import dev.adeengineer.platform.test.extension.AdeAgentTestExtension;
  * <p>Example usage:
  *
  * <pre>{@code
- * @AdeAgentTest
+ * @AgenticTest
  * class MyAgentTest {
  *
  *     @MockLLM(responseContent = "Test response")
@@ -38,12 +38,12 @@ import dev.adeengineer.platform.test.extension.AdeAgentTestExtension;
  *
  * @see MockLLM
  * @see MockAgent
- * @see AdeAgentTestExtension
+ * @see AgenticTestExtension
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@ExtendWith(AdeAgentTestExtension.class)
-public @interface AdeAgentTest {
+@ExtendWith(AgenticTestExtension.class)
+public @interface AgenticTest {
 
     /**
      * Whether to automatically configure mocks with sensible defaults.

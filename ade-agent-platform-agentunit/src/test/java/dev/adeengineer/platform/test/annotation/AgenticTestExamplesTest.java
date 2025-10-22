@@ -11,13 +11,13 @@ import dev.adeengineer.platform.test.mock.MockLLMProvider;
 import adeengineer.dev.agent.TaskResult;
 
 /**
- * Example tests demonstrating {@link AdeAgentTest} annotation usage patterns.
+ * Example tests demonstrating {@link AgenticTest} annotation usage patterns.
  *
  * <p>These tests serve as both examples and verification that the annotation-based approach works
  * for real-world scenarios.
  */
-@AdeAgentTest
-class AdeAgentTestExamplesTest {
+@AgenticTest
+class AgenticTestExamplesTest {
 
     @MockLLM(responseContent = "Code review completed successfully")
     MockLLMProvider llmProvider;

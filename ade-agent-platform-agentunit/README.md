@@ -29,11 +29,11 @@ Quick Links:
 ade-agent-platform-agentunit/
 └── src/main/java/dev/adeengineer/platform/test/
     ├── annotation/                    # Test annotations (NEW)
-    │   ├── AdeAgentTest.java         # Main test annotation
+    │   ├── AgenticTest.java         # Main test annotation
     │   ├── MockLLM.java              # Mock LLM provider injection
     │   └── MockAgent.java            # Mock agent injection
     ├── extension/                     # JUnit 5 extensions (NEW)
-    │   └── AdeAgentTestExtension.java # Annotation processing extension
+    │   └── AgenticTestExtension.java # Annotation processing extension
     ├── mock/                          # Mock implementations
     │   ├── MockAgent.java             # Mock Agent for testing
     │   └── MockLLMProvider.java       # Mock LLM provider
@@ -77,7 +77,7 @@ Add to your module's `pom.xml`:
 ```java
 package dev.adeengineer.platform.core;
 
-import dev.adeengineer.platform.test.annotation.AdeAgentTest;
+import dev.adeengineer.platform.test.annotation.AgenticTest;
 import dev.adeengineer.platform.test.annotation.MockLLM;
 import dev.adeengineer.platform.test.annotation.MockAgent;
 import dev.adeengineer.platform.test.factory.TestData;
@@ -86,7 +86,7 @@ import dev.adeengineer.platform.test.mock.MockLLMProvider;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@AdeAgentTest  // Enables automatic mock injection
+@AgenticTest  // Enables automatic mock injection
 class AgentRegistryTest {
 
     @MockLLM(responseContent = "Test response")
@@ -161,9 +161,9 @@ AgentUnit supports **two testing approaches**:
 ✅ **Consistent** - Unified pattern across all modules
 ✅ **Auto-configured** - Mocks ready immediately
 
-**Use `@AdeAgentTest` with field annotations:**
+**Use `@AgenticTest` with field annotations:**
 ```java
-@AdeAgentTest
+@AgenticTest
 class MyTest {
     @MockLLM(responseContent = "Response")
     MockLLMProvider llm;
@@ -193,7 +193,7 @@ MockAgent agent = new MockAgent("agent");
 
 ### Phase 0: Annotations (v0.2.0) - **NEW**
 
-#### @AdeAgentTest
+#### @AgenticTest
 
 Main annotation for enabling automatic mock injection in test classes.
 
@@ -204,9 +204,9 @@ Main annotation for enabling automatic mock injection in test classes.
 
 **Usage:**
 ```java
-import dev.adeengineer.platform.test.annotation.AdeAgentTest;
+import dev.adeengineer.platform.test.annotation.AgenticTest;
 
-@AdeAgentTest
+@AgenticTest
 class MyTest {
     // Test code - mocks auto-injected
 }
@@ -214,7 +214,7 @@ class MyTest {
 
 **Configuration:**
 ```java
-@AdeAgentTest(autoConfigureMocks = false)  // Disable auto-configuration if needed
+@AgenticTest(autoConfigureMocks = false)  // Disable auto-configuration if needed
 class MyTest {
     // Manual mock setup required
 }
@@ -234,7 +234,7 @@ Injects a configured `MockLLMProvider` into test fields.
 import dev.adeengineer.platform.test.annotation.MockLLM;
 import dev.adeengineer.platform.test.mock.MockLLMProvider;
 
-@AdeAgentTest
+@AgenticTest
 class MyTest {
     @MockLLM(responseContent = "Custom response")
     MockLLMProvider llmProvider;
@@ -265,7 +265,7 @@ Injects a configured `MockAgent` into test fields.
 ```java
 import dev.adeengineer.platform.test.annotation.MockAgent;
 
-@AdeAgentTest
+@AgenticTest
 class MyTest {
     @MockAgent(name = "developer", capabilities = {"coding", "testing"})
     dev.adeengineer.platform.test.mock.MockAgent agent;

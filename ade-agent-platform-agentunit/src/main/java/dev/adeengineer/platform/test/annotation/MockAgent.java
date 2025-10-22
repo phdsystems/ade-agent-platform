@@ -8,12 +8,12 @@ import java.lang.annotation.Target;
 /**
  * Injects a configured {@link dev.adeengineer.platform.test.mock.MockAgent} into a test field.
  *
- * <p>Must be used in conjunction with {@link AdeAgentTest} annotation on the test class.
+ * <p>Must be used in conjunction with {@link AgenticTest} annotation on the test class.
  *
  * <p>Example usage:
  *
  * <pre>{@code
- * @AdeAgentTest
+ * @AgenticTest
  * class MyTest {
  *
  *     @MockAgent(name = "developer", capabilities = {"coding", "testing"})
@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * }
  * }</pre>
  *
- * @see AdeAgentTest
+ * @see AgenticTest
  * @see dev.adeengineer.platform.test.mock.MockAgent
  */
 @Target(ElementType.FIELD)

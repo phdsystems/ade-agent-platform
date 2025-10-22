@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-import dev.adeengineer.platform.test.annotation.AdeAgentTest;
+import dev.adeengineer.platform.test.annotation.AgenticTest;
 import dev.adeengineer.platform.test.annotation.MockAgent;
 import dev.adeengineer.platform.test.annotation.MockLLM;
 import dev.adeengineer.platform.test.factory.TestData;
@@ -13,12 +13,12 @@ import dev.adeengineer.platform.test.mock.MockLLMProvider;
 import adeengineer.dev.agent.TaskResult;
 
 /**
- * Tests for {@link AdeAgentTestExtension}.
+ * Tests for {@link AgenticTestExtension}.
  *
  * <p>Verifies that the extension correctly injects and configures mock instances.
  */
-@AdeAgentTest
-class AdeAgentTestExtensionTest {
+@AgenticTest
+class AgenticTestExtensionTest {
 
     @MockLLM(responseContent = "Custom test response", providerName = "test-llm", model = "gpt-test")
     MockLLMProvider llmProvider;
