@@ -189,6 +189,140 @@ MockAgent agent = new MockAgent("agent");
 
 **Recommendation:** Use **annotation-based** for standard tests, fall back to **utilities** for complex scenarios requiring custom setup.
 
+---
+
+## Framework Testing Annotations Comparison
+
+AgentUnit's **`@AgenticTest`** follows the same pattern as framework-specific testing annotations:
+
+| Framework | Testing Annotation | Purpose |
+|-----------|-------------------|---------|
+| **AgenticBoot** | `@AgenticTest` | AgenticBoot test infrastructure with auto-injection |
+| **Spring Boot** | `@SpringBootTest` | Spring application context and dependency injection |
+| **Quarkus** | `@QuarkusTest` | Quarkus test infrastructure and CDI |
+| **Micronaut** | `@MicronautTest` | Micronaut application context and DI |
+
+### Using @AgenticTest for AgenticBoot Tests
+
+**Pure AgenticBoot (Recommended):**
+```java
+import dev.adeengineer.platform.test.annotation.AgenticTest;
+import dev.adeengineer.platform.test.annotation.MockLLM;
+import dev.adeengineer.platform.test.annotation.MockAgent;
+
+@AgenticTest  // AgenticBoot testing infrastructure
+class AgentServiceTest {
+
+    @MockLLM(responseContent = "Test response")
+    MockLLMProvider llmProvider;
+
+    @MockAgent(name = "developer")
+    MockAgent agent;
+
+    @Test
+    void shouldExecuteAgentTask() {
+        // AgenticBoot test infrastructure active
+        TaskResult result = agent.executeTask(TestData.validTaskRequest());
+        assertThat(result.success()).isTrue();
+    }
+}
+```
+
+### Framework Integration Patterns
+
+#### Pattern 1: AgenticBoot + Spring Boot
+
+Combine `@AgenticTest` with Spring's testing infrastructure:
+
+```java
+import dev.adeengineer.platform.test.annotation.AgenticTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.beans.factory.annotation.Autowired;
+
+@SpringBootTest  // Spring application context
+@AgenticTest     // AgenticBoot mock injection
+class SpringAgentServiceTest {
+
+    @Autowired
+    AgentService agentService;  // Real Spring bean
+
+    @MockLLM(responseContent = "Spring test")
+    MockLLMProvider mockLLM;  // AgenticBoot mock
+
+    @Test
+    void shouldIntegrateWithSpring() {
+        // Use real Spring service with AgenticBoot mocks
+        TaskResult result = agentService.execute(mockLLM, "test task");
+        assertThat(result.success()).isTrue();
+    }
+}
+```
+
+#### Pattern 2: AgenticBoot + Quarkus
+
+Combine `@AgenticTest` with Quarkus testing:
+
+```java
+import dev.adeengineer.platform.test.annotation.AgenticTest;
+import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
+
+@QuarkusTest  // Quarkus CDI context
+@AgenticTest  // AgenticBoot mock injection
+class QuarkusAgentServiceTest {
+
+    @Inject
+    AgentService agentService;  // Real Quarkus bean
+
+    @MockAgent(name = "quarkus-agent")
+    MockAgent mockAgent;  // AgenticBoot mock
+
+    @Test
+    void shouldIntegrateWithQuarkus() {
+        // Use real Quarkus service with AgenticBoot mocks
+        agentService.registerAgent(mockAgent);
+        assertThat(agentService.getAgent("quarkus-agent")).isNotNull();
+    }
+}
+```
+
+#### Pattern 3: AgenticBoot + Micronaut
+
+Combine `@AgenticTest` with Micronaut testing:
+
+```java
+import dev.adeengineer.platform.test.annotation.AgenticTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import jakarta.inject.Inject;
+
+@MicronautTest  // Micronaut DI context
+@AgenticTest    // AgenticBoot mock injection
+class MicronautAgentServiceTest {
+
+    @Inject
+    AgentService agentService;  // Real Micronaut bean
+
+    @MockLLM(responseContent = "Micronaut test")
+    MockLLMProvider mockLLM;  // AgenticBoot mock
+
+    @Test
+    void shouldIntegrateWithMicronaut() {
+        // Use real Micronaut service with AgenticBoot mocks
+        var result = agentService.process(mockLLM, "task");
+        assertThat(result).isNotNull();
+    }
+}
+```
+
+### Key Principles
+
+1. **`@AgenticTest` is framework-agnostic** - Works standalone or with any DI framework
+2. **Combine annotations** - Use both framework annotation + `@AgenticTest` for integration tests
+3. **Real beans + Mock utilities** - Inject real services, use AgenticBoot mocks for test data
+4. **Consistent pattern** - Same approach across Spring, Quarkus, Micronaut
+
+---
+
 ## Available Test Utilities
 
 ### Phase 0: Annotations (v0.2.0) - **NEW**

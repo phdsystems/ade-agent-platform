@@ -17,6 +17,7 @@
 ### By Task
 - **Getting Started** → [README.md](../README.md)
 - **Understanding Design Philosophy** → [Utilities vs Annotations Guide](guide/utilities-vs-annotations-testing.md)
+- **Framework Integration** → [Framework Integration Patterns](guide/framework-integration-patterns.md)
 - **Migrating from Mockito** → [Migration Guide](guide/utilities-vs-annotations-testing.md#migration-guide)
 - **Learning Best Practices** → [Best Practices](guide/utilities-vs-annotations-testing.md#best-practices)
 - **Troubleshooting** → [Common Pitfalls](guide/utilities-vs-annotations-testing.md#common-pitfalls)
@@ -27,11 +28,12 @@
 
 ```
 ade-agent-platform-agentunit/
-├── README.md                                    # Main documentation (482 lines)
+├── README.md                                      # Main documentation (enhanced)
 └── doc/
-    ├── overview.md                              # This file - documentation index
+    ├── overview.md                                # This file - documentation index
     └── guide/
-        └── utilities-vs-annotations-testing.md  # Core philosophy guide (803 lines)
+        ├── utilities-vs-annotations-testing.md    # Core philosophy guide (803 lines)
+        └── framework-integration-patterns.md      # Framework integration (NEW - 450 lines)
 ```
 
 ---
@@ -64,6 +66,9 @@ ade-agent-platform-agentunit/
 | File | Size | Purpose | Read Time |
 |------|------|---------|-----------|
 | [utilities-vs-annotations-testing.md](guide/utilities-vs-annotations-testing.md) | 803 lines | Philosophy guide comparing utilities-based vs annotation-based testing | 25 min |
+| [framework-integration-patterns.md](guide/framework-integration-patterns.md) | 450 lines | How to integrate @AgenticTest with Spring, Quarkus, Micronaut | 15 min |
+
+#### utilities-vs-annotations-testing.md
 
 **Contents:**
 - Core design philosophy
@@ -80,6 +85,25 @@ ade-agent-platform-agentunit/
 - ✅ Deciding between approaches
 - ✅ Learning testing best practices
 - ✅ Contributing to AgentUnit
+
+#### framework-integration-patterns.md
+
+**Contents:**
+- Framework annotations comparison (@SpringBootTest, @QuarkusTest, @MicronautTest, @AgenticTest)
+- Pure AgenticBoot testing patterns
+- Spring Boot integration examples
+- Quarkus integration examples
+- Micronaut integration examples
+- Best practices for combining annotations
+- Common patterns (async, profiles, external deps)
+- References (6 sources)
+
+**When to read:**
+- ✅ Using @AgenticTest with Spring/Quarkus/Micronaut
+- ✅ Understanding @AgenticTest as framework testing annotation
+- ✅ Integration testing with DI frameworks
+- ✅ Learning framework-specific patterns
+- ✅ Combining real beans with AgenticBoot mocks
 
 ---
 
@@ -138,24 +162,27 @@ ade-agent-platform-agentunit/
 
 ---
 
-### Path 3: Framework Integration (Quarkus/Micronaut)
+### Path 3: Framework Integration (Spring/Quarkus/Micronaut)
 
-**Goal:** Integrate AgentUnit with DI frameworks
+**Goal:** Integrate @AgenticTest with DI frameworks
 
-1. **Read Framework-Specific Section in README (5 min)**
-   - [Quarkus Test Utilities](../README.md#quarkus-test-utilities)
-   - [Micronaut Test Utilities](../README.md#micronaut-test-utilities)
+1. **Read Framework Annotations Comparison (5 min)**
+   - [Framework Testing Annotations Comparison](../README.md#framework-testing-annotations-comparison)
+   - Understand @AgenticTest as framework testing annotation
 
-2. **Understand Hybrid Approach (5 min)**
-   - [Hybrid Approach Section](guide/utilities-vs-annotations-testing.md#hybrid-approach-recommended)
-   - Framework annotations at boundaries only
+2. **Study Framework Integration Patterns Guide (10 min)**
+   - [Framework Integration Patterns](guide/framework-integration-patterns.md)
+   - Choose your framework (Spring/Quarkus/Micronaut)
 
-3. **Review Framework Integration Example (3 min)**
-   - [Example 3: Framework Integration](guide/utilities-vs-annotations-testing.md#example-3-framework-integration)
+3. **Review Integration Examples (5 min)**
+   - [Spring Boot Integration](guide/framework-integration-patterns.md#spring-boot-integration)
+   - [Quarkus Integration](guide/framework-integration-patterns.md#quarkus-integration)
+   - [Micronaut Integration](guide/framework-integration-patterns.md#micronaut-integration)
 
-4. **Implement in Your Tests (varies)**
-   - Use framework annotations for real services
-   - Use AgentUnit utilities for test data
+4. **Implement Combined Annotations (varies)**
+   - Use framework annotation (@SpringBootTest, @QuarkusTest, etc.)
+   - Add @AgenticTest for mock injection
+   - Real framework beans + AgenticBoot mocks
 
 ---
 
@@ -201,9 +228,11 @@ ade-agent-platform-agentunit/
 - **Base Classes** → [Base Test Classes Section](../README.md#base-test-classes)
 
 ### Framework Integration
-- **Quarkus** → [Quarkus Test Utilities](../README.md#quarkus-test-utilities)
-- **Micronaut** → [Micronaut Test Utilities](../README.md#micronaut-test-utilities)
-- **Spring Boot** → [When to Use Annotation-Based](guide/utilities-vs-annotations-testing.md#use-annotation-based-when)
+- **@AgenticTest Overview** → [Framework Testing Annotations Comparison](../README.md#framework-testing-annotations-comparison)
+- **Complete Guide** → [Framework Integration Patterns](guide/framework-integration-patterns.md)
+- **Spring Boot** → [Spring Boot Integration](guide/framework-integration-patterns.md#spring-boot-integration)
+- **Quarkus** → [Quarkus Integration](guide/framework-integration-patterns.md#quarkus-integration)
+- **Micronaut** → [Micronaut Integration](guide/framework-integration-patterns.md#micronaut-integration)
 
 ### Migration
 - **From Mockito** → [Migration Guide](guide/utilities-vs-annotations-testing.md#migration-guide)
@@ -219,14 +248,14 @@ ade-agent-platform-agentunit/
 
 | Metric | Value |
 |--------|-------|
-| **Total Documentation Files** | 2 files |
-| **Total Lines** | 1,285 lines |
-| **Total Reading Time** | ~40 minutes |
-| **Guide Documents** | 1 file |
-| **API References** | 1 file (README) |
-| **Code Examples** | 15+ examples |
-| **Comparison Tables** | 5 tables |
-| **Reference Sources** | 9 authoritative sources |
+| **Total Documentation Files** | 3 files |
+| **Total Lines** | 1,735+ lines |
+| **Total Reading Time** | ~55 minutes |
+| **Guide Documents** | 2 files |
+| **API References** | 1 file (README + enhanced) |
+| **Code Examples** | 25+ examples |
+| **Comparison Tables** | 6 tables |
+| **Reference Sources** | 15 authoritative sources |
 
 ---
 
