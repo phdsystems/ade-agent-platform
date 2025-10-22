@@ -291,6 +291,305 @@ ade-agent-platform/
 
 ---
 
+## Framework Integration Patterns
+
+The ade Agent Platform supports three frameworks: **Spring Boot**, **Quarkus**, and **Micronaut**. Understanding how beans are configured across these frameworks is essential for extending the platform.
+
+### Conditional Bean Configuration Pattern
+
+**Problem:** Some infrastructure beans require optional dependencies that may not be available in all deployment scenarios.
+
+**Example:** The `InMemoryMemoryProvider` requires an `EmbeddingsProvider` for vector search, but many applications don't need memory/vector search features.
+
+#### Spring Boot Solution: @ConditionalOnBean
+
+Spring Boot provides the cleanest approach using `@ConditionalOnBean`:
+
+```java
+@Bean
+@ConditionalOnMissingBean(MemoryProvider.class)
+@ConditionalOnBean(EmbeddingsProvider.class)  // ← Only create if EmbeddingsProvider exists
+public MemoryProvider inMemoryMemoryProvider(EmbeddingsProvider embeddingsProvider) {
+    log.info("Auto-configuring InMemoryMemoryProvider");
+    return new InMemoryMemoryProvider(embeddingsProvider);
+}
+```
+
+**How it works:**
+- Bean is only created **if** an `EmbeddingsProvider` bean is available
+- If `EmbeddingsProvider` is missing, Spring silently skips this bean
+- No errors, no exceptions - graceful degradation
+
+**File:** `ade-agent-platform-spring-boot/src/main/java/dev/adeengineer/platform/spring/config/ProvidersAutoConfiguration.java:71-77`
+
+#### Quarkus Solution: Commented with Documentation
+
+Quarkus CDI doesn't have as flexible conditional bean creation, so we comment out optional beans:
+
+```java
+/**
+ * Produces an in-memory memory provider bean.
+ *
+ * <p>NOTE: This producer is commented out because it requires EmbeddingsProvider, which is not
+ * available in all contexts. Applications using memory features should provide their own
+ * MemoryProvider bean or ensure EmbeddingsProvider is available.
+ *
+ * @param embeddingsProvider Embeddings provider for vector search
+ * @return InMemoryMemoryProvider instance
+ */
+// @Produces
+// @Singleton
+// public MemoryProvider inMemoryMemoryProvider(EmbeddingsProvider embeddingsProvider) {
+//     log.info("Producing InMemoryMemoryProvider");
+//     return new InMemoryMemoryProvider(embeddingsProvider);
+// }
+```
+
+**How it works:**
+- Bean is commented out by default
+- Applications that need it can uncomment after providing `EmbeddingsProvider`
+- Clear documentation explains why it's commented and how to enable it
+
+**File:** `ade-agent-platform-quarkus/src/main/java/dev/adeengineer/platform/quarkus/config/PlatformProducers.java:60-75`
+
+#### Micronaut Solution: Commented with Documentation
+
+Similar to Quarkus, Micronaut uses commented beans with documentation:
+
+```java
+/**
+ * Creates an in-memory memory provider bean.
+ *
+ * <p>NOTE: This factory method is commented out because it requires EmbeddingsProvider, which
+ * is not available in all contexts. Applications using memory features should provide their own
+ * MemoryProvider bean or ensure EmbeddingsProvider is available.
+ *
+ * @param embeddingsProvider Embeddings provider for vector search
+ * @return InMemoryMemoryProvider instance
+ */
+// @Singleton
+// @Requires(missingBeans = MemoryProvider.class)
+// public MemoryProvider inMemoryMemoryProvider(EmbeddingsProvider embeddingsProvider) {
+//     log.info("Creating InMemoryMemoryProvider");
+//     return new InMemoryMemoryProvider(embeddingsProvider);
+// }
+```
+
+**File:** `ade-agent-platform-micronaut/src/main/java/dev/adeengineer/platform/micronaut/factory/PlatformFactory.java:60-75`
+
+### Why This Pattern Matters
+
+**Auto-configuration should work out-of-the-box:**
+- No required dependencies beyond core framework needs
+- No runtime errors when optional features aren't used
+- Clear upgrade path when advanced features are needed
+
+**Applications opt-in to advanced features:**
+- Add `EmbeddingsProvider` implementation (OpenAI, Anthropic, HuggingFace, etc.)
+- Spring Boot: Bean automatically activates
+- Quarkus/Micronaut: Uncomment bean or create custom implementation
+
+### When to Use This Pattern
+
+Use conditional bean configuration when:
+
+1. **Optional Dependencies:** Bean requires dependencies not needed by all applications
+   - Example: `EmbeddingsProvider`, `CacheManager`, `MetricsCollector`
+
+2. **Feature Flags:** Bean should only exist in certain profiles/configurations
+   - Example: Development-only beans, production-only beans
+
+3. **Multiple Implementations:** Different beans for different scenarios
+   - Example: `InMemoryCache` vs `RedisCache` based on availability
+
+4. **Graceful Degradation:** System should work with reduced functionality when dependencies are missing
+   - Example: Memory provider without embeddings, metrics without Prometheus
+
+### Example: Adding Memory Support to Your Application
+
+**Step 1: Choose an Embeddings Provider**
+
+```xml
+<!-- pom.xml - Add OpenAI embeddings support -->
+<dependency>
+    <groupId>com.openai</groupId>
+    <artifactId>openai-java</artifactId>
+    <version>0.12.0</version>
+</dependency>
+```
+
+**Step 2: Create EmbeddingsProvider Bean**
+
+**Spring Boot:**
+```java
+@Configuration
+public class EmbeddingsConfig {
+
+    @Bean
+    public EmbeddingsProvider openAIEmbeddings() {
+        return new OpenAIEmbeddingsProvider(apiKey);
+    }
+}
+```
+
+The `inMemoryMemoryProvider` bean automatically activates!
+
+**Quarkus:**
+```java
+@ApplicationScoped
+public class EmbeddingsProducers {
+
+    @Produces
+    @Singleton
+    public EmbeddingsProvider openAIEmbeddings() {
+        return new OpenAIEmbeddingsProvider(apiKey);
+    }
+}
+```
+
+Uncomment the `inMemoryMemoryProvider` bean in `PlatformProducers.java`.
+
+**Micronaut:**
+```java
+@Factory
+public class EmbeddingsFactory {
+
+    @Singleton
+    public EmbeddingsProvider openAIEmbeddings() {
+        return new OpenAIEmbeddingsProvider(apiKey);
+    }
+}
+```
+
+Uncomment the `inMemoryMemoryProvider` bean in `PlatformFactory.java`.
+
+**Step 3: Use Memory Features**
+
+```java
+@Inject
+private MemoryProvider memoryProvider;
+
+public void storeMemory(String agentId, String content) {
+    memoryProvider.store(agentId, content);
+}
+
+public List<String> searchMemory(String agentId, String query) {
+    return memoryProvider.search(agentId, query, 5);
+}
+```
+
+### Testing with Optional Dependencies
+
+**Problem:** Tests may fail if they expect beans that don't exist.
+
+**Solution:** Use framework-specific test configurations:
+
+**Spring Boot:**
+```java
+@TestConfiguration
+static class TestConfig {
+    @Bean
+    public EmbeddingsProvider mockEmbeddings() {
+        return Mockito.mock(EmbeddingsProvider.class);
+    }
+}
+```
+
+**Quarkus:**
+```java
+@QuarkusTest
+class MyTest {
+    @Inject
+    EmbeddingsProvider embeddingsProvider;  // Will fail if not provided
+
+    // Alternative: Use @InjectMock for automatic mocking
+    @InjectMock
+    EmbeddingsProvider mockEmbeddings;
+}
+```
+
+**Micronaut:**
+```java
+@MicronautTest
+class MyTest {
+    @MockBean(EmbeddingsProvider.class)
+    EmbeddingsProvider embeddingsProvider() {
+        return Mockito.mock(EmbeddingsProvider.class);
+    }
+}
+```
+
+### Common Pitfalls
+
+**❌ Don't: Create beans with missing dependencies**
+```java
+@Bean
+public MemoryProvider memoryProvider(EmbeddingsProvider embeddings) {
+    // This will fail if EmbeddingsProvider doesn't exist!
+    return new InMemoryMemoryProvider(embeddings);
+}
+```
+
+**✅ Do: Make beans conditional or documented**
+```java
+// Spring Boot
+@Bean
+@ConditionalOnBean(EmbeddingsProvider.class)
+public MemoryProvider memoryProvider(EmbeddingsProvider embeddings) {
+    return new InMemoryMemoryProvider(embeddings);
+}
+
+// Quarkus/Micronaut - Comment out with clear documentation
+```
+
+**❌ Don't: Assume all beans are available**
+```java
+@Inject
+private MemoryProvider memoryProvider;  // May be null/missing!
+
+public void useMemory() {
+    memoryProvider.store(...);  // NullPointerException!
+}
+```
+
+**✅ Do: Check for bean availability or use Optional**
+```java
+@Inject
+private Optional<MemoryProvider> memoryProvider;
+
+public void useMemory() {
+    memoryProvider.ifPresent(provider ->
+        provider.store(...)
+    );
+}
+```
+
+### Framework-Specific Conditional Annotations
+
+| Framework | Annotation | Purpose |
+|-----------|-----------|---------|
+| **Spring Boot** | `@ConditionalOnBean` | Create bean only if another bean exists |
+| **Spring Boot** | `@ConditionalOnMissingBean` | Create bean only if another bean is missing |
+| **Spring Boot** | `@ConditionalOnProperty` | Create bean based on configuration property |
+| **Spring Boot** | `@ConditionalOnClass` | Create bean only if class is on classpath |
+| **Quarkus** | `@IfBuildProfile` | Create bean only in specific build profile |
+| **Quarkus** | Custom Arc extensions | Advanced conditional logic |
+| **Micronaut** | `@Requires(beans = X.class)` | Create bean only if another bean exists |
+| **Micronaut** | `@Requires(missingBeans = X.class)` | Create bean only if another bean is missing |
+| **Micronaut** | `@Requires(property = "x")` | Create bean based on configuration property |
+
+### Best Practices
+
+1. **Default to Minimal Dependencies:** Framework modules should work with minimal dependencies
+2. **Document Optional Features:** Clearly explain what features require which dependencies
+3. **Use Spring Boot Conditionals:** Leverage `@ConditionalOnBean` when possible
+4. **Comment with Purpose:** When commenting out beans, explain why and how to enable
+5. **Provide Examples:** Show how to enable optional features in documentation
+6. **Test Without Optionals:** Ensure tests pass when optional dependencies are missing
+7. **Graceful Degradation:** Features should degrade gracefully when dependencies unavailable
+
+---
+
 ## Testing
 
 The platform has three levels of testing: Unit, Integration (E2E), and Load tests.
