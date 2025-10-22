@@ -28,6 +28,12 @@ Quick Links:
 ```
 ade-agent-platform-agentunit/
 └── src/main/java/dev/adeengineer/platform/test/
+    ├── annotation/                    # Test annotations (NEW)
+    │   ├── AdeAgentTest.java         # Main test annotation
+    │   ├── MockLLM.java              # Mock LLM provider injection
+    │   └── MockAgent.java            # Mock agent injection
+    ├── extension/                     # JUnit 5 extensions (NEW)
+    │   └── AdeAgentTestExtension.java # Annotation processing extension
     ├── mock/                          # Mock implementations
     │   ├── MockAgent.java             # Mock Agent for testing
     │   └── MockLLMProvider.java       # Mock LLM provider
@@ -66,7 +72,48 @@ Add to your module's `pom.xml`:
 </dependency>
 ```
 
-### Example Test
+### Example Test (Annotation-Based) - **Recommended for ade-agent Ecosystem**
+
+```java
+package dev.adeengineer.platform.core;
+
+import dev.adeengineer.platform.test.annotation.AdeAgentTest;
+import dev.adeengineer.platform.test.annotation.MockLLM;
+import dev.adeengineer.platform.test.annotation.MockAgent;
+import dev.adeengineer.platform.test.factory.TestData;
+import dev.adeengineer.platform.test.mock.MockLLMProvider;
+
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+
+@AdeAgentTest  // Enables automatic mock injection
+class AgentRegistryTest {
+
+    @MockLLM(responseContent = "Test response")
+    MockLLMProvider llmProvider;  // Automatically injected
+
+    @MockAgent(name = "test-agent", capabilities = {"testing"})
+    dev.adeengineer.platform.test.mock.MockAgent agent;  // Automatically injected
+
+    @Test
+    void shouldRegisterAgent() {
+        // Mocks are ready to use - no setup needed
+        AgentRegistry registry = new AgentRegistry();
+        registry.registerAgent(agent);
+
+        assertThat(registry.getAgent("test-agent")).isEqualTo(agent);
+    }
+
+    @Test
+    void shouldExecuteTaskWithMockLLM() {
+        // LLM provider is pre-configured from annotation
+        LLMResponse response = llmProvider.generate("test prompt", 0.7, 100);
+        assertThat(response.content()).isEqualTo("Test response");
+    }
+}
+```
+
+### Example Test (Utilities-Based) - Alternative Approach
 
 ```java
 package dev.adeengineer.platform.core;
@@ -81,33 +128,162 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AgentRegistryTest {
     @Test
     void shouldRegisterAgent() {
-        // Arrange
+        // Manual instantiation
         AgentRegistry registry = new AgentRegistry();
         MockAgent agent = new MockAgent("test-agent");
 
-        // Act
         registry.registerAgent(agent);
-
-        // Assert
         assertThat(registry.getAgent("test-agent")).isEqualTo(agent);
     }
 
     @Test
     void shouldExecuteTaskWithMockLLM() {
-        // Arrange
+        // Manual configuration
         MockLLMProvider llmProvider = new MockLLMProvider();
         llmProvider.withResponseContent("Test response");
 
-        // Act
         LLMResponse response = llmProvider.generate("test prompt", 0.7, 100);
-
-        // Assert
         assertThat(response.content()).isEqualTo("Test response");
     }
 }
 ```
 
+## Testing Approaches
+
+AgentUnit supports **two testing approaches**:
+
+### 1. Annotation-Based Testing (Recommended for Internal Use)
+
+**Best for:** ade-agent ecosystem modules (internal use)
+
+✅ **Less boilerplate** - No manual mock instantiation
+✅ **Cleaner tests** - Focus on test logic, not setup
+✅ **Consistent** - Unified pattern across all modules
+✅ **Auto-configured** - Mocks ready immediately
+
+**Use `@AdeAgentTest` with field annotations:**
+```java
+@AdeAgentTest
+class MyTest {
+    @MockLLM(responseContent = "Response")
+    MockLLMProvider llm;
+
+    @MockAgent(name = "agent")
+    MockAgent agent;
+}
+```
+
+### 2. Utilities-Based Testing (Maximum Portability)
+
+**Best for:** Complex scenarios, fine-grained control
+
+✅ **Explicit** - Clear what's being created
+✅ **Flexible** - Full control over configuration
+✅ **Simple** - Just Java, no magic
+
+**Direct instantiation:**
+```java
+MockLLMProvider llm = new MockLLMProvider();
+MockAgent agent = new MockAgent("agent");
+```
+
+**Recommendation:** Use **annotation-based** for standard tests, fall back to **utilities** for complex scenarios requiring custom setup.
+
 ## Available Test Utilities
+
+### Phase 0: Annotations (v0.2.0) - **NEW**
+
+#### @AdeAgentTest
+
+Main annotation for enabling automatic mock injection in test classes.
+
+**Features:**
+- Enables JUnit 5 extension for mock injection
+- Auto-configures all `@MockLLM` and `@MockAgent` fields
+- No manual setup required
+
+**Usage:**
+```java
+import dev.adeengineer.platform.test.annotation.AdeAgentTest;
+
+@AdeAgentTest
+class MyTest {
+    // Test code - mocks auto-injected
+}
+```
+
+**Configuration:**
+```java
+@AdeAgentTest(autoConfigureMocks = false)  // Disable auto-configuration if needed
+class MyTest {
+    // Manual mock setup required
+}
+```
+
+#### @MockLLM
+
+Injects a configured `MockLLMProvider` into test fields.
+
+**Features:**
+- Automatic instantiation and injection
+- Configurable response content, provider name, model
+- Configurable health status
+
+**Usage:**
+```java
+import dev.adeengineer.platform.test.annotation.MockLLM;
+import dev.adeengineer.platform.test.mock.MockLLMProvider;
+
+@AdeAgentTest
+class MyTest {
+    @MockLLM(responseContent = "Custom response")
+    MockLLMProvider llmProvider;
+
+    @Test
+    void test() {
+        var response = llmProvider.generate("prompt", 0.7, 100);
+        assertThat(response.content()).isEqualTo("Custom response");
+    }
+}
+```
+
+**Configuration options:**
+- `responseContent` - Response content (default: "Test LLM response")
+- `providerName` - Provider name (default: "test-provider")
+- `model` - Model name (default: "test-model")
+- `healthy` - Health status (default: true)
+
+#### @MockAgent
+
+Injects a configured `MockAgent` into test fields.
+
+**Features:**
+- Automatic instantiation and injection
+- Configurable name, description, capabilities
+
+**Usage:**
+```java
+import dev.adeengineer.platform.test.annotation.MockAgent;
+
+@AdeAgentTest
+class MyTest {
+    @MockAgent(name = "developer", capabilities = {"coding", "testing"})
+    dev.adeengineer.platform.test.mock.MockAgent agent;
+
+    @Test
+    void test() {
+        TaskResult result = agent.executeTask(TestData.validTaskRequest());
+        assertThat(result.agentName()).isEqualTo("developer");
+    }
+}
+```
+
+**Configuration options:**
+- `name` - Agent name (default: "test-agent")
+- `description` - Agent description (default: "Mock agent for {name}")
+- `capabilities` - Capability array (default: ["capability1", "capability2"])
+
+---
 
 ### Phase 1: Core Utilities (v0.2.0)
 
